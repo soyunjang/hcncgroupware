@@ -537,13 +537,13 @@
 				maxRow = $("#table2").jqGrid('getGridParam', 'reccount') + 1;
 			} else {
 				maxRow = rowid;
-			}			
+			}
 		
 			$("#table2").jqGrid("addRow", {
 				rowID : maxRow,
 				initdata : {
 					'rowStatus' : '추가',
-					'COLLECT_CONDITION' : condition
+					// 'COLLECT_CONDITION' : condition
 				},
 				position : "last",
 				useDefValues : false,
@@ -570,7 +570,7 @@
 				rowID : maxRow,
 				initdata : {
 					'rowStatus' : '추가',
-					'BUY_ITEM' : condition
+					// 'BUY_ITEM' : condition
 				},
 				position : "last",
 				useDefValues : false,
@@ -890,11 +890,12 @@
 				e.preventDefault();
 				
 				if (!$(this).hasClass('disable')) {
-					var rowid = $("#table2").jqGrid('getGridParam', 'reccount');
-					$('#table2').jqGrid("delRowData", rowid); // 잔금 삭제
-					
-					insertGrid1('중도금' + (rowid - 1));
-					insertGrid1('잔금');
+					// var rowid = $("#table2").jqGrid('getGridParam', 'reccount');
+					// $('#table2').jqGrid("delRowData", rowid); // 잔금 삭제
+					// insertGrid1('중도금' + (rowid - 1));
+					// insertGrid1('잔금');
+
+					insertGrid1('');
 				}
 			}
 		});
@@ -1188,7 +1189,7 @@
 			});
 
 			searchGridData();
-			
+
 			$("#table2").jqGrid({
 				mtype : 'POST'
 				, datatype : 'local'
@@ -1200,7 +1201,7 @@
 				, colNames: langDetail1
 				, colModel: [
 					{name: 'rowStatus'				, align:'center'	, width: '3%'	, editable: false}
-					, {name: 'COLLECT_CONDITION'	, align: 'center'	, width: '4%'}
+					, {name: 'COLLECT_CONDITION'	, align: 'center'	, width: '4%' , editable: true}
 					, {name: 'COLLECT_DT'			, align: 'center'	, width: '5%', editable: true	, editoptions: {dataInit: function (element) {
 																									                        $(element).datepicker({
 																									                            id: 'orderDate_datePicker',
@@ -1224,8 +1225,8 @@
 																									                    }
 																									                }
 					}
-					, {name: 'COLLECT_PER'			, align: 'center'	, width: '4%', editable: true	, formatter : currencyFmatterPER}
 					, {name: 'COLLECT_PRICE'		, align: 'right'	, width: '8%', editable: true	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
+					, {name: 'COLLECT_PER'			, align: 'center'	, width: '4%', editable: true	, formatter : currencyFmatterPER}
 					, {name: 'SALES_NUM'			, align: 'center'	, width: '0%', hidden: true}
 					, {name: 'REVISION'				, align: 'center'	, width: '0%', hidden: true}
 				]
@@ -1241,7 +1242,7 @@
 					}
 					
 					$(this).jqGrid('editRow', rowid, {
-						keys : true,
+						keys : false,
 						onEnter : function(rowid, options, event) {
 							$(this).jqGrid("saveRow", rowid, options);
 							if(status == "추가") {
@@ -1299,7 +1300,7 @@
 					}
 					
 					$(this).jqGrid('editRow', rowid, {
-						keys : true,
+						keys : false,
 						onEnter : function(rowid, options, event) {
 							$(this).jqGrid("saveRow", rowid, options);
 							if(status == "추가") {
@@ -1350,7 +1351,7 @@
 					}
 					
 					$(this).jqGrid('editRow', rowid, {
-						keys : true,
+						keys : false,
 						onEnter : function(rowid, options, event) {
 							$(this).jqGrid("saveRow", rowid, options);
 							if(status == "추가") {
@@ -1390,7 +1391,7 @@
 					}
 					
 					$(this).jqGrid('editRow', rowid, {
-						keys : true,
+						keys : false,
 						onEnter : function(rowid, options, event) {
 							$(this).jqGrid("saveRow", rowid, options);
 							if(status == "추가") {
@@ -1436,7 +1437,7 @@
 					}
 					
 					$(this).jqGrid('editRow', rowid, {
-						keys : true,
+						keys : false,
 						onEnter : function(rowid, options, event) {
 							$(this).jqGrid("saveRow", rowid, options);
 							if(status == "추가") {
@@ -1521,7 +1522,7 @@
 					}
 					
 					$(this).jqGrid('editRow', rowid, {
-						keys : true,
+						keys : false,
 						onEnter : function(rowid, options, event) {
 							$(this).jqGrid("saveRow", rowid, options);
 							if(status == "추가") {
@@ -1586,7 +1587,7 @@
 						$(this).jqGrid('setCell', rowid, 'rowStatus', '수정');
 					}
 					
-					$(this).jqGrid('editRow', rowid, {keys : true});
+					$(this).jqGrid('editRow', rowid, {keys : false});
 				}
 // 				, afterEditCell : function(rowid, cellname, value, iRow, iCol) {
 // 					console.log("afterEdiltCell 실행.");
@@ -1669,22 +1670,23 @@
 			$("#table7").clearGridData();
 			$("#table8").clearGridData();
 			
-			insertGrid1('선금');
-			insertGrid1('중도금');
-			insertGrid1('잔금');
-			
+			insertGrid1('');
+			// insertGrid1('선금');
+			// insertGrid1('중도금');
+			// insertGrid1('잔금');
+
+			insertGrid2('ITEM1ITEMPRINCIPAL');
+			// insertGrid2('ITEM2SENIOR');
+			// insertGrid2('ITEM3INTERMEDIATE');
+			// insertGrid2('ITEM4JUNIOR');
+			// insertGrid2('ITEM5HW');
+			// insertGrid2('ITEM6SW');
+			// insertGrid2('ITEM7COST');
+
 			insertGrid3('ITEMMM1PRINCIPAL');
 			insertGrid3('ITEMMM2SENIOR');
 			insertGrid3('ITEMMM3INTERMEDIATE');
 			insertGrid3('ITEMMM4JUNIOR');
-			
-			insertGrid2('ITEM1ITEMPRINCIPAL');
-			insertGrid2('ITEM2SENIOR');
-			insertGrid2('ITEM3INTERMEDIATE');
-			insertGrid2('ITEM4JUNIOR');
-			insertGrid2('ITEM5HW');
-			insertGrid2('ITEM6SW');
-			insertGrid2('ITEM7COST');
 			
 			insertGrid4('출장경비 / 회의비 / 기타경비 등');
 			
