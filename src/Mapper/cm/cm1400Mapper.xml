@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cm1400Mapper">
+	<!-- Head Table 조회 -->
+	<select id="cm1400Sel" parameterType="map" resultType="map">
+		EXEC CM1400_SEL #{MENU_ID}, #{MENU_NAME}, #{MENU_GROUP}, #{PROG_ID}, #{PROG_PATH}, #{USE_YN}
+  	</select>		
+ 
+    <!-- 메뉴ID 중복확인 -->
+    <select id="cm1400Verification" parameterType="map" resultType="map">
+    	EXEC CM1400_CNT #{MENU_ID}
+    </select>	
+    
+    <!-- Detail Table 저장 -->
+    <update id="cm1400Save" parameterType="map">
+		EXEC CM1400_SAVE #{MENU_PID}, #{MENU_ID}, #{MENU_NAME}, #{USE_YN}, #{PROG_ID}, #{PROG_PATH}, #{MENU_GROUP}, #{SORT_NO}, #{MENU_DESC}, #{MEMO}, #{USER_ID}  
+	</update>
+</mapper>

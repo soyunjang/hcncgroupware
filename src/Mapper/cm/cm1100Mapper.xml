@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="cm1100Mapper">
+	<!-- Table 조회 -->
+	<select id="cm1100Sel" parameterType="map" resultType="map">
+		EXEC CM1100_SEL #{DEPT_NM}
+	</select>
+	
+	<!-- 부서코드 중복 확인 -->
+	<select id="cm1100Verification" parameterType="map" resultType="map">
+		EXEC CM1100_DETAIL_CNT #{DEPT_ID}
+	</select>
+	
+	<!-- Table 저장 -->
+	<update id="cm1100Save">
+		EXEC CM1100_SAVE #{DEPT_PID}, #{DEPT_ID}, #{DEPT_NM}, #{DEPT_GROUP}, #{SORT_NO}, #{USE_YN}, #{MEMO}, #{USER_ID}
+	</update>
+	
+	<!-- Table 삭제 -->
+	<update id="cm1100Del">
+		EXEC CM1100_DEL #{DEPT_ID}, #{USER_ID}
+	</update>
+</mapper>

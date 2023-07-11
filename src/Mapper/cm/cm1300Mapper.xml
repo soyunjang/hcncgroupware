@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cm1300Mapper">
+	<!-- Head Table 조회 -->
+	<select id="cm1300HeadSel" parameterType="map" resultType="map">
+		EXEC CM1300_HEAD_SEL #{AUTH_TYPE_CD}, #{USE_YN}
+	</select>
+	
+	<!-- Detail Table 조회 -->
+	<select id="cm1300DetailSel" parameterType="map" resultType="map">
+		EXEC CM1300_DETAIL_SEL #{AUTH_TYPE_CD}, #{USE_YN}
+	</select>
+	
+	<!-- Head Table Cnt 조회 -->
+	<select id="cm1300HeadCnt" parameterType="map" resultType="map">
+		EXEC CM1300_HEAD_CNT #{AUTH_TYPE_CD}
+	</select>
+	
+	<!-- Detail Table Cnt 조회 -->
+	<select id="cm1300DetailCnt" parameterType="map" resultType="map">
+		EXEC CM1300_DETAIL_CNT #{AUTH_TYPE_CD}, #{MENU_ID}, #{BUTTON_TYPE_CD}
+	</select>
+    
+    <!-- 팝업 Menu Table 조회 -->
+	<select id="cm1300PopMenuSel" parameterType="map" resultType="map">
+		EXEC CM1300_POP_MENU_SEL #{MENU_NAME}, #{USE_YN}
+	</select>
+    
+    <!-- 팝업 Button Table 조회 -->
+	<select id="cm1300PopButtonSel" parameterType="map" resultType="map">
+		EXEC CM1300_POP_BUTTON_SEL #{AUTH_TYPE_CD}, #{MENU_ID}, #{USE_YN}
+	</select>
+    
+    <!-- Head Table 저장 -->
+	<update id="cm1300HeadSave" parameterType="map">
+		EXEC CM1300_HEAD_SAVE #{AUTH_TYPE_CD}, #{AUTH_TYPE_NAME}, #{USE_YN}, #{MEMO}, #{USER_ID}
+    </update>
+    
+    <!-- Detail Table 저장 -->
+	<update id="cm1300DetailSave" parameterType="map">
+		EXEC CM1300_DETAIL_SAVE #{AUTH_TYPE_CD}, #{MENU_ID}, #{MENU_NAME}, #{BUTTON_TYPE_CD}, #{BUTTON_TYPE_NAME}, #{USE_YN}, #{MEMO}, #{USER_ID}
+    </update>    
+</mapper>

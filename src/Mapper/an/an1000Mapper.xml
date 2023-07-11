@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="an1000Mapper">
+	<!-- Table 조회 -->
+	<select id="an1000InfoSel" parameterType="map" resultType="map">
+		EXEC AN1000_SEL_INFO #{USER_ID}
+	</select>
+	
+	<!-- Table 조회 -->
+	<select id="an1000Sel" parameterType="map" resultType="map">
+		EXEC AN1000_SEL #{USER_ID}
+	</select>
+</mapper>

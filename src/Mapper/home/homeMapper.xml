@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="homeMapper">
+    <!-- 사용자 정보 조회 -->
+    <select id="loginCheck" parameterType="map" resultType="map">
+		SELECT USER_ID
+			 , CASE WHEN #{PASSWORD} = PASSWORD THEN 'O' ELSE 'X' END AS PASSWD
+			 , PASSWORD
+			 , USER_NM
+			 , PDEPT_CD
+			 , (SELECT dbo.FN_COMMON_NM('DEPT', PDEPT_CD)) AS PDEPT_NM	
+			 , DEPT_CD	
+			 , (SELECT dbo.FN_COMMON_NM('DEPT', DEPT_CD)) AS DEPT_NM
+			 , GRADE_CD
+			 , (SELECT dbo.FN_COMMON_NM('ROLE', GRADE_CD)) AS GRADE_NM
+			 , ENTER_DT
+			 , BIRTHDAY
+			 , EMAIL
+			 , PHONE_NUM
+			 , AUTH_TYPE_CD
+			 , 'KOR' AS LANG
+			 , (SELECT TOP 1 CONNECT_START_DT FROM CONNECT_INFO WHERE USER_ID = #{USER_ID} ORDER BY CONNECT_START_DT DESC) AS CONNECT_DT
+		  FROM USER_INFO
+		 WHERE USER_ID = #{USER_ID}
+		   AND PASSWORD = #{PASSWORD}
+    </select>
+    
+    <!-- 사용자 권한별 메뉴 조회 -->
+    <select id="userMenuList" parameterType="map" resultType="map">
+		SELECT A.MENU_ID
+			 , A.MENU_PID
+			 , A.MENU_TYPE
+			 , A.MENU_NAME
+			 , A.MENU_DES
+			 , A.PROG_ID
+			 , A.PROG_PATH
+			 , A.MENU_GROUP
+			 , A.SORT_NO
+			 , A.USE_YN
+			 , A.MEMO
+		  FROM MENU_INFO A
+		 WHERE A.USE_YN = 'Y'
+		   AND (A.MENU_ID IN (SELECT MENU_ID 
+		   						FROM MENU_INFO
+		   					   WHERE MENU_GROUP = 'GRP01')
+		    OR A.MENU_ID IN (SELECT DISTINCT D.MENU_ID 
+							   FROM AUTH_TYPE_DETAIL D 
+							  WHERE AUTH_TYPE_CD = #{AUTH_TYPE_CD})
+			OR A.MENU_ID IN (SELECT DISTINCT MENU_PID 
+							   FROM MENU_INFO 
+							  WHERE MENU_ID IN (SELECT DISTINCT D.MENU_ID 
+							  					  FROM AUTH_TYPE_DETAIL D 
+							  					 WHERE AUTH_TYPE_CD = #{AUTH_TYPE_CD})))
+		 ORDER BY A.MENU_ID, A.SORT_NO
+    </select>
+    
+    <!-- 접속 정보 저장 -->
+    <insert id="insertConnectInfo" parameterType="map">
+		EXEC CM0000_CONNECT_INS #{SESSION_ID}, #{USER_ID}, #{DEPT_CD}, #{USER_NM}, #{CONNECT_IP}
+    </insert>
+</mapper>

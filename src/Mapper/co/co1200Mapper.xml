@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="co1200Mapper">
+	<!-- Table 조회 -->
+	<select id="co1200Sel" parameterType="map" resultType="map">
+		EXEC CO1200_SEL #{START}, #{END}, #{SALES}, #{USER_NM}, #{DEPT}
+	</select>
+</mapper>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cm1700Mapper">
+	<!-- 접속조회, 메뉴접근조회, 권한그룹변경조회 Table 조회 -->
+	<select id="cm1700LogSel" parameterType="map" resultType="map">
+		EXEC CM1700_LOG_SEL #{LOG_SEL}, #{STARTDT_NUM}, #{ENDDT_NUM}
+	</select>
+</mapper>

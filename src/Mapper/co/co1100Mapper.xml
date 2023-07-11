@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="co1100Mapper">
+	<!-- Table 조회 -->
+	<select id="co1100Sel" parameterType="map" resultType="map">
+		EXEC CO1100_SEL #{COMPANY}, #{DATE}, #{USER_NM}, #{CARD_NUM}
+	</select>
+</mapper>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cm1500Mapper">
+	<!-- Table 조회 -->
+	<select id="cm1500Sel" parameterType="map" resultType="map">
+		EXEC CM1500_SEL #{OFFICE_TYPE}, #{COMPANY}, #{CARD_NUM}, #{USER_NM}
+	</select>
+	
+	<!-- 사용자 조회 팝업 Table 조회 -->
+	<select id="cm1500UserSel" parameterType="map" resultType="map">
+		EXEC CM1500_USER_SEL #{USER_NM}
+	</select>
+	
+	<!-- Table 저장 -->
+	<update id="cm1500Save" parameterType="map">
+		EXEC CM1500_SAVE #{OFFICE}, #{USER_ID}, #{COMPANY}, #{CARD_NUM}, #{CVS}, #{LIMIT}, #{CARD_DT}, #{ISSUANCE_DT}, #{PROVIDE_DT}, #{RETRIEVE_DT}, #{MEMO}, #{REG_ID}
+	</update>
+</mapper>

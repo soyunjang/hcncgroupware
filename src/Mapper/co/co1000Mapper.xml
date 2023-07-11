@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="co1000Mapper">
+	<!-- Table 조회 -->
+	<select id="co1000Sel" parameterType="map" resultType="map">
+		EXEC CO1000_SEL #{COMPANY}, #{DATE}, #{CARD_NUM}
+	</select>
+	
+	<!-- Table 조회 -->
+	<select id="co1000SelTemp" parameterType="map" resultType="map">
+		EXEC CO1000_SEL_TEMP #{COMPANY}, #{DATE}, #{CARD_NUM}
+	</select>
+	
+	<insert id="co1000InsExcel" parameterType="map">
+		EXEC CO1000_INS_XLS #{USE_DATE}, #{CARD_NUM}, #{BREAKDOWN}, #{APPROVAL}, #{REFUND}, #{COMPANY}, #{CONFIRM_YN}
+	</insert>
+</mapper>

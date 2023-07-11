@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cm1600Mapper">
+	<!-- Table 조회 -->
+    <select id="cm1600HeadSel" parameterType="map" resultType="map">
+		EXEC CM1600_SEL #{KOR_NM}, #{ENG_NM}, #{CHN_NM}
+    </select>
+    
+    <!-- Table 저장 -->
+    <update id="cm1600HeadSave" parameterType="map">
+		EXEC CM1600_SAVE #{SEQ_NO}, #{USE_YN}, #{TYPE}, #{UNIQUE_ID}, #{KOR_NM}, #{ENG_NM}, #{CHN_NM}, #{SORT_NO}, #{MEMO}, #{REG_ID}
+    </update>    
+</mapper>
