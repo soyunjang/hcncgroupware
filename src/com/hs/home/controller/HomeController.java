@@ -1,19 +1,7 @@
 package com.hs.home.controller;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
-import java.security.MessageDigest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import com.hs.common.service.CommonService;
+import com.hs.home.service.HomeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -22,8 +10,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.hs.common.service.CommonService;
-import com.hs.home.service.HomeService;
+import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 @Controller
 public class HomeController {
@@ -74,11 +71,11 @@ public class HomeController {
 
 		// 사용자 정보 조회
 		Map<String, Object> loginInfo = homeService.loginCheck(map);
+		System.out.println("loginInfo = " + loginInfo.toString());
 
 		if (loginInfo != null) {
 			UserInfo vo = new UserInfo();
 			vo.setUSER_ID(id);
-			vo.setUSER_PW(loginInfo.get("PASSWORD").toString());
 			vo.setUSER_NM(loginInfo.get("USER_NM") != null ? loginInfo.get("USER_NM").toString() : "");
 			vo.setPDEPT_CD(loginInfo.get("PDEPT_CD") != null ? loginInfo.get("PDEPT_CD").toString() : "");
 			vo.setPDEPT_NM(loginInfo.get("PDEPT_NM") != null ? loginInfo.get("PDEPT_NM").toString() : "");
