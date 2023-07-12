@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import com.hs.home.controller.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -39,9 +40,11 @@ public class AN1100Controller {
    	 */
 	@RequestMapping(value = "/an1100")
 	public String an1100(Locale locale, Model model, HttpSession session) {
-		
+
+		UserInfo user = (UserInfo) session.getAttribute("User");
+
 		// 사용자 연차정보 조회
-		Map<String,Object> holidayInfo = an1000Service.an1000InfoSel(session);
+		Map<String,Object> holidayInfo = an1000Service.an1000InfoSel(user);
 		
 		model.addAttribute("Holiday", holidayInfo);
 		
@@ -58,6 +61,7 @@ public class AN1100Controller {
 	public @ResponseBody List<Map<String, Object>> AN1100_SEL(@RequestBody Map<String, Object> param, HttpSession session) {
 		
 		List<Map<String, Object>> list = an1100Service.an1100Sel(param, session);
+
 		return list;
 	}
 	

@@ -13,4 +13,9 @@
 	<select id="an1000Sel" parameterType="map" resultType="map">
 		EXEC AN1000_SEL #{USER_ID}
 	</select>
+
+	<insert id="an1000Save" parameterType="map">
+		EXEC AN1000_SAVE #{USER_ID}, #{HOLIDAY_TYPE}, #{HOLIDAY_CNT}, #{HOLIDAY_START}, #{HOLIDAY_END},
+		#{HOLIDAY_REASON}, #{TASK}, #{ACQUIRER}, #{EMERGENCY}, #{REG_ID}, #{REG_DT}, #{DEPT_CD}, #{POST_CD}
+	</insert>
 </mapper>

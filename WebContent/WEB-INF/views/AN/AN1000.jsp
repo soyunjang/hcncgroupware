@@ -140,24 +140,24 @@
 										<td colspan="3">
 											<div class="fl-sb">
 												<label for="pop01_date01_START" class="hide">날짜 시작</label>
-												<input type="date" id="pop01_date01_START" name="pop01_date01_START"> 
-												<span>~</span> 
+												<input type="date" id="pop01_date01_START" name="pop01_date01_START">
+												<span>~</span>
 												<label for="pop01_date01_END" class="hide">날짜끝</label>
 												<input type="date" id="pop01_date01_END" name="pop01_date01_END">
 											</div>
 										</td>
 									</tr>
-									<tr>										
+									<tr>
 										<th class="req">4.신청일자</th>
 										<td>
-											<input type="date" id="pop01_date01_REG" name="pop01_date01_START">
+											<input type="date" id="pop01_date01_REG" name="pop01_date01_START" disabled>
 										</td>
 										<th class="req">5.비상연락망</th>
 										<td>
 			                            	<input type="text" id="pop01_txt01_EMERGENCY" Placeholder="비상연락망" class="wp100">
 										</td>
 									</tr>
-									<tr>										
+									<tr>
 										<th class="req">6.담당업무</th>
 										<td>
 											<input type="text" id="pop01_txt01_TASK" Placeholder="담당업무" class="wp100">
@@ -389,36 +389,45 @@
 					{
 						text : pop01_btn01_SAVE,
 	                    click : function(){
-							if($('#pop01_txt01_EMP_ID').val() == ''){
-								toast("경고", "사번을 선택해주세요.", "error");
+
+							if($('#pop01_txt01_COUNT').val() == ''){
+								toast("경고", "휴가일수를 선택해주세요.", "error");
 								return false;
-							}else if($('#pop01_txt01_USER_ID').val() == ''){
-								toast("경고", "사용자ID를 입력해주세요.", "error");
-								return false;	
-							}else if($('#pop01_txt01_PW').val() == ''){
-								toast("경고", "비밀번호를 입력해주세요.", "error");
+							}else if($('#pop01_date01_START').val() == ''){
+								toast("경고", "휴가시작일을 입력해주세요.", "error");
 								return false;
-							}else if($('#pop01_txt01_AUTH_TYPE').val() == ''){
-								toast("경고", "권한그룹을 선택해주세요.", "error");
+							}else if($('#pop01_date01_END').val() == ''){
+								toast("경고", "휴가종료일을 입력해주세요.", "error");
 								return false;
-							}else if($('#pop01_txt01_START_YMD').val() == ''){
-								toast("경고", "권한적용일을 선택해주세요.", "error");
+							}else if($('#pop01_txt01_EMERGENCY').val() == ''){
+								toast("경고", "비상연락망을 입력해주세요.", "error");
 								return false;
-							}else if($('#pop01_txt01_END_YMD').val() == ''){
-								toast("경고", "권한만료일을 선택해주세요.", "error");
+							}else if($('#pop01_txt01_TASK').val() == ''){
+								toast("경고", "담당업무을 입력해주세요.", "error");
 								return false;
-							}else {
-								if(action == "C"){
-									if(!checkUserID){
-										toast("경고", "사용자ID 중복확인을 해주세요.", "error");
-										return false;
-									}
-									confirms("저장 하시겠습니까?", "C");
-								}
-								else if(action == "U"){
-									confirms("저장 하시겠습니까?", "U");
-								}
+							}else if($('#pop01_txt01_ACQUIRER').val() == ''){
+								toast("경고", "업무인수자을 입력해주세요.", "error");
+								return false;
+							}else if($('#pop01_txt01_REASON').val() == ''){
+								toast("경고", "사유을 입력해주세요.", "error");
+								return false;
 							}
+
+							const param = {
+								HOLIDAY_TYPE : $('#pop01_sel01_TYPE').val(),
+								HOLIDAY_CNT : $('#pop01_txt01_COUNT').val(),
+								HOLIDAY_START : $('#pop01_date01_START').val(),
+								HOLIDAY_END : $('#pop01_date01_END').val(),
+								EMERGENCY : $('#pop01_txt01_EMERGENCY').val(),
+								TASK : $('#pop01_txt01_TASK').val(),
+								ACQUIRER : $('#pop01_txt01_ACQUIRER').val(),
+								HOLIDAY_REASON : $('#pop01_txt01_REASON').val()
+							}
+							getAjaxJsonData('/an1000', param, 'testDataCallBack')
+							function testDataCallBack(data){
+								console.log(data);
+							};
+
 						}
 					}
 					, {
