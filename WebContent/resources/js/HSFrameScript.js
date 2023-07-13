@@ -137,13 +137,13 @@ function noticeShowHide(type){
  * @param	Array 	subParam 	전달할 파라미터
  * @param	String 	fnCallBack	callBack 함수명
  */
-function getAjaxJsonData(url, subParam, fnCallBack){
+function getAjaxJsonData(url, subParam, fnCallBack, type){
 	console.log('getAjaxJsonData', JSON.stringify(subParam));
 	try{
 		$.ajax({
 			url : url
 			, data : JSON.stringify(subParam)
-			, type : 'POST'
+			, type : type == undefined ? 'POST' : type
 			, dataType : 'json'
 			, beforeSend : function(xmlHttpRequest){
 				xmlHttpRequest.setRequestHeader("AJAX", "true"); // ajax 호출을  header에 기록
@@ -201,7 +201,7 @@ function ajaxSubmit(url, subParamList, fnCallBack, alertText){
 	for(var i = 0; i < subParamList.length; i++){
 		dataArray.push(subParamList[i]);
 	}
-	
+	console.log(dataArray)
 	try{
 		$.ajax({
 			url : url

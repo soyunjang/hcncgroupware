@@ -132,7 +132,7 @@
 										</td>
 										<th class="req">2.휴가일수</th>
 										<td>
-			                            	<input type="number" id="pop01_txt01_COUNT" Placeholder="휴가일수" class="wp100">
+			                            	<input type="number" id="pop01_txt01_COUNT" Placeholder="휴가일수" class="wp100" disabled>
 										</td>
 									</tr>
 									<tr>
@@ -254,6 +254,7 @@
 		$("#btn01_UPDATE").on({
 			click: function(){
 				var rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
+				console.log(rowData)
 				if(rowData != null){
 					checkAction = "U";
 					updateGridData(rowData);
@@ -332,7 +333,7 @@
 		function searchGridData(){
 			var searchParam = {};
 			
-			getAjaxJsonData("an1000Sel", searchParam, "searchGridDataCallBack");
+			getAjaxJsonData("an1000Sel", searchParam, "searchGridDataCallBack", 'GET');
 		};
 		
 		function searchGridDataCallBack(data){
@@ -423,11 +424,8 @@
 								ACQUIRER : $('#pop01_txt01_ACQUIRER').val(),
 								HOLIDAY_REASON : $('#pop01_txt01_REASON').val()
 							}
-							getAjaxJsonData('/an1000', param, 'testDataCallBack')
-							function testDataCallBack(data){
-								console.log(data);
-							};
 
+							getAjaxJsonData('/an1000', param, 'testDataCallBack', 'POST')
 						}
 					}
 					, {
@@ -439,6 +437,94 @@
 				]
 				, focus: function (event, ui) {}
 			}).css("z-index", 1000).prev(".ui-dialog-titlebar").css("background","#266f80").css("color","#fff");
+		};
+
+		function testDataCallBack(data){
+			console.log(data);
+		};
+
+
+		$('#pop01_sel01_TYPE').change(() => {
+			holidayDateCheck();
+		});
+		$('#pop01_date01_START').change(() => {
+			holidayDateCheck();
+		});
+		$('#pop01_date01_END').change(() => {
+			holidayDateCheck();
+		});
+
+		/**
+		 * 반차 체크 및 휴가기간 체크(휴가시작일 >= 휴가종료일)
+		 */
+		function holidayDateCheck() {
+			const HALF_CHECK = ($('#pop01_sel01_TYPE').val() == 'HALF01' || $('#pop01_sel01_TYPE').val() == 'HALF02');
+			let startValue = $('#pop01_date01_START').val();
+			let endValue = $('#pop01_date01_END').val();
+
+			if (HALF_CHECK) { // 반차일 경우
+				$('#pop01_date01_END').val($('#pop01_date01_START').val());
+				$('#pop01_txt01_COUNT').val('0.5');
+			} else if(startValue != '' && endValue != '') { // 반차가 아닐 경우
+				if (new Date(startValue) > new Date(endValue)) {
+					toast("경고", "휴가기간을 확인해 주세요.", "error");
+					$('#pop01_date01_END').val(startValue);
+				} else {
+					let year = new Date(startValue).getFullYear();
+					let month = new Date(startValue).getMonth() + 1;
+					let url = '/an1000/publicHoliday?year=' + year + '&month=' + month;
+					getAjaxJsonData(url, '', 'holidayDateCount', 'GET')
+				}
+			}
+		}
+
+		/**
+		 * 휴가일수 계산(주말, 공휴일 제외)
+		 */
+		function holidayDateCount(data){
+			let apiArray = [];
+			for (let i = 0; i < data.length; i++) {
+				let year = (data[i]).toString().substring(0, 4);
+				let month = (data[i]).toString().substring(4, 6);
+				let day = (data[i]).toString().substring(6, 8);
+				apiArray.push(new Date(year + "-" + month + "-" + day));
+			}
+
+			const holiday_start = $('#pop01_date01_START');
+			const holiday_end = $('#pop01_date01_END');
+			const holiday_count = $('#pop01_txt01_COUNT');
+
+			let start = new Date(holiday_start.val());
+			let end = new Date(holiday_end.val());
+
+			if (start.getDay() == 0 || start.getDay() == 6) { // 주말 체크
+				holiday_start.val("");
+				holiday_end.val("");
+				holiday_count.val("")
+			} else if (end.getDay() == 0 || end.getDay() == 6) { // 주말 체크
+				holiday_end.val("");
+				holiday_count.val("");
+			} else {
+				let difference = Math.abs(end - start);
+				let dayTime = 1000 * 3600 * 24;
+				let count = difference / dayTime + 1; // +1은 당일 포함
+				let weekend = parseInt(count / 7);
+				if (end.getDay() < start.getDay() && weekend == 0) {
+					count = difference / dayTime + 1 - 2; // -2는 주말 빼기
+				} else {
+					count = difference / dayTime + 1 - (weekend * 2);
+				}
+				apiArray.forEach(item => {
+					if (end >= item && start <= item) {
+						if (item.getDay() == 0 || item.getDay() == 6) {
+							return;
+						} else {
+							count = count - 1;
+						}
+					}
+				});
+				holiday_count.val(count);
+			}
 		};
 	</script>
 </html>

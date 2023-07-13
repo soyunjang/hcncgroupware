@@ -11,8 +11,8 @@
 			 , PASSWORD
 			 , USER_NM
 			 , PDEPT_CD
-			 , (SELECT dbo.FN_COMMON_NM('DEPT', PDEPT_CD)) AS PDEPT_NM	
-			 , DEPT_CD	
+			 , (SELECT dbo.FN_COMMON_NM('DEPT', PDEPT_CD)) AS PDEPT_NM
+			 , DEPT_CD
 			 , (SELECT dbo.FN_COMMON_NM('DEPT', DEPT_CD)) AS DEPT_NM
 			 , GRADE_CD
 			 , (SELECT dbo.FN_COMMON_NM('ROLE', GRADE_CD)) AS GRADE_NM
@@ -27,7 +27,7 @@
 		 WHERE USER_ID = #{USER_ID}
 		   AND PASSWORD = #{PASSWORD}
     </select>
-    
+
     <!-- 사용자 권한별 메뉴 조회 -->
     <select id="userMenuList" parameterType="map" resultType="map">
 		SELECT A.MENU_ID
@@ -43,22 +43,45 @@
 			 , A.MEMO
 		  FROM MENU_INFO A
 		 WHERE A.USE_YN = 'Y'
-		   AND (A.MENU_ID IN (SELECT MENU_ID 
+		   AND (A.MENU_ID IN (SELECT MENU_ID
 		   						FROM MENU_INFO
 		   					   WHERE MENU_GROUP = 'GRP01')
-		    OR A.MENU_ID IN (SELECT DISTINCT D.MENU_ID 
-							   FROM AUTH_TYPE_DETAIL D 
+		    OR A.MENU_ID IN (SELECT DISTINCT D.MENU_ID
+							   FROM AUTH_TYPE_DETAIL D
 							  WHERE AUTH_TYPE_CD = #{AUTH_TYPE_CD})
-			OR A.MENU_ID IN (SELECT DISTINCT MENU_PID 
-							   FROM MENU_INFO 
-							  WHERE MENU_ID IN (SELECT DISTINCT D.MENU_ID 
-							  					  FROM AUTH_TYPE_DETAIL D 
+			OR A.MENU_ID IN (SELECT DISTINCT MENU_PID
+							   FROM MENU_INFO
+							  WHERE MENU_ID IN (SELECT DISTINCT D.MENU_ID
+							  					  FROM AUTH_TYPE_DETAIL D
 							  					 WHERE AUTH_TYPE_CD = #{AUTH_TYPE_CD})))
 		 ORDER BY A.MENU_ID, A.SORT_NO
     </select>
-    
+
     <!-- 접속 정보 저장 -->
     <insert id="insertConnectInfo" parameterType="map">
 		EXEC CM0000_CONNECT_INS #{SESSION_ID}, #{USER_ID}, #{DEPT_CD}, #{USER_NM}, #{CONNECT_IP}
     </insert>
+
+	<!-- 연차 관련 조회 -->
+	<select id="userAndHolidayInfo" resultType="com.hs.an.service.UserAndHolidayInfoDto">
+		SELECT U.USER_ID,
+			   U.ENTER_DT,
+			   H.HOLIDAY_TOTAL,
+			   H.HOLIDAY_USE,
+			   H.HOLIDAY_REMAIN,
+			   H.HOLIDAY_DEDUCT
+		FROM USER_INFO U LEFT JOIN HOLIDAY_INFO H ON(U.USER_ID = H.USER_ID)
+		WHERE U.ENTER_DT IS NOT NULL
+	</select>
+
+	<!-- 연차 업데이트 -->
+	<update id="userHolidayUpdate" parameterType="com.hs.an.service.UserAndHolidayInfoDto">
+        UPDATE HOLIDAY_INFO SET HOLIDAY_TOTAL = #{HOLIDAY_TOTAL},
+                                HOLIDAY_USE = #{HOLIDAY_USE},
+                                HOLIDAY_REMAIN = #{HOLIDAY_REMAIN},
+                                HOLIDAY_DEDUCT = #{HOLIDAY_DEDUCT},
+								UPT_ID = #{UPT_ID},
+                            	UPT_DT = GETDATE()
+                            WHERE USER_ID = #{USER_ID}
+	</update>
 </mapper>
