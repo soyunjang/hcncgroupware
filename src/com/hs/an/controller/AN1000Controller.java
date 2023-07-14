@@ -18,7 +18,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 public class AN1000Controller {
@@ -42,8 +41,10 @@ public class AN1000Controller {
 
 		// 사용자 연차정보 조회
 		Map<String,Object> holidayInfo = an1000Service.an1000InfoSel(user);
+		List holidayOffice = an1000Service.an1000HolidayOfficeSel();
 
 		model.addAttribute("Holiday", holidayInfo);
+		model.addAttribute("HolidayOffice", holidayOffice);
 
 		return "AN/AN1000";
 	}
@@ -76,12 +77,19 @@ public class AN1000Controller {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/an1000", method = RequestMethod.DELETE)
-	public String an1000_delete(@RequestBody Map<String, Object> param, HttpSession session) {
+	@RequestMapping(value = "/an1000", method = RequestMethod.PATCH)
+	public List<Map<String, Object>> an1000_update(@RequestBody Map<String, Object> param, HttpSession session) {
+		UserInfo user = (UserInfo) session.getAttribute("User");
+		System.out.println("param = " + param.toString());
+		an1000Service.an1000Update(param, user);
 
-		logger.info("들어오니??");
+		return an1000Service.an1000Sel(param, user);
+	}
 
-		return null;
+	@ResponseBody
+	@RequestMapping(value = "", method = RequestMethod.GET)
+	public List an1000_holidayOfficeSel() {
+		return an1000Service.an1000HolidayOfficeSel();
 	}
 
 	@ResponseBody
@@ -119,18 +127,18 @@ public class AN1000Controller {
 				result = br.readLine();
 
 				JSONParser jsonParser = new JSONParser();
-				JSONObject jsonObject = (JSONObject)jsonParser.parse(result);
-				JSONObject response = (JSONObject)jsonObject.get("response");
-				JSONObject body = (JSONObject)response.get("body");
+				JSONObject jsonObject = (JSONObject) jsonParser.parse(result);
+				JSONObject response = (JSONObject) jsonObject.get("response");
+				JSONObject body = (JSONObject) response.get("body");
 				String totalCount = String.valueOf(body.get("totalCount"));
 
 				if (Integer.parseInt(totalCount) == 1) {
-					JSONObject items = (JSONObject)body.get("items");
-					JSONObject item = (JSONObject)items.get("item");
+					JSONObject items = (JSONObject) body.get("items");
+					JSONObject item = (JSONObject) items.get("item");
 					String locdate = String.valueOf(item.get("locdate"));
 					list.add(locdate);
 				} else if (Integer.parseInt(totalCount) > 1) {
-					JSONObject items = (JSONObject)body.get("items");
+					JSONObject items = (JSONObject) body.get("items");
 					JSONArray item = (JSONArray) items.get("item");
 					for (int j = 0; j < item.length(); j++) {
 						JSONObject sequence = (JSONObject) item.get(j);
@@ -144,7 +152,7 @@ public class AN1000Controller {
 		}
 
 		//노동자의날 추가
-		if(Arrays.stream(monthArray).anyMatch("05"::equals)) {
+		if (Arrays.stream(monthArray).anyMatch("05"::equals)) {
 			String workersDay = year + "0501";
 			list.add(workersDay);
 		}

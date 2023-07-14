@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import com.hs.an.service.HolidayOfficeNotSubmitDto;
 import com.hs.an.service.UserAndHolidayInfoDto;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
@@ -54,4 +55,11 @@ public class HomeService {
 		sqlSession.update("homeMapper.userHolidayUpdate", new UserAndHolidayInfoDto(USER_ID, HOLIDAY_TOTAL, HOLIDAY_USE, HOLIDAY_REMAIN, HOLIDAY_DEDUCT));
 	}
 
+	public List<HolidayOfficeNotSubmitDto> holidayOfficeNotSubmit() {
+		return sqlSession.selectList("homeMapper.holidayOfficeNotSubmit");
+	}
+
+	public void holidayOfficeNotSubmitSave(List<HolidayOfficeNotSubmitDto> dto) {
+		sqlSession.insert("homeMapper.holidayOfficeNotSubmitSave", dto);
+	}
 }

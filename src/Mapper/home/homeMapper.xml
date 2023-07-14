@@ -84,4 +84,22 @@
                             	UPT_DT = GETDATE()
                             WHERE USER_ID = #{USER_ID}
 	</update>
+
+	<!-- 회사 휴무 미사용자 조회 -->
+	<select id="holidayOfficeNotSubmit" resultType="com.hs.an.service.HolidayOfficeNotSubmitDto">
+		DECLARE @HOLIDAY VARCHAR(10) = (SELECT MIN(hc.OFFICE_HOLIDAY) AS companyday FROM HOLIDAY_OFFICE hc WHERE DATEPART(MONTH, CONVERT(DATE, hc.OFFICE_HOLIDAY)) = DATEPART(MONTH, CONVERT(DATE, getdate())))
+
+		SELECT U.USER_ID, U.DEPT_CD, @HOLIDAY as HOLIDAY_DATE, count(H.HOLIDAY_TYPE) AS STATUS
+		FROM USER_INFO U LEFT JOIN HOLIDAY_PERSON H ON (U.USER_ID = H.USER_ID AND H.HOLIDAY_TYPE IN ('OFFICE01', 'OFFICE02')
+			AND H.HOLIDAY_START = @HOLIDAY AND H.HOLIDAY_END = @HOLIDAY)
+		GROUP BY U.USER_ID, U.DEPT_CD HAVING COUNT(H.HOLIDAY_TYPE) &lt; 1
+	</select>
+
+	<!-- 회사 휴무 미사용자 휴가 등록 -->
+	<insert id="holidayOfficeNotSubmitSave" parameterType="com.hs.an.service.HolidayOfficeNotSubmitDto">
+		<foreach collection="list" item="item" open="INSERT ALL" close="" separator=" ">
+			INTO HOLIDAY_PERSON (USER_ID, HOLIDAY_TYPE, HOLIDAY_CNT, HOLIDAY_START, HOLIDAY_END, HOLIDAY_REASON, REG_ID, REG_DT)
+			VALUES (#{USER_ID}, 'OFFICE01', '1', #{HOLIDAY_DATE}, #{HOLIDAY_DATE}, '회사 휴무', 'admin', GETDATE())
+		</foreach>
+	</insert>
 </mapper>

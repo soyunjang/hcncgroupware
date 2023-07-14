@@ -180,7 +180,22 @@
 				</div>
 			</div>
 		</div>
+
+		<!-- 연차신청 추가 팝업 -->
+		<div id="viewForm2" style="display: none;">
+			<div class="modal-cont">
+				<div class="row row-1">
+					<div class="col col-1 wp100">
+						<section>
+
+						</section>
+					</div>
+				</div>
+			</div>
+		</div>
 		<!-- .modal-cont 팝업영역 END -->
+
+	<input type="hidden" value="${HolidayOffice.get(0)}">
 	</body>
 	
 	<script type="text/javascript">
@@ -253,14 +268,17 @@
 		/* 수정 버튼 */
 		$("#btn01_UPDATE").on({
 			click: function(){
-				var rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
-				console.log(rowData)
-				if(rowData != null){
-					checkAction = "U";
-					updateGridData(rowData);
-					openModalPopup(checkAction);
-				}else {
-					toast("정보", "선택된 사용자가 없습니다.", "info");
+				let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
+
+				let holidayEnd = new Date(new Date(rowData.HOLIDAY_END).getFullYear(), new Date(rowData.HOLIDAY_END).getMonth(), new Date(rowData.HOLIDAY_END).getDate());
+				let today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+
+				if(rowData != null && rowData.length == undefined && (today <= holidayEnd)){
+					confirms("신청을 취소하시겠습니까?", "D");
+				} else if (today > holidayEnd) {
+					toast("경고", "휴가 종료일이 지난 목록은 삭제할 수 없습니다.", "error");
+				} else {
+					toast("정보", "신청 취소할 목록을 선택해 주시기 바랍니다.", "info");
 					return false;
 				}
 			}
@@ -270,32 +288,23 @@
 		/* confirm 확인버튼 클릭시 */
 		function confirmYes(action){
 			if(action == "C"){
-				var params = {
-						EMP_ID : $("#pop01_txt01_EMP_ID").val()
-						, USER_ID : $("#pop01_txt01_USER_ID").val()
-						, PASSWORD : $("#pop01_txt01_PW").val()
-						, START_YMD : $("#pop01_txt01_START_YMD").val()
-						, END_YMD : $("#pop01_txt01_END_YMD").val()
-						, AUTH_TYPE_CD : $("#pop01_txt01_AUTH_TYPE_CD").val()
-						, USE_YN : $("#pop01_sel01_USE_YN").val()
-						, MEMO : $("#pop01_txt01_MEMO").val()
+				const param = {
+					HOLIDAY_TYPE : $('#pop01_sel01_TYPE').val(),
+					HOLIDAY_CNT : $('#pop01_txt01_COUNT').val(),
+					HOLIDAY_START : $('#pop01_date01_START').val(),
+					HOLIDAY_END : $('#pop01_date01_END').val(),
+					EMERGENCY : $('#pop01_txt01_EMERGENCY').val(),
+					TASK : $('#pop01_txt01_TASK').val(),
+					ACQUIRER : $('#pop01_txt01_ACQUIRER').val(),
+					HOLIDAY_REASON : $('#pop01_txt01_REASON').val()
 				}
-			}else if(action == "U"){
-				var rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
-				var params = {
-						EMP_ID : rowData.EMP_ID
-						, USER_ID : rowData.USER_ID
-						, PASSWORD : ""
-						, START_YMD : $("#pop01_txt01_START_YMD").val()
-						, END_YMD : $("#pop01_txt01_END_YMD").val()
-						, AUTH_TYPE_CD : $("#pop01_txt01_AUTH_TYPE_CD").val()
-						, USE_YN : $("#pop01_sel01_USE_YN").val()
-						, MEMO : $("#pop01_txt01_MEMO").val()
-				}
+
+				getAjaxJsonData('/an1000', param, 'searchGridDataCallBack', 'POST')
+				$("#viewForm1").dialog("close");
+			}else if (action == "D") {
+				const param = $("#table1").getRowData($("#table1").getGridParam("selrow"));
+				getAjaxJsonData('/an1000', param, 'searchGridDataCallBack', 'PATCH')
 			}
-			
-			getAjaxJsonData("cm1200Save", params, "reLoadCallback");
-			$("#viewForm1").dialog("close");
 		}
 		
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 그리드
@@ -310,19 +319,19 @@
 				}
 				, colNames: langHead
 				, colModel: [
-					{name: 'USER_NM'			, align: 'center'	, width: '7%'	, hidden: false}				
-					, {name: 'GRADE_CD'			, align: 'center' 	, width: '0%'	, hidden: true}									
-					, {name: 'GRADE_NM'			, align: 'center' 	, width: '8%'	, hidden: false}									
-					, {name: 'HOLIDAY_START'	, align: 'center'	, width: '10%'	, hidden: false}				
-					, {name: 'HOLIDAY_END'		, align: 'center'	, width: '10%'	, hidden: false}				
-					, {name: 'HOLIDAY_CNT'		, align: 'center' 	, width: '5%'	, hidden: false}				
-					, {name: 'HOLIDAY_TYPE'		, align: 'center'	, width: '5%'	, hidden: false}					
+					{name: 'USER_NM'			, align: 'center'	, width: '7%'	, hidden: false}
+					, {name: 'GRADE_CD'			, align: 'center' 	, width: '0%'	, hidden: true}
+					, {name: 'GRADE_NM'			, align: 'center' 	, width: '8%'	, hidden: false}
+					, {name: 'HOLIDAY_START'	, align: 'center'	, width: '10%'	, hidden: false}
+					, {name: 'HOLIDAY_END'		, align: 'center'	, width: '10%'	, hidden: false}
+					, {name: 'HOLIDAY_CNT'		, align: 'center' 	, width: '5%'	, hidden: false}
+					, {name: 'HOLIDAY_TYPE'		, align: 'center'	, width: '5%'	, hidden: false}
 					, {name: 'HOLIDAY_REASON'	, align: 'left'		, width: '15%'	, hidden: false}
 				]
 				, autowidth: false
 				, shrinkToFit: false
 				, rowNum : 500
-				, multiselect: true
+				, multiselect: false
 			});
 			
 			searchGridData();
@@ -333,7 +342,7 @@
 		function searchGridData(){
 			var searchParam = {};
 			
-			getAjaxJsonData("an1000Sel", searchParam, "searchGridDataCallBack", 'GET');
+			getAjaxJsonData("an1000Sel", searchParam, "searchGridDataCallBack");
 		};
 		
 		function searchGridDataCallBack(data){
@@ -390,11 +399,7 @@
 					{
 						text : pop01_btn01_SAVE,
 	                    click : function(){
-
-							if($('#pop01_txt01_COUNT').val() == ''){
-								toast("경고", "휴가일수를 선택해주세요.", "error");
-								return false;
-							}else if($('#pop01_date01_START').val() == ''){
+							if($('#pop01_date01_START').val() == ''){
 								toast("경고", "휴가시작일을 입력해주세요.", "error");
 								return false;
 							}else if($('#pop01_date01_END').val() == ''){
@@ -413,19 +418,7 @@
 								toast("경고", "사유을 입력해주세요.", "error");
 								return false;
 							}
-
-							const param = {
-								HOLIDAY_TYPE : $('#pop01_sel01_TYPE').val(),
-								HOLIDAY_CNT : $('#pop01_txt01_COUNT').val(),
-								HOLIDAY_START : $('#pop01_date01_START').val(),
-								HOLIDAY_END : $('#pop01_date01_END').val(),
-								EMERGENCY : $('#pop01_txt01_EMERGENCY').val(),
-								TASK : $('#pop01_txt01_TASK').val(),
-								ACQUIRER : $('#pop01_txt01_ACQUIRER').val(),
-								HOLIDAY_REASON : $('#pop01_txt01_REASON').val()
-							}
-
-							getAjaxJsonData('/an1000', param, 'testDataCallBack', 'POST')
+							confirms("저장 하시겠습니까?", "C");
 						}
 					}
 					, {
@@ -439,10 +432,13 @@
 			}).css("z-index", 1000).prev(".ui-dialog-titlebar").css("background","#266f80").css("color","#fff");
 		};
 
-		function testDataCallBack(data){
-			console.log(data);
-		};
 
+		window.onload = () => {
+			setTimeout(() => {
+				let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
+				console.log(rowData)
+			}, 1000);
+		};
 
 		$('#pop01_sel01_TYPE').change(() => {
 			holidayDateCheck();
@@ -469,12 +465,11 @@
 				if (new Date(startValue) > new Date(endValue)) {
 					toast("경고", "휴가기간을 확인해 주세요.", "error");
 					$('#pop01_date01_END').val(startValue);
-				} else {
-					let year = new Date(startValue).getFullYear();
-					let month = new Date(startValue).getMonth() + 1;
-					let url = '/an1000/publicHoliday?year=' + year + '&month=' + month;
-					getAjaxJsonData(url, '', 'holidayDateCount', 'GET')
 				}
+				let year = new Date(startValue).getFullYear();
+				let month = new Date(startValue).getMonth() + 1;
+				let url = '/an1000/publicHoliday?year=' + year + '&month=' + month;
+				getAjaxJsonData(url, '', 'holidayDateCount', 'GET')
 			}
 		}
 

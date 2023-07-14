@@ -18,4 +18,22 @@
 		EXEC AN1000_SAVE #{USER_ID}, #{HOLIDAY_TYPE}, #{HOLIDAY_CNT}, #{HOLIDAY_START}, #{HOLIDAY_END},
 		#{HOLIDAY_REASON}, #{TASK}, #{ACQUIRER}, #{EMERGENCY}, #{REG_ID}, #{REG_DT}, #{DEPT_CD}, #{POST_CD}
 	</insert>
+
+	<update id="an1000Update" parameterType="map">
+		UPDATE HOLIDAY_PERSON SET UPT_DT = GETDATE(), UPT_ID = #{USER_ID}
+		                      WHERE HOLIDAY_START = #{HOLIDAY_START} AND
+		                          	HOLIDAY_END = #{HOLIDAY_END} AND
+		                          	HOLIDAY_CNT = #{HOLIDAY_CNT} AND
+		                          	HOLIDAY_REASON = #{HOLIDAY_REASON} AND
+		                          	HOLIDAY_TYPE = #{HOLIDAY_TYPE} AND
+								  	UPT_DT IS NULL AND
+								  	UPT_ID IS NULL
+		EXEC AN1000_UPDATE
+	</update>
+
+	<select id="an1000HolidayOfficeSel" resultType="String">
+		SELECT MIN(OFFICE_HOLIDAY) FROM HOLIDAY_OFFICE
+		                           WHERE DATEPART(MONTH, CONVERT(DATE, OFFICE_HOLIDAY)) = DATEPART(MONTH, CONVERT(DATE, GETDATE()))
+	</select>
+
 </mapper>

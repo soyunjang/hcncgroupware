@@ -22,10 +22,22 @@ public class AN0000Service {
     private HomeService homeService;
 
     /**
+     * 회사 휴무 미등록 시 해당 달 마지막 날에 자동 등록
+     */
+        @Scheduled(cron = "10 * * * * *")
+//    @Scheduled(cron = "0 30 23 L * *")
+    public void holidayCompanyAutoSubmit() {
+        List<HolidayOfficeNotSubmitDto> dto = homeService.holidayOfficeNotSubmit();
+        homeService.holidayOfficeNotSubmitSave(dto);
+    }
+
+
+
+    /**
      * 입사일 기준 연차 계산
      */
-    @Scheduled(cron = "10 * * * * *")
-//    @Scheduled(cron = "0 30 0 * * *")
+//    @Scheduled(cron = "10 * * * * *")
+    @Scheduled(cron = "0 30 0 * * *")
     public void calculation() {
         List<UserAndHolidayInfoDto> dto = homeService.userAndHolidayInfo();
 
@@ -44,7 +56,7 @@ public class AN0000Service {
                         Period period = Period.between(LocalDate.parse(item.getENTER_DT()), LocalDate.now());
                         int years = period.getYears();
                         int months = period.getMonths();
-                        logger.info("ID= " + item.getUSER_ID());
+                        logger.info("ID={}", item.getUSER_ID());
                         if (years < 1) {
                             // 근속 1년 미만 대상자
                             int holidayTotal = months;
