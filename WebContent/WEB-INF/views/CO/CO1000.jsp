@@ -23,12 +23,6 @@
 		        <div class="search-zone">
 					<div class="search-wrap">
 						<div class="sch-box">
-							<dl>
-								<dt>카드사</dt>
-								<dd>
-									<select id="sel01_COMPANY" name="sel01_COMPANY"></select>
-								</dd>
-							</dl>
 							<dl class="dl-2n">
 								<dt>첨부파일</dt>
 								<dd class="fl-sb">
@@ -116,8 +110,7 @@
 		/* 공통코드_다국어 */
 		var langHead;
 		var arrayFile = new Array();
-		
-		commonCodeSelectAdd("sel01_COMPANY", getCommonCode('CARD'), 'N');
+
 		commonCodeSelectAdd("sel02_COMPANY", getCommonCode('CARD'), 'Y');
 
 		/* Document가 로드되었을 때 실행되는 코드 */
