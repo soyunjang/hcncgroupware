@@ -16,65 +16,75 @@ import java.util.stream.Collectors;
 @Component
 @Transactional
 public class AN0000Service {
-    private static final Logger logger = LoggerFactory.getLogger(AN0000Service.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private HomeService homeService;
 
-    /**
-     * 회사 휴무 미등록 시 해당 달 마지막 날에 자동 등록
-     */
-        @Scheduled(cron = "10 * * * * *")
-//    @Scheduled(cron = "0 30 23 L * *")
+    /** 회사 휴무 미등록 시 해당 달 마지막 날에 자동 등록 */
+//    @Scheduled(cron = "0 30 23 28-31 * *")
+    @Scheduled(cron = "0 * * * * *")
     public void holidayCompanyAutoSubmit() {
-        List<HolidayOfficeNotSubmitDto> dto = homeService.holidayOfficeNotSubmit();
-        homeService.holidayOfficeNotSubmitSave(dto);
+        try {
+//            Calendar calendar = Calendar.getInstance();
+//            if (calendar.get(Calendar.DATE) == calendar.getActualMaximum(Calendar.DATE)) {
+                List<HolidayOfficeNotSubmitDto> dto = homeService.holidayOfficeNotSubmitSelect();
+                if (!dto.isEmpty()) {
+                    homeService.holidayOfficeNotSubmitSave(dto);
+                }
+//            }
+        } catch (Exception e) {
+            throw new RuntimeException("회사 휴무 자동 등록 오류", e);
+        }
     }
 
-
-
-    /**
-     * 입사일 기준 연차 계산
-     */
-//    @Scheduled(cron = "10 * * * * *")
+    /** 입사일 기준 연차 계산 */
     @Scheduled(cron = "0 30 0 * * *")
     public void calculation() {
-        List<UserAndHolidayInfoDto> dto = homeService.userAndHolidayInfo();
+        try {
+            List<UserAndHolidayInfoDto> dto = homeService.userAndHolidayInfo();
+            if (!dto.isEmpty()) {
+                dto.stream().filter(item -> {
+                            //check1 = 근속 1년 미만 및 년월일 중 일이 같은 대상자
+                            boolean check1 = Period.between(LocalDate.parse(item.getENTER_DT()), LocalDate.now()).getYears() < 1 &&
+                                    LocalDate.parse(item.getENTER_DT()).getDayOfMonth() == LocalDate.now().getDayOfMonth();
+                            //check2 = 년월일 중 월과 일이 같은 대상자(근속 1년 이상 대상)
+                            boolean check2 = LocalDate.parse(item.getENTER_DT()).getMonth() == LocalDate.now().getMonth() &&
+                                    LocalDate.parse(item.getENTER_DT()).getDayOfMonth() == LocalDate.now().getDayOfMonth();
+                            return check1 || check2;
+                        })
+                        .collect(Collectors.toList())
+                        .forEach(item -> {
+                            byYears(item);
+                        });
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("연차 계산 오류", e);
+        }
 
-        if (!dto.isEmpty()) {
-            dto.stream().filter(item -> {
-                        //check1 = 근속 1년 미만 및 년월일 중 일이 같은 대상자
-                        boolean check1 = Period.between(LocalDate.parse(item.getENTER_DT()), LocalDate.now()).getYears() < 1 &&
-                                LocalDate.parse(item.getENTER_DT()).getDayOfMonth() == LocalDate.now().getDayOfMonth();
-                        //check2 = 년월일 중 월과 일이 같은 대상자(근속 1년 이상 대상)
-                        boolean check2 = LocalDate.parse(item.getENTER_DT()).getMonth() == LocalDate.now().getMonth() &&
-                                LocalDate.parse(item.getENTER_DT()).getDayOfMonth() == LocalDate.now().getDayOfMonth();
-                        return check1 || check2;
-                    })
-                    .collect(Collectors.toList())
-                    .forEach(item -> {
-                        Period period = Period.between(LocalDate.parse(item.getENTER_DT()), LocalDate.now());
-                        int years = period.getYears();
-                        int months = period.getMonths();
-                        logger.info("ID={}", item.getUSER_ID());
-                        if (years < 1) {
-                            // 근속 1년 미만 대상자
-                            int holidayTotal = months;
-                            holidayRefresh(item, holidayTotal, years);
-                        } else if (years < 3) {
-                            // 근속 1년이상 3년 미만 대상자
-                            int holidayTotal = 15;
-                            holidayRefresh(item, holidayTotal, years);
-                        } else if (years >= 3 && years % 2 == 1) {
-                            // 근속 3년 이상이면서 연차 증가 대상자
-                            int holidayTotal = 15 + (years / 2);
-                            holidayRefresh(item, holidayTotal, years);
-                        } else if (years >= 3 && years % 2 == 0) {
-                            // 근속 3년 이상이면서 연차 미 증가 대상자
-                            float holidayTotal = item.getHOLIDAY_TOTAL();
-                            holidayRefresh(item, holidayTotal, years);
-                        }
-                    });
+    }
+
+    private void byYears(UserAndHolidayInfoDto item) {
+        Period period = Period.between(LocalDate.parse(item.getENTER_DT()), LocalDate.now());
+        int years = period.getYears();
+        int months = period.getMonths();
+        logger.info("ID={}", item.getUSER_ID());
+        if (years < 1) {
+            // 근속 1년 미만 대상자
+            int holidayTotal = months;
+            holidayRefresh(item, holidayTotal, years);
+        } else if (years < 3) {
+            // 근속 1년이상 3년 미만 대상자
+            int holidayTotal = 15;
+            holidayRefresh(item, holidayTotal, years);
+        } else if (years >= 3 && years % 2 == 1) {
+            // 근속 3년 이상이면서 연차 증가 대상자
+            int holidayTotal = 15 + (years / 2);
+            holidayRefresh(item, holidayTotal, years);
+        } else if (years >= 3 && years % 2 == 0) {
+            // 근속 3년 이상이면서 연차 미 증가 대상자
+            float holidayTotal = item.getHOLIDAY_TOTAL();
+            holidayRefresh(item, holidayTotal, years);
         }
     }
 

@@ -36,4 +36,12 @@
 		                           WHERE DATEPART(MONTH, CONVERT(DATE, OFFICE_HOLIDAY)) = DATEPART(MONTH, CONVERT(DATE, GETDATE()))
 	</select>
 
+	<update id="an1000HolidayInfoUpdate">
+		UPDATE
+	</update>
+
+	<select id="an1000HolidayInfoSel" parameterType="String" resultType="java.util.Map">
+		SELECT USER_ID, HOLIDAY_TOTAL, HOLIDAY_USE, HOLIDAY_REMAIN, HOLIDAY_DEDUCT FROM HOLIDAY_INFO WHERE USER_ID = #{USER_ID}
+	</select>
+
 </mapper>

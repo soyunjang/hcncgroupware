@@ -96,10 +96,10 @@
 	</select>
 
 	<!-- 회사 휴무 미사용자 휴가 등록 -->
-	<insert id="holidayOfficeNotSubmitSave" parameterType="com.hs.an.service.HolidayOfficeNotSubmitDto">
-		<foreach collection="list" item="item" open="INSERT ALL" close="" separator=" ">
-			INTO HOLIDAY_PERSON (USER_ID, HOLIDAY_TYPE, HOLIDAY_CNT, HOLIDAY_START, HOLIDAY_END, HOLIDAY_REASON, REG_ID, REG_DT)
-			VALUES (#{USER_ID}, 'OFFICE01', '1', #{HOLIDAY_DATE}, #{HOLIDAY_DATE}, '회사 휴무', 'admin', GETDATE())
+	<insert id="holidayOfficeNotSubmitSave" parameterType="java.util.List">
+		INSERT INTO HOLIDAY_PERSON (USER_ID, HOLIDAY_TYPE, HOLIDAY_CNT, HOLIDAY_START, HOLIDAY_END, HOLIDAY_REASON, REG_ID, REG_DT) VALUES
+		<foreach collection="list" item="item" separator=", ">
+			(#{item.USER_ID}, 'OFFICE01', '1', #{item.HOLIDAY_DATE}, #{item.HOLIDAY_DATE}, '회사 휴무', 'admin', GETDATE())
 		</foreach>
 	</insert>
 </mapper>

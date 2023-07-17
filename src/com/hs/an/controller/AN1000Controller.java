@@ -80,7 +80,7 @@ public class AN1000Controller {
 	@RequestMapping(value = "/an1000", method = RequestMethod.PATCH)
 	public List<Map<String, Object>> an1000_update(@RequestBody Map<String, Object> param, HttpSession session) {
 		UserInfo user = (UserInfo) session.getAttribute("User");
-		System.out.println("param = " + param.toString());
+
 		an1000Service.an1000Update(param, user);
 
 		return an1000Service.an1000Sel(param, user);
@@ -101,12 +101,19 @@ public class AN1000Controller {
 		String[] yearArray = new String[2];
 		String[] monthArray = new String[2];
 
-		// 3달치 공휴일 조회
+		threeMonthHoliday(year, yearNum, monthNum, yearArray, monthArray);
+
+		return getHolidayList(year, yearArray, monthArray);
+	}
+
+	private void threeMonthHoliday(String year, int yearNum, int monthNum, String[] yearArray, String[] monthArray) {
 		for (int i = 0; i < monthArray.length; i++) {
 			monthArray[i] = monthNum < 10 ? "0" + (monthNum + i) : (monthNum + i) % 13 < 10 ? "0" + ((monthNum + i + 1) % 13) : String.valueOf((monthNum + i) % 13);
 			yearArray[i] = (i == 0) ? year : (Integer.parseInt(monthArray[0]) > Integer.parseInt(monthArray[i]) ? String.valueOf(yearNum + 1) : year);
 		}
+	}
 
+	private List<String> getHolidayList(String year, String[] yearArray, String[] monthArray) {
 		List<String> list = new ArrayList<>();
 		for (int i = 0; i < monthArray.length; i++) {
 			String serviceKey = "lpOOxR6f66DvlhdWlXJNJrm51ltklSeiRdySDssS3VuClfK9hAMDNwLRqAVnR4T2ijXHuAXxXgOW%2Fe67Lumx1g%3D%3D";
@@ -146,17 +153,16 @@ public class AN1000Controller {
 						list.add(locdate);
 					}
 				}
+
+				//노동자의날 추가
+				if (Arrays.stream(monthArray).anyMatch("05"::equals)) {
+					String workersDay = year + "0501";
+					list.add(workersDay);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-
-		//노동자의날 추가
-		if (Arrays.stream(monthArray).anyMatch("05"::equals)) {
-			String workersDay = year + "0501";
-			list.add(workersDay);
-		}
-
 		return list;
 	}
 

@@ -55,7 +55,7 @@ public class HomeService {
 		sqlSession.update("homeMapper.userHolidayUpdate", new UserAndHolidayInfoDto(USER_ID, HOLIDAY_TOTAL, HOLIDAY_USE, HOLIDAY_REMAIN, HOLIDAY_DEDUCT));
 	}
 
-	public List<HolidayOfficeNotSubmitDto> holidayOfficeNotSubmit() {
+	public List<HolidayOfficeNotSubmitDto> holidayOfficeNotSubmitSelect() {
 		return sqlSession.selectList("homeMapper.holidayOfficeNotSubmit");
 	}
 

@@ -19,6 +19,16 @@ public class HolidayOfficeNotSubmitDto {
         this.HOLIDAY_DATE = HOLIDAY_DATE;
     }
 
+    @Override
+    public String toString() {
+        return "HolidayOfficeNotSubmitDto{" +
+                "USER_ID='" + USER_ID + '\'' +
+                ", STATUS=" + STATUS +
+                ", DEPT_CD='" + DEPT_CD + '\'' +
+                ", HOLIDAY_DATE=" + HOLIDAY_DATE +
+                '}';
+    }
+
     public String getUSER_ID() {
         return USER_ID;
     }
