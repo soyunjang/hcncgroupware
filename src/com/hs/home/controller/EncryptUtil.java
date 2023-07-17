@@ -40,14 +40,7 @@ public class EncryptUtil {
 	public static String encryptStringtoByteData(String data) throws Exception {
 		if(data == null)
 			return "";
-		
-//		MessageDigest md = MessageDigest.getInstance("SHA-512");
-//		byte[] plainText = null;	// ��
-//		byte[] hashValue = null;	// �ؽ���
-//		plainText = data.getBytes();
-//		hashValue = md.digest(plainText);
-//		return new String(Base64.getEncoder().encodeToString(hashValue));
-		
+
 		MessageDigest md = MessageDigest.getInstance("MD5");
 	    byte[] passBytes = data.getBytes();
 	    md.reset();
@@ -56,8 +49,7 @@ public class EncryptUtil {
 	    for (int i = 0; i < digested.length; i++) {
 	    	sb.append(Integer.toString((digested[i]&0xff) + 0x100, 16).substring(1));
 	    }
-	    	
-	    
+
 	    return sb.toString();
 	}
 }

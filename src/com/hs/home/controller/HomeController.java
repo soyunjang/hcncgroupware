@@ -52,11 +52,9 @@ public class HomeController {
 			HttpServletResponse res, Model model, RedirectAttributes red) throws UnknownHostException {
 
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		String userid = "";
 		String userPw = "";
 
 		try {
-			userid = UserInfoEncrypt.encryptStringData(id);
 			userPw = UserInfoEncrypt.encryptStringData(pwd);
 		} catch (Exception e1) {
 			e1.printStackTrace();
