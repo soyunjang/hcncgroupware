@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 @Transactional
 public class AN0000Service {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final String HOLIDAY_TYPE = "OFFICE01";
+    private final String HOLIDAY_CNT = "1";
 
     @Autowired
     private HomeService homeService;
@@ -30,32 +32,27 @@ public class AN0000Service {
     private AN1000Service an1000Service;
 
     /** 회사 휴무 미등록 시 해당 달 마지막 날에 자동 등록 */
-//    @Scheduled(cron = "0 30 23 28-31 * *")
-    @Scheduled(cron = "0 * * * * * ")
+    @Scheduled(cron = "0 30 23 28-31 * *")
     public void holidayCompanyAutoSubmit() {
         try {
-//            Calendar calendar = Calendar.getInstance();
-//            if (calendar.get(Calendar.DATE) == calendar.getActualMaximum(Calendar.DATE)) {
+            Calendar calendar = Calendar.getInstance();
+            if (calendar.get(Calendar.DATE) == calendar.getActualMaximum(Calendar.DATE)) {
                 List<HolidayOfficeNotSubmitDto> dtos = homeService.holidayOfficeNotSubmitSelect();
                 if (!dtos.isEmpty()) {
                     homeService.holidayOfficeNotSubmitSave(dtos);
-//                    for (HolidayOfficeNotSubmitDto dto : dtos) {
-//                        HashMap<String, Object> param = new HashMap<>();
-//                        param.put("USER_ID", dto.getUSER_ID());
-//                        param.put("HOLIDAY_CNT", "1");
-//                        param.put("HOLIDAY_TYPE", "OFFICE01");
-//                        UserInfo user = new UserInfo();
-//                        user.setUSER_ID(dto.getUSER_ID());
-//                        System.out.println("param = " + param);
-//                        System.out.println("user = " + user);
-//                        System.out.println("AN1000Service.Type.PLUS = " + AN1000Service.Type.PLUS);
-//
-//                        an1000Service.holidayInfoUpdate(param, user, AN1000Service.Type.PLUS);
-//                    }
+                    for (HolidayOfficeNotSubmitDto dto : dtos) {
+                        HashMap<String, Object> param = new HashMap<>();
+                        param.put("USER_ID", dto.getUSER_ID());
+                        param.put("HOLIDAY_CNT", HOLIDAY_CNT);
+                        param.put("HOLIDAY_TYPE", HOLIDAY_TYPE);
+                        UserInfo user = new UserInfo();
+                        user.setUSER_ID(dto.getUSER_ID());
+                        an1000Service.holidayInfoUpdate(param, user, AN1000Service.Type.PLUS);
+                    }
                 } else {
                     logger.info("holidayCompanyAutoSubmit.dto.isEmpty()");
                 }
-//            }
+            }
         } catch (Exception e) {
             throw new RuntimeException("회사 휴무 자동 등록 오류", e);
         }
