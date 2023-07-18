@@ -20,15 +20,14 @@
 	</insert>
 
 	<update id="an1000Update" parameterType="map">
-		UPDATE HOLIDAY_PERSON SET UPT_DT = GETDATE(), UPT_ID = #{USER_ID}
-		                      WHERE HOLIDAY_START = #{HOLIDAY_START} AND
+		UPDATE HOLIDAY_PERSON SET UPT_DT = GETDATE(), UPT_ID = #{USER_ID}, USE_YN = 'N'
+		                      WHERE	USER_ID = #{USER_ID} AND
+		                          	HOLIDAY_START = #{HOLIDAY_START} AND
 		                          	HOLIDAY_END = #{HOLIDAY_END} AND
 		                          	HOLIDAY_CNT = #{HOLIDAY_CNT} AND
 		                          	HOLIDAY_REASON = #{HOLIDAY_REASON} AND
 		                          	HOLIDAY_TYPE = #{HOLIDAY_TYPE} AND
-								  	UPT_DT IS NULL AND
-								  	UPT_ID IS NULL
-		EXEC AN1000_UPDATE
+									USE_YN = 'Y'
 	</update>
 
 	<select id="an1000HolidayOfficeSel" resultType="String">
@@ -36,6 +35,10 @@
 		                           WHERE DATEPART(MONTH, CONVERT(DATE, OFFICE_HOLIDAY)) = DATEPART(MONTH, CONVERT(DATE, GETDATE()))
 	</select>
 
+	<select id="an1000HolidayOfficeByUser" resultType="Integer">
+		DECLARE @HOLIDAY VARCHAR(10) = (SELECT MIN(hc.OFFICE_HOLIDAY) AS companyday FROM HOLIDAY_OFFICE hc WHERE DATEPART(MONTH, CONVERT(DATE, hc.OFFICE_HOLIDAY)) = DATEPART(MONTH, CONVERT(DATE, getdate())))
+		SELECT COUNT(*) FROM HOLIDAY_PERSON WHERE USER_ID = #{USER_ID} AND HOLIDAY_START = @HOLIDAY AND HOLIDAY_END = @HOLIDAY AND HOLIDAY_TYPE IN ('OFFICE01', 'OFFICE02')
+	</select>
 
 	<resultMap id="holidayInfo" type="com.hs.an.dto.HolidayInfoDto">
 		<result property="user_id" column="USER_ID"/>

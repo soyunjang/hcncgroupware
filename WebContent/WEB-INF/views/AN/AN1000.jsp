@@ -24,30 +24,6 @@
 			<div class="search-zone">
 				<div class="search-wrap">
 					<div class="sch-box">
-<!-- 						<dl> -->
-<!-- 							<dt>부서</dt> -->
-<!-- 							<dd> -->
-<!-- 								<input type="text" id="txt01_DEPT" name="txt01_DEPT"> -->
-<!-- 							</dd> -->
-<!-- 						</dl> -->
-<!-- 						<dl> -->
-<!-- 							<dt>성명</dt> -->
-<!-- 							<dd> -->
-<!-- 								<input type="text" id="txt01_USER_NM" name="txt01_USER_NM"> -->
-<!-- 							</dd> -->
-<!-- 						</dl>				 -->
-<!-- 						<dl> -->
-<!-- 							<dt>생년월일</dt> -->
-<!-- 							<dd> -->
-<!-- 								<input type="date" id="date01_BIRTH" name="date01_BIRTH">  -->
-<!-- 							</dd> -->
-<!-- 						</dl>				 -->
-<!-- 						<dl> -->
-<!-- 							<dt>직위</dt> -->
-<!-- 							<dd> -->
-<!-- 								<input type="text" id="txt01_GRADE" name=""> -->
-<!-- 							</dd> -->
-<!-- 						</dl>				 -->
 						<dl>
 							<dt>휴가일수</dt>
 							<dd>
@@ -71,13 +47,7 @@
 							<dd>
 								<input type="text" id="txt01_HOLIDAY_DEDUCT" name="txt01_HOLIDAY_DEDUCT" value="${Holiday.HOLIDAY_DEDUCT }" readonly="readonly">
 							</dd>
-						</dl>				
-<!-- 						<dl> -->
-<!-- 							<dt>입사일</dt> -->
-<!-- 							<dd> -->
-<!-- 								<input type="date" id="txt01_ENTER_DT" name="startDate1"> -->
-<!-- 							</dd> -->
-<!-- 						</dl>				 -->
+						</dl>
 					</div>
 				</div>
 			</div>
@@ -186,16 +156,14 @@
 			<div class="modal-cont">
 				<div class="row row-1">
 					<div class="col col-1 wp100">
-						<section>
-
-						</section>
+						<section id="viewForm2Content"></section>
 					</div>
 				</div>
 			</div>
 		</div>
 		<!-- .modal-cont 팝업영역 END -->
 
-	<input type="hidden" value="${HolidayOffice.get(0)}">
+	<input type="hidden" id="holidayOfficeValue" value="${HolidayOffice.get(0)}">
 	</body>
 	
 	<script type="text/javascript">
@@ -233,6 +201,11 @@
 			
 			setGrid();
 			init(); //그리드 리사이징
+
+			const count = ${Count};
+			if (count == 0) {
+				autoOpenModalPopup();
+			}
 		});
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 버튼
@@ -371,7 +344,7 @@
 		/* 사용자 추가/수정 팝업 */
 		function openModalPopup(action){
 			// 화면ID, 화면ID사이즈(ex. 6:CM1000 / 13:CM1000_Detail), 팝업ID, 다국어
-			var returnPopup = getLangCodePopup("CM1200_Pop1", 11, "viewForm1", "${LANG}");
+			var returnPopup = getLangCodePopup("AN1000_Pop1", 11, "viewForm1", "${LANG}");
 			var titlePop = returnPopup[0];
 			var pop01_btn01_SAVE = returnPopup[1];
 			var pop01_btn01_CLOSE = returnPopup[2];
@@ -432,6 +405,56 @@
 			}).css("z-index", 1000).prev(".ui-dialog-titlebar").css("background","#266f80").css("color","#fff");
 		};
 
+		function autoOpenModalPopup(action){
+			// 화면ID, 화면ID사이즈(ex. 6:CM1000 / 13:CM1000_Detail), 팝업ID, 다국어
+			let returnPopup = getLangCodePopup("AN1000_Pop2", 11, "viewForm2", "${LANG}");
+			let titlePop = returnPopup[0];
+			let pop02_btn01_SAVE = returnPopup[1];
+			let pop02_btn01_CLOSE = returnPopup[2];
+
+			$("#viewForm2").dialog({
+				autoOpen: true
+				, title: titlePop
+				, width: 900
+				, modal: true
+				, open: function (event, ui) {
+					let weeks = ['일', '월', '화', '수', '목', '금', '토'];
+					const holidayOfficeDay = new Date($("#holidayOfficeValue").val());
+					let year = holidayOfficeDay.getFullYear();
+					let month = holidayOfficeDay.getMonth() + 1;
+					let day = holidayOfficeDay.getDate();
+					let week = weeks[holidayOfficeDay.getDay()];
+					let message = '<strong style="color: red">' + year + '년 ' + month + '월 ' + day + '일(' + week + ') </strong> ' + '은 회사 공식 휴무일입니다.' +
+							'<br> 출근 하시는 분들께서도 \'공식 휴무일/출근\' 으로 사유를 작성 후 필히 등록해주세요.';
+					$("#viewForm2Content").html(message);
+				}
+				, close: function () {
+					$(this).dialog("close");
+				}
+				, buttons: [
+					{
+						text : pop02_btn01_SAVE,
+						click : function(){
+							$(this).dialog("close");
+							checkAction = "C";
+							openModalPopup(checkAction);
+							$("#pop01_sel01_TYPE").val("OFFICE01")
+							$("#pop01_txt01_COUNT").val("1")
+							$("#pop01_date01_START").val($("#holidayOfficeValue").val())
+							$("#pop01_date01_END").val($("#holidayOfficeValue").val())
+							$("#pop01_txt01_REASON").val("회사 공식 휴무일")
+						}
+					}
+					, {
+						text : pop02_btn01_CLOSE,
+						click : function () {
+							$(this).dialog("close");
+						}
+					}
+				]
+				, focus: function (event, ui) {}
+			}).css("z-index", 1000).prev(".ui-dialog-titlebar").css("background","#266f80").css("color","#fff");
+		};
 
 		window.onload = () => {
 			setTimeout(() => {
@@ -454,14 +477,23 @@
 		 * 반차 체크 및 휴가기간 체크(휴가시작일 >= 휴가종료일)
 		 */
 		function holidayDateCheck() {
-			const HALF_CHECK = ($('#pop01_sel01_TYPE').val() == 'HALF01' || $('#pop01_sel01_TYPE').val() == 'HALF02');
+			const HALF_CHECK = ($('#pop01_sel01_TYPE').val() == 'HALF01' || $('#pop01_sel01_TYPE').val() == 'HALF02'
+					|| $('#pop01_sel01_TYPE').val() == 'CIVIL01' || $('#pop01_sel01_TYPE').val() == 'CIVIL02');
+			const OFFICE_CHECK = ($('#pop01_sel01_TYPE').val() == 'OFFICE01' || $('#pop01_sel01_TYPE').val() == 'OFFICE02');
 			let startValue = $('#pop01_date01_START').val();
 			let endValue = $('#pop01_date01_END').val();
 
-			if (HALF_CHECK) { // 반차일 경우
+			if (HALF_CHECK) {
+				// 반차 및 민방위인 경우
 				$('#pop01_date01_END').val($('#pop01_date01_START').val());
 				$('#pop01_txt01_COUNT').val('0.5');
-			} else if(startValue != '' && endValue != '') { // 반차가 아닐 경우
+			} else if (OFFICE_CHECK) {
+				// 공식 휴무일(연차 및 출근)
+				$("#pop01_date01_START").val($("#holidayOfficeValue").val())
+				$("#pop01_date01_END").val($("#holidayOfficeValue").val())
+				$('#pop01_txt01_COUNT').val('1');
+			} else if (startValue != '' && endValue != '') {
+				// 반차, 민방위, 공식 휴무일이 아닌 경우
 				if (new Date(startValue) > new Date(endValue)) {
 					toast("경고", "휴가기간을 확인해 주세요.", "error");
 					$('#pop01_date01_END').val(startValue);
@@ -469,7 +501,7 @@
 				let year = new Date(startValue).getFullYear();
 				let month = new Date(startValue).getMonth() + 1;
 				let url = '/an1000/publicHoliday?year=' + year + '&month=' + month;
-				getAjaxJsonData(url, '', 'holidayDateCount', 'GET')
+				getAjaxJsonData(url, '', 'holidayDateCount', 'GET');
 			}
 		}
 

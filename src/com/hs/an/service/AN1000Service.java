@@ -5,16 +5,16 @@ import com.hs.home.controller.UserInfo;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.lang.String.*;
+import static java.lang.String.valueOf;
 import static java.util.Arrays.asList;
 
 @Transactional
@@ -22,22 +22,17 @@ import static java.util.Arrays.asList;
 public class AN1000Service {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+	private final String[] HOLIDAY_CHECK_TYPE = {"ANNUAL", "HALF01", "HALF02", "OFFICE01"};
 	protected enum Type {
 		PLUS, MINUS
 	}
 
-	private final String[] HOLIDAY_CHECK_TYPE = {"ANNUAL", "HALF01", "HALF02", "OFFICE01"};
-
-	@Inject
+	@Autowired
 	private SqlSession sqlSession;
 
 	/**
-	 * 메소드 설명 : 사용자 연차정보 조회
-	 * -------------------------------------------------------------------
-	 *
-	 * @param Map param 검색조건 (사용자ID)
-	 * @return List    Map 연차정보 목록
+	 * 사용자 연차정보 조회
+	 * @return 사용자 휴가 신청 내역
 	 */
 	public Map<String, Object> an1000InfoSel(UserInfo user) {
 
@@ -51,9 +46,7 @@ public class AN1000Service {
 
 	/**
 	 * 메소드 설명 : 연차신청내역 조회
-	 * -------------------------------------------------------------------
-	 *
-	 * @param Map param 검색조건 (사용자ID)
+	 * @param param : 검색조건 (사용자ID)
 	 * @return List    list 사용자정보 목록
 	 */
 	public List<Map<String, Object>> an1000Sel(Map<String, Object> param, UserInfo user) {
@@ -76,6 +69,14 @@ public class AN1000Service {
 	}
 
 	/**
+	 * 해당 월에 회사 휴무일관련 등록 확인 로직
+	 * 결과값 : 0 (미등록), 1('OFFICE01', 'OFFICE02' 둘 중 하나 등록)
+	 */
+	public Integer an1000HolidayOfficeByUser(UserInfo user) {
+		return sqlSession.selectOne("an1000HolidayOfficeByUser", user.getUSER_ID());
+	}
+
+	/**
 	 * 휴가 등록
 	 */
 	public void an1000Save(Map<String, Object> param, UserInfo user) {
@@ -93,9 +94,6 @@ public class AN1000Service {
 		}
 
 	}
-
-
-
 
 	/**
 	 * 휴가 신청 취소
@@ -115,7 +113,6 @@ public class AN1000Service {
 		} catch (Exception e) {
 			throw new RuntimeException("휴가 신청 취소 에러 발생", e);
 		}
-
 	}
 
 	/**
