@@ -1,5 +1,8 @@
 package com.hs.an.service;
 
+import com.hs.an.dto.HolidayOfficeNotSubmitDto;
+import com.hs.an.dto.UserAndHolidayInfoDto;
+import com.hs.home.controller.UserInfo;
 import com.hs.home.service.HomeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,16 +26,34 @@ public class AN0000Service {
     @Autowired
     private HomeService homeService;
 
+    @Autowired
+    private AN1000Service an1000Service;
+
     /** 회사 휴무 미등록 시 해당 달 마지막 날에 자동 등록 */
 //    @Scheduled(cron = "0 30 23 28-31 * *")
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 * * * * * ")
     public void holidayCompanyAutoSubmit() {
         try {
 //            Calendar calendar = Calendar.getInstance();
 //            if (calendar.get(Calendar.DATE) == calendar.getActualMaximum(Calendar.DATE)) {
-                List<HolidayOfficeNotSubmitDto> dto = homeService.holidayOfficeNotSubmitSelect();
-                if (!dto.isEmpty()) {
-                    homeService.holidayOfficeNotSubmitSave(dto);
+                List<HolidayOfficeNotSubmitDto> dtos = homeService.holidayOfficeNotSubmitSelect();
+                if (!dtos.isEmpty()) {
+                    homeService.holidayOfficeNotSubmitSave(dtos);
+//                    for (HolidayOfficeNotSubmitDto dto : dtos) {
+//                        HashMap<String, Object> param = new HashMap<>();
+//                        param.put("USER_ID", dto.getUSER_ID());
+//                        param.put("HOLIDAY_CNT", "1");
+//                        param.put("HOLIDAY_TYPE", "OFFICE01");
+//                        UserInfo user = new UserInfo();
+//                        user.setUSER_ID(dto.getUSER_ID());
+//                        System.out.println("param = " + param);
+//                        System.out.println("user = " + user);
+//                        System.out.println("AN1000Service.Type.PLUS = " + AN1000Service.Type.PLUS);
+//
+//                        an1000Service.holidayInfoUpdate(param, user, AN1000Service.Type.PLUS);
+//                    }
+                } else {
+                    logger.info("holidayCompanyAutoSubmit.dto.isEmpty()");
                 }
 //            }
         } catch (Exception e) {
@@ -57,11 +80,12 @@ public class AN0000Service {
                         .forEach(item -> {
                             byYears(item);
                         });
+            } else {
+                logger.info("calculation.dto.isEmpty");
             }
         } catch (Exception e) {
             throw new RuntimeException("연차 계산 오류", e);
         }
-
     }
 
     private void byYears(UserAndHolidayInfoDto item) {
@@ -85,6 +109,8 @@ public class AN0000Service {
             // 근속 3년 이상이면서 연차 미 증가 대상자
             float holidayTotal = item.getHOLIDAY_TOTAL();
             holidayRefresh(item, holidayTotal, years);
+        } else {
+            logger.info("byYears.else");
         }
     }
 

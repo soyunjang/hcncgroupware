@@ -16,7 +16,7 @@
 
 	<insert id="an1000Save" parameterType="map">
 		EXEC AN1000_SAVE #{USER_ID}, #{HOLIDAY_TYPE}, #{HOLIDAY_CNT}, #{HOLIDAY_START}, #{HOLIDAY_END},
-		#{HOLIDAY_REASON}, #{TASK}, #{ACQUIRER}, #{EMERGENCY}, #{REG_ID}, #{REG_DT}, #{DEPT_CD}, #{POST_CD}
+		#{HOLIDAY_REASON}, #{TASK}, #{ACQUIRER}, #{EMERGENCY}, #{REG_ID}, #{DEPT_CD}, #{POST_CD}
 	</insert>
 
 	<update id="an1000Update" parameterType="map">
@@ -36,12 +36,25 @@
 		                           WHERE DATEPART(MONTH, CONVERT(DATE, OFFICE_HOLIDAY)) = DATEPART(MONTH, CONVERT(DATE, GETDATE()))
 	</select>
 
-	<update id="an1000HolidayInfoUpdate">
-		UPDATE
-	</update>
 
-	<select id="an1000HolidayInfoSel" parameterType="String" resultType="java.util.Map">
+	<resultMap id="holidayInfo" type="com.hs.an.dto.HolidayInfoDto">
+		<result property="user_id" column="USER_ID"/>
+		<result property="holiday_total" column="HOLIDAY_TOTAL"/>
+		<result property="holiday_use" column="HOLIDAY_USE"/>
+		<result property="holiday_remain" column="HOLIDAY_REMAIN"/>
+		<result property="holiday_deduct" column="HOLIDAY_DEDUCT"/>
+	</resultMap>
+
+	<select id="an1000HolidayInfoSel" parameterType="String" resultMap="holidayInfo">
 		SELECT USER_ID, HOLIDAY_TOTAL, HOLIDAY_USE, HOLIDAY_REMAIN, HOLIDAY_DEDUCT FROM HOLIDAY_INFO WHERE USER_ID = #{USER_ID}
 	</select>
+
+	<update id="an1000HolidayInfoUpdate" parameterType="com.hs.an.dto.HolidayInfoDto">
+		UPDATE HOLIDAY_INFO SET HOLIDAY_TOTAL = #{holiday_total},
+		                        HOLIDAY_USE = #{holiday_use},
+		                        HOLIDAY_REMAIN = #{holiday_remain},
+		                        HOLIDAY_DEDUCT = #{holiday_deduct}
+		WHERE USER_ID = #{user_id}
+	</update>
 
 </mapper>
