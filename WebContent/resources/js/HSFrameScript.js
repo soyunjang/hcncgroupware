@@ -78,8 +78,6 @@ $(document).ready(function(){
 		
 		$(".openpage li").eq(0).addClass('active');
 		$("	#frame" + $(".openpage li").eq(0).attr("data-tab")).addClass('active');
-		
-		noticeShowHide("main");
 	});
 	
 	//탭 관련 함수
@@ -91,8 +89,6 @@ $(document).ready(function(){
 		
 		$(this).addClass('active');
 		$("#frame" + tab_id).addClass('active');
-		
-		noticeShowHide(tab_id);
 	});
 	
 	$("#btn01_IFRAME_CLOSE").click(function(){
@@ -107,28 +103,6 @@ $(document).ready(function(){
 		jQuery("#table2").jqGrid('setGridWidth', (jQuery(".table-wrap").width()),true);
 	});
 });
-
-/**
- * 메소드 설명 : 로고 클릭하거나 탭 이동시 공지사항 팝업 닫기/열기
- * -------------------------------------------------------------------
- * @param
- */
-function noticeShowHide(type){
-	var len = $(".popup").length;
-	
-	for(var i = 0; i < len; i++){
-		if(type == "main"){
-			if(document.cookie == ''){
-				$('#' + $(".popup")[i].id + '').show();
-				$('#' + $(".popup")[i].id + '').draggable();
-			} else {
-				$('#' + $(".popup")[i].id + '').hide();
-			}
-		} else {
-			$('#' + $(".popup")[i].id + '').hide();
-		}
-	} 
-}
 
 /**
  * 메소드 설명 : AJAX 통신으로 Json을 받는 함수
@@ -852,8 +826,6 @@ function initFrame($this){
 	var addNav = '<li class="active" data-tab="'+ $this.id + '"><a href="javascript:void(0);">' + $this.title + '</a><a class="btn-close"><i class="fas fa-times"></a>';
 	$(".openpage").append(addNav);
 	
-	noticeShowHide("notMain");
-	
 	//생성된 시점의 탭 클릭 이벤트
 	$(".openpage li").last().click(function(){
 		$('ul.openpage li').removeClass('active');
@@ -861,8 +833,6 @@ function initFrame($this){
 		
 		$(this).addClass('active');
 		$("#frame" + $(this).attr('data-tab')).addClass('active');
-		
-		noticeShowHide("notMain");	// 공지사항 팝업 닫기/열기
 	});
 		
 	
@@ -1048,7 +1018,7 @@ function showLoding() {
     		, 'height': height
     		, 'opacity' : '1'
     });
-    
+
     $('#loadingSearch').show();	// loadingPanel show
 }
 
