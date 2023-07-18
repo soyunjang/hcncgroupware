@@ -1,4 +1,4 @@
-package com.hs.an.service;
+package com.hs.an.dto;
 
 public class UserAndHolidayInfoDto {
     private String USER_ID;

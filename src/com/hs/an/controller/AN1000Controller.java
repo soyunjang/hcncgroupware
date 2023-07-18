@@ -29,42 +29,38 @@ public class AN1000Controller {
 
 	/**
    	 * 메소드 설명 : 연차등록 페이지로 이동
-   	 * -------------------------------------------------------------------
-   	 * @param	Locale	locale
-   	 * @param	Model 	model
-   	 * @return	String 	result	연차등록 페이지ID
    	 */
 	@RequestMapping(value = "/an1000", method = RequestMethod.GET)
-	public String an1000(Locale locale, Model model, HttpSession session) {
+	public String an1000(Model model, HttpSession session) {
 
 		UserInfo user = (UserInfo) session.getAttribute("User");
 
-		// 사용자 연차정보 조회
-		Map<String,Object> holidayInfo = an1000Service.an1000InfoSel(user);
-		List holidayOffice = an1000Service.an1000HolidayOfficeSel();
-
-		model.addAttribute("Holiday", holidayInfo);
-		model.addAttribute("HolidayOffice", holidayOffice);
+		model.addAttribute("Holiday", an1000Service.an1000InfoSel(user));
+		model.addAttribute("HolidayOffice", an1000Service.an1000HolidayOfficeSel());
+		model.addAttribute("Count", an1000Service.an1000HolidayOfficeByUser(user));
 
 		return "AN/AN1000";
 	}
 
 	/**
 	 * 메소드 설명 : 연차신청내역 조회
-	 * -------------------------------------------------------------------
-	 * @param	Map		param	검색조건
-	 * @return	List	list	연차신청 목록
+	 * @param param :	검색조건
+	 * @return 휴가 신청 내역
 	 */
+	@ResponseBody
 	@RequestMapping(value = "/an1000Sel")
-	public @ResponseBody List<Map<String, Object>> AN1000_SEL(@RequestBody Map<String, Object> param, HttpSession session) {
+	public List<Map<String, Object>> AN1000_SEL(@RequestBody Map<String, Object> param, HttpSession session) {
 
 		UserInfo user = (UserInfo) session.getAttribute("User");
 
-		List<Map<String, Object>> list = an1000Service.an1000Sel(param, user);
-
-		return list;
+		return an1000Service.an1000Sel(param, user);
 	}
 
+	/**
+	 * 휴가 등록
+	 * @param param : 휴가 등록 정보
+	 * @return : 휴가 신청 내역
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/an1000", method = RequestMethod.POST)
 	public List<Map<String, Object>> an1000_save(@RequestBody Map<String, Object> param, HttpSession session) {
@@ -76,9 +72,15 @@ public class AN1000Controller {
 		return an1000Service.an1000Sel(param, user);
 	}
 
+	/**
+	 * 휴가 취소
+	 * @param param : 휴가 취소 정소
+	 * @return : 휴가 신청 내역
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/an1000", method = RequestMethod.PATCH)
 	public List<Map<String, Object>> an1000_update(@RequestBody Map<String, Object> param, HttpSession session) {
+
 		UserInfo user = (UserInfo) session.getAttribute("User");
 
 		an1000Service.an1000Update(param, user);
@@ -86,12 +88,12 @@ public class AN1000Controller {
 		return an1000Service.an1000Sel(param, user);
 	}
 
-	@ResponseBody
-	@RequestMapping(value = "", method = RequestMethod.GET)
-	public List an1000_holidayOfficeSel() {
-		return an1000Service.an1000HolidayOfficeSel();
-	}
-
+	/**
+	 * 공휴일 조회
+	 * @param year : 조회할 연도
+	 * @param month : 조회할 월
+	 * @return 조회할 연도, 월 기준으로 3개월치 공휴일 List return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/an1000/publicHoliday", method = RequestMethod.GET)
 	public List publicHolidayApi(@RequestParam String year, @RequestParam String month) {
@@ -113,6 +115,10 @@ public class AN1000Controller {
 		}
 	}
 
+	/**
+	 * Open API (한국천문연구원) : 공휴일 정보 조회
+	 * Open API URL : https://www.data.go.kr/data/15012690/openapi.do
+	 */
 	private List<String> getHolidayList(String year, String[] yearArray, String[] monthArray) {
 		List<String> list = new ArrayList<>();
 		for (int i = 0; i < monthArray.length; i++) {
@@ -154,7 +160,7 @@ public class AN1000Controller {
 					}
 				}
 
-				//노동자의날 추가
+				// 노동자의날 추가
 				if (Arrays.stream(monthArray).anyMatch("05"::equals)) {
 					String workersDay = year + "0501";
 					list.add(workersDay);

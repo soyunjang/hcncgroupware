@@ -1,4 +1,4 @@
-package com.hs.an.service;
+package com.hs.an.dto;
 
 import java.time.LocalDate;
 
@@ -8,6 +8,7 @@ public class HolidayOfficeNotSubmitDto {
     private int STATUS;
     private String DEPT_CD;
     private LocalDate HOLIDAY_DATE;
+
 
     public HolidayOfficeNotSubmitDto() {
     }
