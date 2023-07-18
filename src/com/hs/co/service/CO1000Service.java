@@ -105,9 +105,13 @@ public class CO1000Service {
 				paramMap.put("CARD_NUM", cell.getStringCellValue());
 
 				cell = row.getCell(2);	// 행의 3번째 열(거래일자)
-				if (null != cell)
-					paramMap.put("USE_DATE", cell.getStringCellValue().substring(0, 10));
-									
+				if (null != cell) {
+					String yyyy = cell.getStringCellValue().substring(0, 4);
+					String mm = Integer.parseInt(cell.getStringCellValue().substring(6, 7)) < 10 ? "0" + cell.getStringCellValue().substring(6, 7) : cell.getStringCellValue().substring(6, 7);
+					String dd = Integer.parseInt(cell.getStringCellValue().substring(9, 10)) < 10 ? "0" + cell.getStringCellValue().substring(9, 10) : cell.getStringCellValue().substring(9, 10);
+					paramMap.put("USE_DATE", yyyy + "-" + mm + "-" + dd);
+				}
+
 				cell = row.getCell(3);	// 행의 4번째 열(거래처)
 				if (null != cell)
 					paramMap.put("ACCOUNT", cell.getStringCellValue());
@@ -160,8 +164,12 @@ public class CO1000Service {
 					paramMap.put("CARD_NUM", cell.getStringCellValue());
 								
 				cell = row.getCell(2);	// 행의 3번째 열(사용일자)
-				if (null != cell)
-					paramMap.put("USE_DATE", cell.getStringCellValue().substring(0, 10));
+				if (null != cell){
+					String yyyy = cell.getStringCellValue().substring(0, 4);
+					String mm = Integer.parseInt(cell.getStringCellValue().substring(6, 7)) < 10 ? "0" + cell.getStringCellValue().substring(6, 7) : cell.getStringCellValue().substring(6, 7);
+					String dd = Integer.parseInt(cell.getStringCellValue().substring(9, 10)) < 10 ? "0" + cell.getStringCellValue().substring(9, 10) : cell.getStringCellValue().substring(9, 10);
+					paramMap.put("USE_DATE", yyyy + "-" + mm + "-" + dd);
+				}
 									
 				cell = row.getCell(3);	// 행의 4번째 열(거래처)
 				if (null != cell)

@@ -1,5 +1,6 @@
 package com.hs.co.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -49,5 +50,28 @@ public class CO1100Controller {
 		
 		List<Map<String, Object>> list = co1100Service.co1100Sel(param, session);
 		return list;
+	}
+
+	@RequestMapping(value = "/co1100SelProject")
+	public @ResponseBody List<Map<String, Object>> CO1100_SEL_PROJECT(@RequestBody Map<String, Object> param) {
+
+		List<Map<String, Object>> list = co1100Service.co1100SelProject(param);
+		return list;
+	}
+
+	@RequestMapping(value = "/co1100Save")
+	public @ResponseBody Map<String, Object> CO1100_SAVE(@RequestBody Map<String, Object> param, HttpSession session) {
+
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		try {
+			rtnMap = co1100Service.co1100Save(param, session);
+		}catch(Exception e) {
+			e.printStackTrace();
+			rtnMap.put("Errmsg", "오류가 발생하였습니다.");
+			rtnMap.put("Errstate", -1);
+		}
+
+		return rtnMap;
 	}
 }

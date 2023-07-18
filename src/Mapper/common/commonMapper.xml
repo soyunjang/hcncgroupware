@@ -18,8 +18,13 @@
     <select id="getCommonCodeEsc" parameterType="map" resultType="map">
 		EXEC GET_COMMONCODE_ESC #{sysClassCd}
     </select>
-    
-	<!-- 권한분류 조회 -->
+
+    <!-- 카드정보 조회 -->
+    <select id="getCommonCodeCard" parameterType="map" resultType="map">
+        EXEC GET_COMMONCODE_CARD #{sysClassCd}, #{USER_ID}
+    </select>
+
+    <!-- 권한분류 조회 -->
     <select id="getAuthCode" parameterType="map" resultType="map">
 		EXEC GET_AUTHCODE
 	</select>

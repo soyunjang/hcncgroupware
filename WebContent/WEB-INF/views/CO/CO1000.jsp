@@ -27,7 +27,6 @@
 								<dt>첨부파일</dt>
 								<dd class="fl-sb">
 									<input type="text" id="txt01_FILE_NM" readonly="readonly">
-									<a href="javascript:void(0);" id="btn01_FILE_RESET" class="btn-file-close"></a>
 								</dd>
 							</dl>
 						</div>
@@ -239,7 +238,6 @@
 					, {name: 'ACCOUNT'			, align: 'center' 	, width: '10%'	, hidden: false}
 					, {name: 'APPROVAL'			, align: 'right'	, width: '8%'	, hidden: false , formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}					
 					, {name: 'REFUND'			, align: 'right'	, width: '8%'	, hidden: false , formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
-					, {name: 'CONFIRM_YN'		, align: 'center'	, width: '4%'	, hidden: false}
 				]
 				, autowidth: false
 				, shrinkToFit: false
