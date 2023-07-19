@@ -320,7 +320,6 @@
 			}
 		});
 		
-
 		/* 사용자 추가/수정 팝업의 권한그룹팝업 버튼 */
 		$("#pop01_btn01_AUTH_TYPE").on({
 			click: function(e){

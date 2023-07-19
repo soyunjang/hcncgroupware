@@ -34,6 +34,15 @@ public class CommonService {
 		return sqlSession.selectList("commonMapper.getCommonCodeEsc", param);
 	}
 
+	/* 사용자별 카드정보 조회(SORT) */
+	public List<Map<String, Object>> getCommonCodeCard(Map<String, Object> param, HttpSession session){
+
+		UserInfo vo = (UserInfo) session.getAttribute("User");
+
+		param.put("USER_ID", vo.getUSER_ID());
+		return sqlSession.selectList("commonMapper.getCommonCodeCard", param);
+	}
+
 	/* 권한분류 조회 */
 	public List<Map<String, Object>> getAuthCode() {
 		return sqlSession.selectList("commonMapper.getAuthCode");

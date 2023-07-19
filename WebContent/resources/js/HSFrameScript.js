@@ -631,6 +631,42 @@ function getCommonCodeEsc(SYS_CLASS_CD, returnType){
 };
 
 /**
+ * 메소드 설명 : 공통코드 호출 함수(카드정보)
+ * -------------------------------------------------------------------
+ * @param	String	SYS_CLASS_CD	코드그룹
+ * @param	String 	returnType		반환형태(Array/Json)
+ */
+function getCommonCodeCard(SYS_CLASS_CD, returnType){
+	var returnValue;	// 반환값(Array/Json)
+
+	$.ajax({
+		url : '/getCommonCodeCard'
+		, data : JSON.stringify({sysClassCd : SYS_CLASS_CD})
+		, type : 'POST'
+		, async: false
+		, dataType : 'json'
+		, headers: {
+			'Accept': 'application/json'
+			, 'Content-Type': 'application/json'
+		}
+		, error : function(request, status, error){
+			console.error('카드정보를 불러오지 못했습니다.');
+			return false;
+		}
+		, success : function(List){
+			if(returnType == 'Array'){
+				returnValue = changeArray(List);
+			}
+			else if(returnType == undefined || returnType == 'Json'){
+				returnValue = List;
+			}
+		}
+	});
+
+	return returnValue;
+};
+
+/**
  * 메소드 설명 : 공통코드 호출 후 태그에 list값을 매칭
  * -------------------------------------------------------------------
  * @param	String	element		매칭할 select 태그ID
@@ -648,6 +684,24 @@ function commonCodeSelectAdd(element, list, allYn){
 			}
 		}
 		$("#" + element).append(option);
+	}
+}
+
+function commonCodeSelectAddMulti(element, list, allYn){
+	$("#" + element).empty();
+
+	if(list.length == 0) {
+		$("#" + element).append("<option value=''>전체</option>");
+	} else {
+		for(var i = 0; i < list.length; i++){
+			var option = "<option value=" + list[i].COMPANY + ">" + list[i].COMPANY_NM + "&nbsp;" + list[i].CARD_NUM + "</option>";
+			if(i == 0){
+				if(allYn == undefined || allYn == 'Y'){
+					$("#" + element).append("<option value=''>전체</option>");
+				}
+			}
+			$("#" + element).append(option);
+		}
 	}
 }
 

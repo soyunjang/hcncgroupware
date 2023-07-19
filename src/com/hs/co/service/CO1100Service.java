@@ -1,5 +1,7 @@
 package com.hs.co.service;
 
+import java.net.InetAddress;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +12,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Service;
 
 import com.hs.home.controller.UserInfo;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service("co1100Service")
 public class CO1100Service {
@@ -32,5 +35,31 @@ public class CO1100Service {
 		List<Map<String, Object>> rList = sqlSession.selectList("co1100Mapper.co1100Sel", param);
 		
 		return rList;
+	}
+
+	public List<Map<String, Object>> co1100SelProject(Map<String, Object> param) {
+
+		List<Map<String, Object>> rList = sqlSession.selectList("co1100Mapper.co1100SelProject", param);
+
+		return rList;
+	}
+
+	@Transactional
+	public Map<String, Object> co1100Save(Map<String, Object> param, HttpSession session) {
+
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		UserInfo vo = (UserInfo) session.getAttribute("User");
+
+		try {
+			param.put("UPT_ID", vo.getUSER_ID());
+
+			sqlSession.update("co1100Mapper.co1100Save", param);
+		}catch(Exception e) {
+			e.printStackTrace();
+			rtnMap.put("Errmsg", "오류가 발생하였습니다.");
+			rtnMap.put("Errstate", -1);
+		}
+
+		return rtnMap;
 	}
 }

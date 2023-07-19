@@ -35,6 +35,7 @@ public class CO1200Controller {
    	 */
 	@RequestMapping(value = "/co1200")
 	public String co1200(Locale locale, Model model) {
+
 		return "CO/CO1200";
 	}
 
@@ -46,8 +47,21 @@ public class CO1200Controller {
    	 */
 	@RequestMapping(value = "/co1200Sel")
 	public @ResponseBody List<Map<String, Object>> CO1200_SEL(@RequestBody Map<String, Object> param, HttpSession session) {
-		
+
 		List<Map<String, Object>> list = co1200Service.co1200Sel(param, session);
 		return list;
+	}
+
+	@RequestMapping(value = "/co1200SelInfo")
+	public @ResponseBody int[] CO1200_SEL_INFO(@RequestBody Map<String, Object> param, HttpSession session) {
+
+		int[] info = new int[2];
+		int expensePrice = co1200Service.co1200SelExpense(param);
+		int approval = co1200Service.co1200SelApproval(param);
+
+		info[0] = expensePrice;
+		info[1] = approval;
+
+		return info;
 	}
 }

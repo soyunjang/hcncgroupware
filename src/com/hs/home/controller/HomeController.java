@@ -149,10 +149,8 @@ public class HomeController {
 
 				session.setAttribute("User", vo);
 				session.setAttribute("MENU", commonService.covertListToJson(menuList));
-				session.setAttribute("LANG",
-						request.getParameter("language") == null ? "KOR" : request.getParameter("language"));
-				red.addFlashAttribute("LANG",
-						request.getParameter("language") == null ? "KOR" : request.getParameter("language"));
+				session.setAttribute("LANG", request.getParameter("language") == null ? "KOR" : request.getParameter("language"));
+				red.addFlashAttribute("LANG", request.getParameter("language") == null ? "KOR" : request.getParameter("language"));
 			} else {
 				Cookie cookie = new Cookie("userID", null); // 삭제할 쿠키에 대한 값을 null로 지정
 				cookie.setMaxAge(0); // 유효시간을 0으로 설정해서 바로 만료시킨다.
