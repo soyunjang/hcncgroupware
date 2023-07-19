@@ -415,7 +415,7 @@
 			$("#viewForm2").dialog({
 				autoOpen: true
 				, title: titlePop
-				, width: 900
+				, width: 560
 				, modal: true
 				, open: function (event, ui) {
 					let weeks = ['일', '월', '화', '수', '목', '금', '토'];

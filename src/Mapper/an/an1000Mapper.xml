@@ -16,7 +16,7 @@
 
 	<insert id="an1000Save" parameterType="map">
 		EXEC AN1000_SAVE #{USER_ID}, #{HOLIDAY_TYPE}, #{HOLIDAY_CNT}, #{HOLIDAY_START}, #{HOLIDAY_END},
-		#{HOLIDAY_REASON}, #{TASK}, #{ACQUIRER}, #{EMERGENCY}, #{REG_ID}, #{DEPT_CD}, #{POST_CD}
+		#{HOLIDAY_REASON}, #{TASK}, #{ACQUIRER}, #{EMERGENCY}, #{REG_ID}
 	</insert>
 
 	<update id="an1000Update" parameterType="map">
