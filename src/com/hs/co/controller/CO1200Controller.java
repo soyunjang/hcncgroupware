@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import com.hs.co.dto.CorporateInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -35,6 +36,7 @@ public class CO1200Controller {
    	 */
 	@RequestMapping(value = "/co1200")
 	public String co1200(Locale locale, Model model) {
+
 		return "CO/CO1200";
 	}
 
@@ -46,7 +48,8 @@ public class CO1200Controller {
    	 */
 	@RequestMapping(value = "/co1200Sel")
 	public @ResponseBody List<Map<String, Object>> CO1200_SEL(@RequestBody Map<String, Object> param, HttpSession session) {
-		
+
+		co1200Service.CO1200SelInfo(param, session);
 		List<Map<String, Object>> list = co1200Service.co1200Sel(param, session);
 		return list;
 	}

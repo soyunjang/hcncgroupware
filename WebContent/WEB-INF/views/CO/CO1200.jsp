@@ -11,9 +11,6 @@
 			<div class="page-title-wrap">
 				<div class="page-title">
 					<h2>법인카드 사용내역 조회</h2>
-					<ul class="title-btn">
-						<li><a href="javascript:reset();" id="btn01_REFLESH" class="btn-refresh" title="검색조건 초기화"></a></li>
-					</ul>
 	           </div>
 	           <div class="page-btn-wrap">
 		            <ul>
@@ -45,10 +42,10 @@
 								<ul class="input2-wrap">
 									<li class="input-src">
 										<input type="search" id="itemNo" name="itemNo" onchange="itemNoChange();">
-										<label for="" class="hide">검색</label>
-										<input type="button" class="btnPopup" data-url="/pu3000EqMstr" data-callbackfun="equipNoCallBack" data-size="L">
+										<label class="hide">검색</label>
+										<input type="button" id="btn01_SALES">
 									</li>
-									<li><label for="itemDesc" class="hide">찾은 내용</label><input type="text" id="itemName" name="itemName" readonly></li>
+									<li><label class="hide">찾은 내용</label><input type="text" id="itemName" name="itemName" readonly></li>
 								</ul>
 								<input type="hidden" id="equipNo" name="equipNo">
 							</dd>
@@ -82,19 +79,19 @@
 						<dl>
 							<dt>경비예산</dt>
 							<dd>
-								<input type="text" id="txt01_USER_NM" value="${Office }" readonly="readonly">
+								<input type="text" id="txt01_EXPENSE_PRICE" value="0" class="readonly ta-r">
 							</dd>
 						</dl>
 						<dl>
 							<dt>사용금액</dt>
 							<dd>
-								<input type="text" id="txt01_USER_NM" value="${Office }" readonly="readonly">
+								<input type="text" id="txt01_USE_PRICE" value="0" class="readonly ta-r">
 							</dd>
 						</dl>
 						<dl>
 							<dt>사용잔액</dt>
 							<dd>
-								<input type="text" id="txt01_USER_NM" value="${Office }" readonly="readonly">
+								<input type="text" id="txt01_BALANCE" class="readonly ta-r">
 							</dd>
 						</dl>
 					</div>
@@ -109,6 +106,7 @@
 						<div class="title-wrap">
 	                        <div class="title-zone">
 	                            <h2 class="title1">법인카드 사용목록</h2>
+								<span id="table1_cnt">0</span>
 	                        </div>
 	                    </div> 
 						<div class="table-wrap">
@@ -120,6 +118,38 @@
 			<!-- .title-wrap TABLE영역 END -->
 		</div>
 		<!-- .contents-wrap 컨텐츠영역 END -->
+
+		<!-- 프로젝트 조회 팝업 -->
+		<div id="viewForm2" style="display: none;">
+			<div class="modal-cont modal-cont2">
+				<div class="search-zone">
+					<div class="search-wrap">
+						<div class="sch-box">
+							<dl class="dl-2n">
+								<dt>프로젝트명</dt>
+								<dd>
+									<input type="text" id="pop02_txt01_PROJECT" class="w200">
+								</dd>
+							</dl>
+						</div>
+						<div class="srch-btn wp40">
+							<ul>
+								<li><a href="javascript:searchGridDataProject();" class="btn-search">검색</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="row row-1 h300">
+					<div class="col col-1 wp100">
+						<section>
+							<div class="table-wrap hp100">
+								<table id="table2"></table>
+							</div>
+						</section>
+					</div>
+				</div>
+			</div>
+		</div>
 	</body>
 	
 	<script type="text/javascript">
@@ -138,7 +168,9 @@
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 공통코드
 		/* 공통코드_다국어 */
 		var langHead;
-		
+		var langPop2;
+
+		var ex = '${CORPORATE.APPROVAL}';
 		commonCodeSelectAdd("sel01_DEPT", getCommonCode('DEPT'), 'Y');
 
 		/* Document가 로드되었을 때 실행되는 코드 */
@@ -153,6 +185,7 @@
 			
 			// 화면ID, 화면ID사이즈(6:CM1000/13:CM1000_Detail), 다국어
 			langHead = getLangCode("CO1200", 6, "${LANG}");
+			langPop2 = getLangCodeDetail("CO1100_Pop2", 11, "${LANG}");
 			
 			var today = new Date();
 			var monthAgo = new Date(today);
@@ -179,7 +212,21 @@
 				searchGridData();
 			}
 		});
-		
+
+		function itemNoChange() {
+			if ($("#itemNo").val() == "") {
+				$("#itemName").val("");
+			}
+		}
+
+		/* 사용내역 수정 팝업의 프로젝트 팝업 버튼 */
+		$("#btn01_SALES").on({
+			click: function(e){
+				e.preventDefault();
+				openModalPopup_Project();
+			}
+		});
+
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: confirm
 		
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 그리드
@@ -194,17 +241,17 @@
 				}
 				, colNames: langHead
 				, colModel: [
-					{name: 'USE_DATE'			, align: 'center'	, width: '7%'	, hidden: false}				
-					, {name: 'USER_ID'			, align: 'center' 	, width: '10%'	, hidden: true}									
-					, {name: 'USER_NM'			, align: 'center'	, width: '5%'	, hidden: false}				
-					, {name: 'SALES_NUM'		, align: 'center'	, width: '10%'	, hidden: false}				
-					, {name: 'PROJECT_NM'		, align: 'center'	, width: '15%'	, hidden: false}				
-					, {name: 'ACCOUNT_SUB'		, align: 'center'	, width: '10%'	, hidden: false}				
-					, {name: 'ACCOUNT'			, align: 'center'	, width: '10%'	, hidden: false}					
-					, {name: 'BREAKDOWN'		, align: 'center'	, width: '10%'	, hidden: false}			
-					, {name: 'APPROVAL'			, align: 'right' 	, width: '5%'	, hidden: false}	
-					, {name: 'REFUND'			, align: 'right' 	, width: '5%'	, hidden: false}	
-					, {name: 'MEMO'				, align: 'left' 	, width: '10%'	, hidden: false}	
+					{name: 'USE_DATE'			, align: 'center'	, width: '6%'	, hidden: false}
+					, {name: 'USER_ID'			, align: 'center' 	, width: '0%'	, hidden: true}
+					, {name: 'USER_NM'			, align: 'center'	, width: '4%'	, hidden: false}
+					, {name: 'SALES_NUM'		, align: 'center'	, width: '8%'	, hidden: false}
+					, {name: 'PROJECT_NM'		, align: 'left'		, width: '12%'	, hidden: false}
+					, {name: 'ACCOUNT_SUB'		, align: 'left'		, width: '6%'	, hidden: false}
+					, {name: 'ACCOUNT'			, align: 'left'		, width: '12%'	, hidden: false}
+					, {name: 'BREAKDOWN'		, align: 'left'		, width: '9%'	, hidden: false}
+					, {name: 'APPROVAL'			, align: 'right' 	, width: '4%'	, hidden: false, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
+					, {name: 'REFUND'			, align: 'right' 	, width: '4%'	, hidden: false, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
+					, {name: 'MEMO'				, align: 'left' 	, width: '9%'	, hidden: false}
 				]
 				, autowidth: false
 				, shrinkToFit: false
@@ -212,6 +259,29 @@
 			});
 			
 			searchGridData();
+
+			$("#table2").jqGrid({
+				mtype : 'POST'
+				, datatype : 'local'
+				, jsonReader: {
+					repeatitems: false
+				}
+				, colNames: langPop2
+				, colModel: [
+					{name: 'SALES_NUM'		, align: 'center'	, width: '5%'	, hidden: false}
+					, {name: 'PROJECT_NM'	, align: 'left'		, width: '10%'	, hidden: false}
+				]
+				, autowidth: true
+				, shrinkToFit: false
+				, ondblClickRow : function(rowid){
+					var rowdata = $("#table2").getRowData(rowid);
+
+					$("#itemNo").val(rowdata.SALES_NUM);
+					$("#itemName").val(rowdata.PROJECT_NM);
+
+					$("#viewForm2").dialog("close");
+				}
+			});
 		};
 		
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: CRUD
@@ -234,11 +304,85 @@
 				datatype: 'local'
 				, data: data
 			}).trigger("reloadGrid");
+
+			if(data.length > 0){
+				$("#table1_cnt").text(comma(data.length));
+			} else {
+				$('#table1_cnt').text(0);
+			}
+			debugger;
+			var e = '${CORPORATE.EXPENSE_PRICE}';
+			var a = '${CORPORATE.APPROVAL}';
+			var balance = parseInt($("#txt01_EXPENSE_PRICE").val()) - parseInt($("#txt01_USE_PRICE").val());
+			$("#txt01_BALANCE").val(balance);
+		};
+
+		/* 사용내역 수정 팝업의 프로젝트 Table 조회  */
+		function searchGridDataProject(){
+			var searchParam = {
+				PROJECT_NM : $("#pop02_txt01_PROJECT").val()
+			};
+
+			getAjaxJsonData("co1100SelProject", searchParam, "searchGridDataProjectCallBack");
+		};
+
+		function searchGridDataProjectCallBack(data){
+			$("#table2").clearGridData();
+			$('#table2').jqGrid('setGridParam', {
+				datatype: 'local'
+				, data: data
+			}).trigger("reloadGrid");
 		};
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 유효성
 		
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: Popup
-		
+		/* 프로젝트 조회 팝업 */
+		function openModalPopup_Project(){
+			// 화면ID, 화면ID사이즈(ex. 6:CM1000 / 13:CM1000_Detail), 팝업ID, 다국어
+			var returnPopup = getLangCodePopup("CO1100_Pop2", 11, "viewForm2", "${LANG}");
+			var titlePop = returnPopup[0];
+			var pop02_btn01_FINISH = returnPopup[1];
+			var pop02_btn01_CLOSE = returnPopup[2];
+
+			$("#viewForm2").dialog({
+				autoOpen: true
+				, title: titlePop
+				, width: 850
+				, modal: true
+				, open: function (event, ui) {
+					searchGridDataProject();
+				}
+				, close: function () {
+					$(this).dialog("close");
+				}
+				, buttons: [
+					{
+						text : pop02_btn01_FINISH,
+						click : function(){
+							var rowid = $("#table2").getGridParam("selrow");
+							if(rowid < 1){
+								toast("정보", "선택된 프로젝트가 없습니다.", "info");
+								return false;
+							} else {
+								var rowdata = $("#table2").getRowData(rowid);
+
+								$("#itemNo").val(rowdata.SALES_NUM);
+								$("#itemName").val(rowdata.PROJECT_NM);
+							}
+
+							$(this).dialog("close");
+						}
+					}
+					, {
+						text : pop02_btn01_CLOSE,
+						click : function () {
+							$(this).dialog("close");
+						}
+					}
+				]
+				, focus: function (event, ui) {}
+			}).css("z-index", 1000).prev(".ui-dialog-titlebar").css("background","#266f80").css("color","#fff");
+		};
 	</script>
 </html>

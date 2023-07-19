@@ -100,7 +100,7 @@
 										<div class="input-srch">
 											<input type="text" id="pop01_txt01_SALE" placeholder="판품번호" class="readonly wp100" readonly="readonly" style="display: none;">
 											<input type="text" id="pop01_txt01_PROJECT" placeholder="프로젝트명" class="readonly wp100" readonly="readonly">
-											<a href="javascript:void(0);" id="pop01_btn01_SALE" class="btn-srch"></a>
+											<a href="javascript:void(0);" id="pop01_btn01_SALES" class="btn-srch"></a>
 										</div>
 									</td>
 								</tr>
@@ -239,7 +239,7 @@
 		});
 
 		/* 사용내역 수정 팝업의 프로젝트 팝업 버튼 */
-		$("#pop01_btn01_SALE").on({
+		$("#pop01_btn01_SALES").on({
 			click: function(e){
 				e.preventDefault();
 				openModalPopup_Project();
@@ -255,6 +255,7 @@
 				, BREAKDOWN : $("#pop01_txt01_BREAKDOWN").val()
 				, MEMO : $("#pop01_txt01_MEMO").val()
 				, USE_DATE : $("#pop01_date01_USE").val()
+				, ACCOUNT : $("#pop01_txt01_ACCOUNT").val()
 				, COMPANY : $("#pop01_txt01_COMPANY").val()
 				, CARD_NUM : $("#pop01_txt01_CARD_NUM").val()
 			}
