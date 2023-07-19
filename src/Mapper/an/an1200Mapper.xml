@@ -6,6 +6,34 @@
 <mapper namespace="an1200Mapper">
 	<!-- Table 조회 -->
 	<select id="an1200Sel" parameterType="map" resultType="map">
-		EXEC AN1200_SEL #{DATE}, #{DEPT}, #{USER_NM}
+		SELECT U.USER_ID,
+			   U.USER_NM,
+			   U.GRADE_CD,
+			   (SELECT dbo.FN_COMMON_NM('ROLE', U.GRADE_CD)) AS GRADE_NM,
+			   U.DEPT_CD,
+			   (SELECT dbo.FN_COMMON_NM('DEPT', U.DEPT_CD))  AS DEPT_NM,
+			   H.HOLIDAY_TYPE,
+			   H.HOLIDAY_CNT,
+			   H.HOLIDAY_START,
+			   H.HOLIDAY_END,
+			   H.HOLIDAY_REASON
+		<choose>
+			<when test='USE.equals("Y")'>
+				FROM USER_INFO U INNER JOIN HOLIDAY_PERSON H
+					ON U.USER_ID = H.USER_ID
+			</when>
+			<otherwise>
+				FROM USER_INFO U LEFT OUTER JOIN HOLIDAY_PERSON H
+					ON U.USER_ID = H.USER_ID
+			</otherwise>
+		</choose>
+		AND #{DATE} BETWEEN H.HOLIDAY_START AND H.HOLIDAY_END
+		WHERE U.DEPT_CD LIKE '%' + #{DEPT} + '%' AND U.USER_NM LIKE '%' + #{USER_NM} + '%' AND U.USE_YN = 'Y'
+		<if test='USE.equals("N")'> AND H.USER_ID IS NULL</if>
+		ORDER BY H.HOLIDAY_START DESC, U.USER_NM ASC;
+	</select>
+
+	<select id="an1200count" resultType="int">
+		SELECT COUNT(*) FROM USER_INFO WHERE USE_YN = 'Y'
 	</select>
 </mapper>

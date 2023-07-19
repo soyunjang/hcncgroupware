@@ -7,7 +7,7 @@
 			<!-- .page-title-wrap 타이블영역 START -->
 			<div class="page-title-wrap">
 				<div class="page-title">
-					<h2>날짜별 연차현황</h2>
+					<h2>날짜별 휴가현황</h2>
 					<ul class="title-btn">
 						<li><a href="javascript:reset();" id="btn01_REFLESH" class="btn-refresh" title="검색조건 초기화"></a></li>
 					</ul>
@@ -37,6 +37,12 @@
 							</dd>
 						</dl>
 						<dl>
+							<dt>사용여부</dt>
+							<dd>
+								<select id="sel01_USE"></select>
+							</dd>
+						</dl>
+						<dl>
 							<dt>성명</dt>
 							<dd>
 								<input type="text" id="txt01_USER_NM">
@@ -56,19 +62,19 @@
 						<dl>
 							<dt>총원</dt>
 							<dd>
-								<input type="text" id="txt01_TOTAL" value="${Holiday.HOLIDAY_TOTAL }" readonly="readonly">
+								<input type="text" id="txt01_TOTAL" value="${UsersCount}" readonly>
 							</dd>
 						</dl>
 						<dl>
-							<dt>사용</dt>
+							<dt>사용인원</dt>
 							<dd>
-								<input type="text" id="txt01_USE" value="${Holiday.HOLIDAY_TOTAL }" readonly="readonly">
+								<input type="text" id="txt01_USE" readonly>
 							</dd>
 						</dl>
 						<dl>
-							<dt>미사용</dt>
+							<dt>미사용인원</dt>
 							<dd>
-								<input type="text" id="txt01_UNUSE" value="${Holiday.HOLIDAY_TOTAL }" readonly="readonly">
+								<input type="text" id="txt01_UNUSE" readonly>
 							</dd>
 						</dl>
 					</div>
@@ -82,7 +88,7 @@
 					<section>
 						<div class="title-wrap">
 	                        <div class="title-zone">
-	                            <h2 class="title1">연차현황 목록</h2>
+	                            <h2 class="title1">휴가현황 목록</h2>
 	                        </div>
 	                    </div> 
 						<div class="table-wrap">
@@ -111,9 +117,10 @@
 		 */
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 공통코드
 		/* 공통코드_다국어 */
-		var langHead;
+		let langHead;
 		
 		commonCodeSelectAdd("sel01_DEPT", getCommonCode('DEPT'), 'Y');
+		commonCodeSelectAdd("sel01_USE", getCommonCode('USE'), 'Y');
 
 		/* Document가 로드되었을 때 실행되는 코드 */
 		$(document).ready(function() {
@@ -134,21 +141,36 @@
 			init(); //그리드 리사이징
 		});
 
-		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 버튼
-		/* 초기화 버튼 */
-		$("#btn01_RESET").on({
-			click: function() {
-				reset();
-			}
-		});
+		function holidayUseCount() {
+			setTimeout(() => {
+				let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
+				console.log(rowData);
+				let total = parseInt($("#txt01_TOTAL").val())
+				let count = 0;
+				rowData.forEach(data => {
+					console.log(data);
+					if (data.HOLIDAY_CNT != "") {
+						count++;
+					}
+				});
+				console.log(count);
+				$("#txt01_USE").val(count);
+				$("#txt01_UNUSE").val(total - count);
+			}, 100);
+		}
 
+		window.onload = () => {
+			// holidayUseCount();
+		};
+
+		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 버튼
 		/* 검색 버튼 */
 		$("#btn01_SEARCH").on({
 			click: function(){
 				searchGridData();
+				// holidayUseCount();
 			}
 		});
-		
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: confirm
 		
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 그리드
@@ -180,17 +202,25 @@
 			});
 			
 			searchGridData();
+			// holidayUseCount();
 		};
-		
+
+		$("#txt01_USER_NM").keypress((e) => {
+			if (e.key === "Enter") {
+				searchGridData();
+				// holidayUseCount();
+			}
+		});
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: CRUD
 		/* Table 조회 */
 		function searchGridData(){
-			var searchParam = {
-					DATE: $("#txt01_DATE").val()
-					, DEPT: $("#sel01_DEPT").val()
-					, USER_NM: $("#txt01_USER_NM").val()
+			let searchParam = {
+					DATE: $("#txt01_DATE").val(),
+					DEPT: $("#sel01_DEPT").val(),
+					USE: $("#sel01_USE").val(),
+					USER_NM: $("#txt01_USER_NM").val()
 			};
-			
+
 			getAjaxJsonData("an1200Sel", searchParam, "searchGridDataCallBack");
 		};
 		
@@ -200,6 +230,35 @@
 				datatype: 'local'
 				, data: data
 			}).trigger("reloadGrid");
+
+
+			let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
+			let total = parseInt($("#txt01_TOTAL").val())
+			let use = 0;
+			let unUse = 0;
+			rowData.forEach(data => {
+				if (data.HOLIDAY_CNT != "") {
+					use++;
+				} else {
+					unUse++;
+				}
+			});
+			console.log(rowData.length)
+			console.log(total);
+			console.log(use);
+			console.log(unUse);
+
+			if (use > 0 && unUse == 0) {
+				$("#txt01_USE").val(use);
+				$("#txt01_UNUSE").val(total - use);
+			} else if (use == 0 && unUse > 0) {
+				$("#txt01_USE").val(total - unUse);
+				$("#txt01_UNUSE").val(unUse);
+			} else {
+				$("#txt01_USE").val(use);
+				$("#txt01_UNUSE").val(unUse);
+			}
+
 		};
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 유효성
