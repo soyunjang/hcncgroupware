@@ -6,7 +6,6 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
-import com.hs.co.dto.CorporateInfo;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Service;
 
@@ -35,21 +34,20 @@ public class CO1200Service {
 		return rList;
 	}
 
-	public void CO1200SelInfo(Map<String, Object> param, HttpSession session) {
-
-		CorporateInfo vo = new CorporateInfo();
-
+	public int co1200SelExpense(Map<String, Object> param) {
 		int expensePrice =0;
-		int approval = 0;
 
 		if(!param.get("SALES").toString().equals(""))
 			expensePrice = sqlSession.selectOne("co1200Mapper.co1200SelExpense", param);
 
+		return expensePrice;
+	}
+
+	public int co1200SelApproval(Map<String, Object> param) {
+		int approval =0;
+
 		approval = sqlSession.selectOne("co1200Mapper.co1200SelApproval", param);
 
-		vo.setEXPENSE_PRICE(expensePrice);
-		vo.setAPPROVAL(approval);
-
-		session.setAttribute("CORPORATE", vo);
+		return approval;
 	}
 }

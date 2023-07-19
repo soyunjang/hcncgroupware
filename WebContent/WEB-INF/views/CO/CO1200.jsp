@@ -170,7 +170,6 @@
 		var langHead;
 		var langPop2;
 
-		var ex = '${CORPORATE.APPROVAL}';
 		commonCodeSelectAdd("sel01_DEPT", getCommonCode('DEPT'), 'Y');
 
 		/* Document가 로드되었을 때 실행되는 코드 */
@@ -191,7 +190,7 @@
 			var monthAgo = new Date(today);
 			monthAgo.setMonth(today.getMonth() - 1);
 			
-			$("#date01_START").val(monthAgo.toISOString().split('T')[0]);	
+			$("#date01_START").val(monthAgo.toISOString().split('T')[0]);
 			$("#date01_END").val(today.toISOString().split('T')[0]);
 			
 			setGrid();
@@ -310,12 +309,31 @@
 			} else {
 				$('#table1_cnt').text(0);
 			}
-			debugger;
-			var e = '${CORPORATE.EXPENSE_PRICE}';
-			var a = '${CORPORATE.APPROVAL}';
-			var balance = parseInt($("#txt01_EXPENSE_PRICE").val()) - parseInt($("#txt01_USE_PRICE").val());
-			$("#txt01_BALANCE").val(balance);
+
+			searchInfoData();
 		};
+
+		function searchInfoData(){
+			var searchParam = {
+				START: $("#date01_START").val()
+				, END: $("#date01_END").val()
+				, SALES: $("#itemNo").val()
+			};
+
+			getAjaxJsonData("co1200SelInfo", searchParam, "searchInfoDataCallBack");
+		};
+
+		function searchInfoDataCallBack(res) {
+			if($("#table1_cnt").text() != '0') {
+				$("#txt01_EXPENSE_PRICE").val(res[0].toLocaleString('ko-KR'));
+				$("#txt01_USE_PRICE").val(res[1].toLocaleString('ko-KR'));
+				$("#txt01_BALANCE").val((res[0] - res[1]).toLocaleString('ko-KR'));
+			} else {
+				$("#txt01_EXPENSE_PRICE").val(0);
+				$("#txt01_USE_PRICE").val(0);
+				$("#txt01_BALANCE").val(0);
+			}
+		}
 
 		/* 사용내역 수정 팝업의 프로젝트 Table 조회  */
 		function searchGridDataProject(){

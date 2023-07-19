@@ -9,7 +9,7 @@
 		EXEC CO1200_SEL #{START}, #{END}, #{SALES}, #{USER_NM}, #{DEPT}
 	</select>
 
-	<select id="co1200SelExpense" parameterType="map" resultType="map">
+	<select id="co1200SelExpense" parameterType="map" resultType="int">
 		SELECT EXPENSE_PRICE FROM SALES_INQUIRY_EXPENSE WHERE SALES_NUM = #{SALES}
 	</select>
 
