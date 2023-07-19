@@ -63,7 +63,7 @@
 	                        </div>
 	                        <div class="btn-right-box">
 	                            <ul>
-									<li><a href="javascript:void(0);" id="btn01_EXCEL">엑셀</a></li>
+									<li><a href="javascript:void(0);" id="btn01_PRINT">출력</a></li>
 	                            	<li><a href="javascript:void(0);" id="btn01_INSERT">추가</a></li>
 									<li><a href="javascript:void(0);" id="btn01_UPDATE">신청취소</a></li>
 	                            </ul>
@@ -216,10 +216,23 @@
 			}
 		});
 
-		/* 엑셀 버튼 */
-		$("#btn01_EXCEL").on({
+		/* 출력 버튼 */
+		$("#btn01_PRINT").on({
 			click: function(){
-				exportExcel("table1", "연차사용내역");
+				let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
+				console.log(rowData)
+				if (rowData.length > 1) {
+					toast("정보", "출력할 휴가를 선택해주시기 바랍니다.", "info");
+					return false;
+				}
+				let windowWidth = window.outerWidth;
+				let windowHeight = window.outerHeight;
+				let openWidth = 1025;
+				let openHeight = 1000;
+				let top = (windowHeight - openHeight) / 2;
+				let left = (windowWidth - openWidth) / 2;
+
+				window.open('/an1000/print', 'an1000Print', 'width='+ openWidth +'px , height=' + openWidth + 'px , top=' + top + 'px , left=' + left + 'px , toolbar=no, menubar=no, lacation=no, scrollbars=no, status=no');
 			}
 		});
 
@@ -313,7 +326,7 @@
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: CRUD
 		/* Table 조회 */
 		function searchGridData(){
-			var searchParam = {};
+			let searchParam = {};
 			
 			getAjaxJsonData("an1000Sel", searchParam, "searchGridDataCallBack");
 		};
@@ -324,7 +337,16 @@
 				datatype: 'local'
 				, data: data
 			}).trigger("reloadGrid");
+
+			getAjaxJsonData("an1000/holidayInfo", "", "holidayInfoSel", "GET")
 		};
+
+		/**	휴가 보유 현황  */
+		function holidayInfoSel(data) {
+			$("#txt01_HOLIDAY_USE").val((data.HOLIDAY_USE).toFixed(1))
+			$("#txt01_HOLIDAY_REMAIN").val((data.HOLIDAY_REMAIN).toFixed(1))
+			$("#txt01_HOLIDAY_DEDUCT").val((data.HOLIDAY_DEDUCT).toFixed(1))
+		}
 
 		/* 추가/수정 후 Table 재조회 */
 		function reLoadCallback(data){

@@ -89,6 +89,23 @@ public class AN1000Controller {
 	}
 
 	/**
+	 * 휴가일수, 사용일수, 잔여일수, 공제일수 요청
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/an1000/holidayInfo", method = RequestMethod.GET)
+	public Map<String, Object> an1000_holidayInfoSel(HttpSession session) {
+		UserInfo user = (UserInfo) session.getAttribute("User");
+		return an1000Service.an1000InfoSel(user);
+	}
+
+	@RequestMapping(value = "/an1000/print", method = RequestMethod.GET)
+	public String an1000_print() {
+		return "AN/AN1000Print";
+	}
+
+
+	/**
 	 * 공휴일 조회
 	 * @param year : 조회할 연도
 	 * @param month : 조회할 월
