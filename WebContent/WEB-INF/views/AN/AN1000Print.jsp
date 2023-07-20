@@ -65,8 +65,6 @@
 		content: '';
 		content: none;
 	}
-	
-
 	html {
 	    font-size: 8px;
 	}
@@ -87,9 +85,9 @@
 	img {
 	    width: 100px;
 	}
-
 	.container {
 	    width: 800px;
+		margin-top: 30px;
 	    display: flex;
 	    flex-direction: column;
 	}
@@ -97,7 +95,11 @@
 	    display: flex;
 	    justify-content: space-between;
 	}
-	
+	.container-top h1 {
+		font-size: 3rem;
+		font-weight: bold;
+		letter-spacing: 35px;
+	}
 	.con-section {
 	    box-shadow: inherit;
 	    margin: 0px;
@@ -105,7 +107,7 @@
 	#register-1 {
 	    justify-content: space-between;
 	    align-items: center;
-	    margin-top: 10px;
+	    margin: 10px 0;
 	}
 	table {
 	    border: 2px solid black;
@@ -127,7 +129,6 @@
 	    margin: 10px 0;
 	    font-size: 1.1rem;
 	}
-
 	.btn-box {
 	    display: flex;
 	    justify-content: flex-end;
@@ -163,12 +164,6 @@
 	    vertical-align: middle;
 	    text-align: center;
 	}
-	#register-1 h1 {
-	    font-size: 1.8rem;
-	    font-weight: bold;
-	    letter-spacing: 10px;
-	}
-
 	.common-td {
 		width: 25%;
 	}
@@ -179,10 +174,10 @@
 	}
 
 	.common-tr1 {
-	    height: 50px;
+	    height: 60px;
 	}
 	.common-tr2 {
-		height: 300px;
+		height: 350px;
 	}
 
 	.holiday-period {
@@ -200,10 +195,37 @@
 		font-size: 2rem;
 	}
 
+	.sign-space2 {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-evenly;
+	}
+	.space2-item {
+		width: 300px;
+		align-self: flex-end;
+		text-align: left;
+	}
+	.common-text {
+		letter-spacing: 3em;
+		margin-left: 3em;
+	}
+	.common-text2 {
+		letter-spacing: 6px;
+		margin-left: 6px;
+	}
+
 	@media print {
 	    .btn-box {
 	        display: none;
 	    }
+		.container-top {
+			justify-content: center;
+		}
+		.container-top img {
+			position: absolute;
+			left: 0;
+		}
 	}
 </style>
 
@@ -219,6 +241,7 @@
 <div class="container">
 	<div class="container-top">
 	    <img src="/resources/img/common/hcnc_logo_web.png" alt="HCNC LOGO">
+		<h1>휴가신청서</h1>
 	    <div class="btn-box">
 	        <input type="button" id="btnPrint" class="btn btn-primary" value="출력">
 	    </div>
@@ -239,7 +262,7 @@
 	            </tr>
 	        </table>
 	    </div>
-	    <h1>휴가신청서</h1>
+
 	    <table class="sign-table">
 	        <tr>
 	            <td rowspan="3" class="column-text">결재</td>
@@ -271,57 +294,61 @@
 	<section class="con-section" id="register-2">
 	    <table>
 	        <tr class="common-tr1">
-	            <td class="common-td">소속</td>
-	            <td class="common-td"></td>
-	            <td class="common-td">사번</td>
+				<td class="common-td"><span class="common-text">소속</span></td>
+	            <td class="common-td"><span class="common-text2">${HolidayPrintInfo.DEPT_NM}</span></td>
+				<td class="common-td"><span class="common-text">사번</span></td>
 	            <td class="common-td"></td>
 	        </tr>
 	        <tr class="common-tr1">
-	            <td>성명</td>
-	            <td><span>${HolidayPrintInfo.USER_NM}</span></td>
-	            <td>담당업무</td>
-	            <td><span>${HolidayPrintInfo.TASK}</span></td>
+	            <td><span class="common-text">성명</span></td>
+	            <td><span class="common-text2">${HolidayPrintInfo.USER_NM}</span></td>
+	            <td><span class="common-text2">담당업무</span></td>
+	            <td><span class="common-text2">${HolidayPrintInfo.TASK}</span></td>
 	        </tr>
 			<tr class="common-tr1">
-				<td>직위</td>
-				<td><span id=""></span></td>
-				<td>업무인수자</td>
+				<td><span class="common-text">직위</span></td>
+				<td><span>${HolidayPrintInfo.GRADE_NM}</span></td>
+				<td><span>업무인수자</span></td>
 				<td><span>${HolidayPrintInfo.ACQUIRER}</span></td>
 			</tr>
 			<tr class="common-tr1">
-				<td>종류</td>
-				<td colspan="3">${HolidayPrintInfo.HOLIDAY_TYPE}</td>
+				<td><span class="common-text">종류</span></td>
+				<td colspan="3"><span id="holiday-type" class="common-text2">${HolidayPrintInfo.HOLIDAY_TYPE}</span></td>
 			</tr>
 			<tr class="common-tr1">
-				<td>사유</td>
-				<td colspan="3">${HolidayPrintInfo.HOLIDAY_REASON}</td>
+				<td><span class="common-text">사유</span></td>
+				<td colspan="3"><span>${HolidayPrintInfo.HOLIDAY_REASON}</span></td>
 			</tr>
 			<tr class="common-tr1">
-				<td>기간</td>
+				<td><span class="common-text">기간</span></td>
 				<td colspan="3">
 					<div class="holiday-period">
 						<div class="period-item">
-							<span id="holiday-start">${HolidayPrintInfo.HOLIDAY_START}</span>
-							<span id="holiday-end">${HolidayPrintInfo.HOLIDAY_END}</span>
+							<span id="holiday-start" class="date">${HolidayPrintInfo.HOLIDAY_START}</span>
+							<span id="holiday-end" class="date">${HolidayPrintInfo.HOLIDAY_END}</span>
 						</div>
 						<div class="period-item">
-							<span>${HolidayPrintInfo.HOLIDAY_CNT}</span>
+							<span class="date-time"></span>
+							<span class="date-time"></span>
+						</div>
+						<div class="period-item">
+							<span id="holiday-cnt">${HolidayPrintInfo.HOLIDAY_CNT}</span>
 						</div>
 					</div>
 
 				</td>
 			</tr>
 			<tr class="common-tr1">
-				<td>비상연락망</td>
-				<td colspan="3">${HolidayPrintInfo.EMERGENCY}</td>
+				<td><span>비상연락망</span></td>
+				<td colspan="3"><span>${HolidayPrintInfo.EMERGENCY}</span></td>
 			</tr>
 			<tr class="common-tr2">
 				<td colspan="4">
-					<div>
+					<div class="sign-space2">
 						<span>위와 같이 휴가를 신청하오니 재가 바랍니다.</span>
-						<span>${HolidayPrintInfo.REG_DT}</span>
-						<span>${HolidayPrintInfo.HolidayPrintInfo} :</span>
-						<span>${HolidayPrintInfo.USER_NM} :</span>
+						<span class="date">${HolidayPrintInfo.REG_DT}</span>
+						<span class="space2-item"><span class="common-text">소</span>속 : ${HolidayPrintInfo.HolidayPrintInfo}</span>
+						<span class="space2-item"><span class="common-text">성</span>명<span class="common-text2"> : ${HolidayPrintInfo.USER_NM}</span>(인)</span>
 					</div>
 				</td>
 			</tr>
@@ -343,10 +370,34 @@
 			location.reload();
 		});
 	});
-	window.onload(() => {
-		const holiday_start = document.querySelector("#holiday-start");
-		console.log(holiday_start.innerText);
+	window.onload = () => {
+		const timeCheck = ['09 : 00', '14 : 00', '18 : 00'];
+		const date_time = document.querySelectorAll(".date-time");
 
-		console.log(holiday_start.innerText().substring(0, 4));
-	});
+		document.querySelectorAll('.date').forEach(date => {
+			date.innerText = dateFormatter(date.innerText);
+		});
+
+		let index = ['반차-오전', '반차-오후'].indexOf(document.querySelector("#holiday-type").innerText);
+		if (index == 0) {
+			date_time.forEach((time, i) => time.innerText = timeCheck[i]);
+		} else if (index == 1) {
+			date_time.forEach((time, i) => time.innerText = timeCheck[i + 1]);
+		} else {
+			date_time.forEach((time, i) => {
+				if (i != 0) i = i + 1
+				time.innerText = timeCheck[i];
+			});
+		}
+
+		const count = document.querySelector('#holiday-cnt');
+		count.innerText = "( " + parseFloat(count.innerText) + " 일간)";
+	};
+
+	function dateFormatter(date) {
+		let year = date.toString().substring(0, 4);
+		let month = parseInt(date.toString().substring(5, 7));
+		let day = parseInt(date.toString().substring(8, 10));
+		return  year + "년  " + month + "월  " + day + "일";
+	}
 </script>
