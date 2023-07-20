@@ -60,4 +60,29 @@
 		WHERE USER_ID = #{user_id}
 	</update>
 
+	<select id="an1000PrintByUser" parameterType="com.hs.an.dto.An1000PrintDto" resultType="map">
+
+		SELECT U.USER_ID,
+			   U.USER_NM,
+			   (SELECT D.DEPT_NAME FROM DEPT_INFO D WHERE D.DEPT_ID = U.DEPT_CD) AS DEPT_NM,
+			   H.TASK,
+			   H.ACQUIRER,
+			   (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD = 'HOLIDAY' AND SYS_ITEM_NAME LIKE #{holidayType}) AS HOLIDAY_TYPE,
+			   H.HOLIDAY_START,
+			   H.HOLIDAY_END,
+			   H.HOLIDAY_CNT,
+			   H.HOLIDAY_REASON,
+			   H.ACQUIRER,
+			   H.EMERGENCY,
+			   H.REG_DT
+		FROM USER_INFO U INNER JOIN HOLIDAY_PERSON H ON U.USER_ID = H.USER_ID
+		WHERE U.USER_ID = 'admin'
+		  AND H.USE_YN = 'Y'
+		  AND (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD = 'HOLIDAY' AND SYS_ITEM_CD LIKE H.HOLIDAY_TYPE) LIKE #{holidayType}
+		  AND H.HOLIDAY_START = #{holidayStart}
+		  AND H.HOLIDAY_END = #{holidayEnd}
+		  AND H.HOLIDAY_CNT = #{holidayCnt}
+		  AND H.HOLIDAY_REASON = #{holidayReason}
+	</select>
+
 </mapper>

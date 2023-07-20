@@ -27,7 +27,7 @@
 						<dl>
 							<dt>연도</dt>
 							<dd>
-								<input type="text" id="txt01_YEAR" readonly="readonly">
+								<input type="text" id="txt01_YEAR" readonly>
 							</dd>
 						</dl>
 						<dl>
@@ -59,6 +59,7 @@
 						<div class="title-wrap">
 	                        <div class="title-zone">
 	                            <h2 class="title1">연차현황 목록</h2>
+								<span id="table1_cnt">0</span>
 	                        </div>
 	                    </div> 
 						<div class="table-wrap">
@@ -87,8 +88,8 @@
 		 */
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 공통코드
 		/* 공통코드_다국어 */
-		var langHead;
-		var nowDate = new Date();
+		let langHead;
+		let nowDate = new Date();
 		
 		commonCodeSelectAdd("sel01_DEPT", getCommonCode('DEPT'), 'Y');
 
@@ -166,13 +167,13 @@
 				, rowNum : 1000
 				, loadComplete : function() {
 					// 그리드 데이터의 ID 가져오기
-					var ids = $('#table1').jqGrid('getDataIDs');
+					let ids = $('#table1').jqGrid('getDataIDs');
 					     
 					// 그리드 데이터 가져오기
-					var gridData = $("#table1").jqGrid('getRowData');
+					let gridData = $("#table1").jqGrid('getRowData');
 					
 					// 데이터 확인후 색상 변경
-					for (var i = 0; i < gridData.length; i++) {
+					for (let i = 0; i < gridData.length; i++) {
 				        // 칼럼의 색생을 변경하고 싶을 때
 				        $('#table1').jqGrid('setCell', ids[i], 'HOLIDAY_TOTAL', '', {'background':'#fffce5'});
 				        $('#table1').jqGrid('setCell', ids[i], 'HOLIDAY_USE', '', {'background':'#fffce5'});
@@ -188,7 +189,7 @@
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: CRUD
 		/* Table 조회 */
 		function searchGridData(){
-			var searchParam = {
+			let searchParam = {
 					YEAR: $("#txt01_YEAR").val()
 					, DEPT: $("#sel01_DEPT").val()
 					, USER_NM: $("#txt01_USER_NM").val()
@@ -203,6 +204,8 @@
 				datatype: 'local'
 				, data: data
 			}).trigger("reloadGrid");
+
+			$("#table1_cnt").text(data.length);
 		};
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 유효성

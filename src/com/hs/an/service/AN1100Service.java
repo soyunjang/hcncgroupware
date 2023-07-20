@@ -24,10 +24,9 @@ public class AN1100Service {
 	 * @param Map 		param 검색조건 (사용자ID)
 	 * @return List 	list 휴가사용현황 목록
 	 */
-	public List<Map<String, Object>> an1100Sel(Map<String, Object> param, HttpSession session) {
+	public List<Map<String, Object>> an1100Sel(Map<String, Object> param, UserInfo user) {
 		
-		UserInfo vo = (UserInfo) session.getAttribute("User");
-		param.put("USER_ID", vo.getUSER_ID());
+		param.put("USER_ID", user.getUSER_ID());
 		
 		List<Map<String, Object>> rList = sqlSession.selectList("an1100Mapper.an1100Sel", param);
 		

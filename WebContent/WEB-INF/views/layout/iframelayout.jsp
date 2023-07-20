@@ -47,7 +47,7 @@
 	
 		<script type="text/javascript" src="<c:url value='/resources/js/script.js'/>"></script>
 		<script type="text/javascript" src="<c:url value='/resources/js/HSFrameScript.js'/>"></script>
-		<title>SK 프레임워크</title>
+		<title>HCNC</title>
 	</head>
 	<%@ include file="/WEB-INF/include/includeFrame.jsp" %>
 	<body oncontextmenu="return false">

@@ -87,30 +87,7 @@
 	img {
 	    width: 100px;
 	}
-	table-0 {
-	    font-size: 8px;
-	}
-	
-	.table-input {
-	    width: 100%;
-	    height: 100%;
-	    font-size: 1rem;
-	    border: none;
-	    margin: 0;
-	    padding: 0;
-	    box-sizing: border-box;
-	    text-align: center;
-	    background-color: white !important;
-	}
-	textarea {
-	    width: 100%;
-	    border: none;
-	    margin: 0;
-	    padding: 10px;
-	    box-sizing: border-box;
-	    resize: none;
-	    overflow: hidden;
-	}
+
 	.container {
 	    width: 800px;
 	    display: flex;
@@ -119,11 +96,6 @@
 	.container-top {
 	    display: flex;
 	    justify-content: space-between;
-	}
-	
-	.container-middle {
-	    display: flex;
-	
 	}
 	
 	.con-section {
@@ -143,18 +115,11 @@
 	    border: 1px solid black;
 	    zoom: 0.8;
 	}
-	td:not(.common-sign1, .sign-date, .sign-space, .textarea-box) {
+	td:not(.common-sign1, .sign-date, .sign-space) {
 	    text-align: center;
 	    vertical-align: middle;
 	    height: 20px;
 	}
-	.td-middle {
-	    width: 80px;
-	}
-	.td-short {
-	    width: 30px;
-	}
-	
 	li {
 	    list-style: none;
 	}
@@ -162,15 +127,7 @@
 	    margin: 10px 0;
 	    font-size: 1.1rem;
 	}
-	/*span {*/
-	/*    zoom: 0.8;*/
-	/*}*/
-	
-	.purchase-merge, .input-merge, .expenses-merge {
-	    width: 50px;
-	}
-	
-	
+
 	.btn-box {
 	    display: flex;
 	    justify-content: flex-end;
@@ -185,9 +142,6 @@
 	    letter-spacing: 2.6px;
 		writing-mode: tb;
 		height: 100px !important;
-	}
-	.column-common {
-	    width: 5%;
 	}
 	.common-sign1 {
 	    height: 20px;
@@ -214,98 +168,38 @@
 	    font-weight: bold;
 	    letter-spacing: 10px;
 	}
+
+	.common-td {
+		width: 25%;
+	}
 	
 	/* section2 */
 	#register-2 {
 	    flex-direction: column;
 	}
-	#project-name {
-	    text-align: center;
+
+	.common-tr1 {
+	    height: 50px;
 	}
-	
-	/* section3 */
-	#register-3 {
-	    flex-direction: column;
+	.common-tr2 {
+		height: 300px;
 	}
-	.register-3-title {
-	    display: flex;
-	    justify-content: space-between;
+
+	.holiday-period {
+		display: flex;
+		justify-content: space-evenly;
+		align-items: center;
 	}
-	
-	/* section4 */
-	#register-4 {
-	    flex-direction: column;
+	.holiday-period .period-item {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
 	}
-	
-	/* section5 */
-	#register-5 {
-	    flex-direction: column;
-	    align-items: flex-end;
+	.table1 dt, span {
+		font-size: 2rem;
 	}
-	#register-5 input {
-	    width: 150px;
-	    font-size: 1.5rem;
-	    font-weight: bold;
-	    text-align: center;
-	    border: none;
-	    border-bottom: 1px solid black;
-	}
-	
-	/* section6 */
-	#register-6 {
-	    flex-direction: column;
-	}
-	
-	/* section7 */
-	#register-7 {
-	    flex-direction: column;
-	}
-	
-	#textarea-1, #textarea-2 {
-	    display: block;
-	    width: 100%;
-	    min-width: 200px;
-	    text-align: left;
-	    padding: 5px;
-	}
-	
-	#client, #project-name {
-	    display: inline-block;
-	}
-	
-	#unit-price {
-	    display: inline-block;
-	    width: 50px;
-	}
-	
-	.margin-box {
-	    width: 150px;
-	    height: 20px;
-	    line-height: 20px;
-	    text-align: right;
-	    border-bottom: 1px solid black;
-	}
-	
-	#total-margin {
-	    font-size: 12px;
-	    font-weight: bold;
-	}
-	
-	.td-a {
-	    width: 75px;
-	}
-	
-	.title-table-tr {
-	    height: 30px;
-	}
-	.title-table-td {
-	    width: 150px;
-	}
-	.title-table-td2 {
-	    width: 250px;
-	}
-	
-	
+
 	@media print {
 	    .btn-box {
 	        display: none;
@@ -318,8 +212,8 @@
 <script type="text/javascript" src="<c:url value='/resources/js/jspdf.min.js'/>"></script>
 
 <script type="text/javascript">
-	var buyListLen = 0;
-	var mmListLen = 0;
+	let buyListLen = 0;
+	let mmListLen = 0;
 </script>
 
 <div class="container">
@@ -376,48 +270,58 @@
 	</section>
 	<section class="con-section" id="register-2">
 	    <table>
-	        <tr class="title-table-tr">
-	            <td class="">소속</td>
-	            <td><span id=""></span></td>
-	            <td class="">사번</td>
-	            <td class=""><span id=""></span></td>
+	        <tr class="common-tr1">
+	            <td class="common-td">소속</td>
+	            <td class="common-td"></td>
+	            <td class="common-td">사번</td>
+	            <td class="common-td"></td>
 	        </tr>
-	        <tr class="title-table-tr">
+	        <tr class="common-tr1">
 	            <td>성명</td>
-	            <td><span id=""></span></td>
+	            <td><span>${HolidayPrintInfo.USER_NM}</span></td>
 	            <td>담당업무</td>
-	            <td><span id=""></span></td>
+	            <td><span>${HolidayPrintInfo.TASK}</span></td>
 	        </tr>
-			<tr class="title-table-tr">
+			<tr class="common-tr1">
 				<td>직위</td>
 				<td><span id=""></span></td>
 				<td>업무인수자</td>
-				<td><span id=""></span></td>
+				<td><span>${HolidayPrintInfo.ACQUIRER}</span></td>
 			</tr>
-			<tr class="title-table-tr">
+			<tr class="common-tr1">
 				<td>종류</td>
-				<td colspan="3"></td>
+				<td colspan="3">${HolidayPrintInfo.HOLIDAY_TYPE}</td>
 			</tr>
-			<tr class="title-table-tr">
+			<tr class="common-tr1">
 				<td>사유</td>
-				<td colspan="3"></td>
+				<td colspan="3">${HolidayPrintInfo.HOLIDAY_REASON}</td>
 			</tr>
-			<tr class="title-table-tr">
+			<tr class="common-tr1">
 				<td>기간</td>
-				<td colspan="3"></td>
+				<td colspan="3">
+					<div class="holiday-period">
+						<div class="period-item">
+							<span id="holiday-start">${HolidayPrintInfo.HOLIDAY_START}</span>
+							<span id="holiday-end">${HolidayPrintInfo.HOLIDAY_END}</span>
+						</div>
+						<div class="period-item">
+							<span>${HolidayPrintInfo.HOLIDAY_CNT}</span>
+						</div>
+					</div>
+
+				</td>
 			</tr>
-			<tr class="title-table-tr">
+			<tr class="common-tr1">
 				<td>비상연락망</td>
-				<td colspan="3"></td>
+				<td colspan="3">${HolidayPrintInfo.EMERGENCY}</td>
 			</tr>
-			<tr class="title-table-tr">
+			<tr class="common-tr2">
 				<td colspan="4">
 					<div>
 						<span>위와 같이 휴가를 신청하오니 재가 바랍니다.</span>
-
-						<span>날짜</span>
-						<span>소속</span>
-						<span>성명</span>
+						<span>${HolidayPrintInfo.REG_DT}</span>
+						<span>${HolidayPrintInfo.HolidayPrintInfo} :</span>
+						<span>${HolidayPrintInfo.USER_NM} :</span>
 					</div>
 				</td>
 			</tr>
@@ -432,11 +336,17 @@
 		}
 		if(mmListLen != 0) {
 			$("#manmonth").attr("rowspan", mmListLen);
-		}		
-		
+		}
+
 		$('#btnPrint').click(function() {
 			window.print();
 			location.reload();
 		});
+	});
+	window.onload(() => {
+		const holiday_start = document.querySelector("#holiday-start");
+		console.log(holiday_start.innerText);
+
+		console.log(holiday_start.innerText().substring(0, 4));
 	});
 </script>

@@ -1,5 +1,6 @@
 package com.hs.an.controller;
 
+import com.hs.an.dto.An1000PrintDto;
 import com.hs.an.service.AN1000Service;
 import com.hs.home.controller.UserInfo;
 import org.json.JSONArray;
@@ -17,7 +18,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class AN1000Controller {
@@ -42,6 +46,22 @@ public class AN1000Controller {
 		return "AN/AN1000";
 	}
 
+
+	/**
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "/an1000/print", method = RequestMethod.POST)
+	public String an1000_print(An1000PrintDto dto, Model model, HttpSession session) {
+
+		UserInfo user = (UserInfo) session.getAttribute("User");
+
+		model.addAttribute("HolidayPrintInfo", an1000Service.an1000PrintByUser(dto, user));
+
+		return "AN/AN1000Print";
+	}
+
+
 	/**
 	 * 메소드 설명 : 연차신청내역 조회
 	 * @param param :	검색조건
@@ -49,7 +69,7 @@ public class AN1000Controller {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/an1000Sel")
-	public List<Map<String, Object>> AN1000_SEL(@RequestBody Map<String, Object> param, HttpSession session) {
+	public List<Map<String, Object>> an1000_SEL(@RequestBody Map<String, Object> param, HttpSession session) {
 
 		UserInfo user = (UserInfo) session.getAttribute("User");
 
@@ -99,10 +119,6 @@ public class AN1000Controller {
 		return an1000Service.an1000InfoSel(user);
 	}
 
-	@RequestMapping(value = "/an1000/print", method = RequestMethod.GET)
-	public String an1000_print() {
-		return "AN/AN1000Print";
-	}
 
 
 	/**

@@ -27,25 +27,25 @@
 						<dl>
 							<dt>휴가일수</dt>
 							<dd>
-								<input type="text" id="txt01_HOLIDAY_TOTAL" name="txt01_HOLIDAY_TOTAL" value="${Holiday.HOLIDAY_TOTAL }" readonly="readonly">
+								<input type="text" id="txt01_HOLIDAY_TOTAL" name="txt01_HOLIDAY_TOTAL" value="${Holiday.HOLIDAY_TOTAL }" readonly>
 							</dd>
 						</dl>				
 						<dl>
 							<dt>사용일수</dt>
 							<dd>
-								<input type="text" id="txt01_HOLIDAY_USE" name="txt01_HOLIDAY_USE" value="${Holiday.HOLIDAY_USE }" readonly="readonly">
+								<input type="text" id="txt01_HOLIDAY_USE" name="txt01_HOLIDAY_USE" value="${Holiday.HOLIDAY_USE }" readonly>
 							</dd>
 						</dl>				
 						<dl>
 							<dt>잔여일수</dt>
 							<dd>
-								<input type="text" id="txt01_HOLIDAY_REMAIN" name="txt01_HOLIDAY_REMAIN" value="${Holiday.HOLIDAY_REMAIN }" readonly="readonly">
+								<input type="text" id="txt01_HOLIDAY_REMAIN" name="txt01_HOLIDAY_REMAIN" value="${Holiday.HOLIDAY_REMAIN }" readonly>
 							</dd>
 						</dl>				
 						<dl>
 							<dt>공제일수</dt>
 							<dd>
-								<input type="text" id="txt01_HOLIDAY_DEDUCT" name="txt01_HOLIDAY_DEDUCT" value="${Holiday.HOLIDAY_DEDUCT }" readonly="readonly">
+								<input type="text" id="txt01_HOLIDAY_DEDUCT" name="txt01_HOLIDAY_DEDUCT" value="${Holiday.HOLIDAY_DEDUCT }" readonly>
 							</dd>
 						</dl>
 					</div>
@@ -60,6 +60,7 @@
 						<div class="title-wrap">
 	                        <div class="title-zone">
 	                            <h2 class="title1">휴가사용 목록</h2>
+								<span id="table1_cnt">0</span>
 	                        </div>
 	                        <div class="btn-right-box">
 	                            <ul>
@@ -164,6 +165,9 @@
 		<!-- .modal-cont 팝업영역 END -->
 
 	<input type="hidden" id="holidayOfficeValue" value="${HolidayOffice.get(0)}">
+	<form>
+		<input type="hidden" name="test" value="test">
+	</form>
 	</body>
 	
 	<script type="text/javascript">
@@ -181,7 +185,7 @@
 		 */
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 공통코드
 		/* 공통코드_다국어 */
-		var langHead;
+		let langHead;
 
 		/* 공통코드_콤보박스 */ 
 		commonCodeSelectAdd("pop01_sel01_TYPE", getCommonCode('HOLIDAY'), 'N');
@@ -220,7 +224,9 @@
 		$("#btn01_PRINT").on({
 			click: function(){
 				let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
-				console.log(rowData)
+				let valueArr = [rowData.GRADE_CD, rowData.GRADE_NM, rowData.HOLIDAY_CNT, rowData.HOLIDAY_START, rowData.HOLIDAY_END, rowData.HOLIDAY_REASON, rowData.HOLIDAY_TYPE, rowData.USER_NM];
+				let nameArr = ["gradeCd", "gradeNm", "holidayCnt", "holidayStart", "holidayEnd", "holidayReason", "holidayType","userNm"];
+				console.log(rowData.length);
 				if (rowData.length > 1) {
 					toast("정보", "출력할 휴가를 선택해주시기 바랍니다.", "info");
 					return false;
@@ -231,8 +237,26 @@
 				let openHeight = 1000;
 				let top = (windowHeight - openHeight) / 2;
 				let left = (windowWidth - openWidth) / 2;
+				const url = '/an1000/print';
+				const target = 'an1000Print';
+				const option = 'width=' + openWidth + 'px , height=' + openWidth + 'px , top=' + top + 'px , left=' + left + 'px , toolbar=no, menubar=no, lacation=no, scrollbars=no, status=no';
 
-				window.open('/an1000/print', 'an1000Print', 'width='+ openWidth +'px , height=' + openWidth + 'px , top=' + top + 'px , left=' + left + 'px , toolbar=no, menubar=no, lacation=no, scrollbars=no, status=no');
+				const form = document.querySelector('form');
+				form.action = url;
+				form.method = 'post';
+				form.target = target
+
+				valueArr.forEach((item, i) => {
+					let hiddenField = document.createElement("input");
+					hiddenField.setAttribute("type", "hidden");
+					hiddenField.setAttribute("name", nameArr[i]);
+					hiddenField.setAttribute("value", item);
+					form.appendChild(hiddenField);
+				});
+
+				window.open("", target, option);
+				form.submit();
+				form.innerHTML = "";
 			}
 		});
 
@@ -338,6 +362,8 @@
 				, data: data
 			}).trigger("reloadGrid");
 
+			$("#table1_cnt").text(data.length)
+
 			getAjaxJsonData("an1000/holidayInfo", "", "holidayInfoSel", "GET")
 		};
 
@@ -366,10 +392,10 @@
 		/* 사용자 추가/수정 팝업 */
 		function openModalPopup(action){
 			// 화면ID, 화면ID사이즈(ex. 6:CM1000 / 13:CM1000_Detail), 팝업ID, 다국어
-			var returnPopup = getLangCodePopup("AN1000_Pop1", 11, "viewForm1", "${LANG}");
-			var titlePop = returnPopup[0];
-			var pop01_btn01_SAVE = returnPopup[1];
-			var pop01_btn01_CLOSE = returnPopup[2];
+			let returnPopup = getLangCodePopup("AN1000_Pop1", 11, "viewForm1", "${LANG}");
+			let titlePop = returnPopup[0];
+			let pop01_btn01_SAVE = returnPopup[1];
+			let pop01_btn01_CLOSE = returnPopup[2];
 			
 			$("#viewForm1").dialog({
 				autoOpen: true
@@ -380,7 +406,7 @@
 					if(action == "C"){
 						popReset("viewForm1");			 			
 
-			 			var date = new Date();
+			 			let date = new Date();
 						document.getElementById('pop01_date01_REG').valueAsDate = new Date();
 					}
 					else if(action == "U"){

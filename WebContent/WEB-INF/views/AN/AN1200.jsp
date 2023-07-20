@@ -89,6 +89,7 @@
 						<div class="title-wrap">
 	                        <div class="title-zone">
 	                            <h2 class="title1">휴가현황 목록</h2>
+								<span id="table1_cnt">0</span>
 	                        </div>
 	                    </div> 
 						<div class="table-wrap">
@@ -231,6 +232,7 @@
 				, data: data
 			}).trigger("reloadGrid");
 
+			$("#table1_cnt").text(data.length);
 
 			let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
 			let total = parseInt($("#txt01_TOTAL").val())

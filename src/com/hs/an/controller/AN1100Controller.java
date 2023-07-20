@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hs.an.service.AN1000Service;
@@ -38,8 +39,8 @@ public class AN1100Controller {
    	 * @param	Model 	model 	
    	 * @return	String 	result	휴가사용현황 페이지ID
    	 */
-	@RequestMapping(value = "/an1100")
-	public String an1100(Locale locale, Model model, HttpSession session) {
+	@RequestMapping(value = "/an1100", method = RequestMethod.GET)
+	public String an1100(Model model, HttpSession session) {
 
 		UserInfo user = (UserInfo) session.getAttribute("User");
 
@@ -59,8 +60,10 @@ public class AN1100Controller {
    	 */
 	@RequestMapping(value = "/an1100Sel")
 	public @ResponseBody List<Map<String, Object>> AN1100_SEL(@RequestBody Map<String, Object> param, HttpSession session) {
-		
-		List<Map<String, Object>> list = an1100Service.an1100Sel(param, session);
+
+		UserInfo user = (UserInfo) session.getAttribute("User");
+
+		List<Map<String, Object>> list = an1100Service.an1100Sel(param, user);
 
 		return list;
 	}

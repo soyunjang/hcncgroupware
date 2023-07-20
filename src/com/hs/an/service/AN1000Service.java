@@ -1,5 +1,6 @@
 package com.hs.an.service;
 
+import com.hs.an.dto.An1000PrintDto;
 import com.hs.an.dto.HolidayInfoDto;
 import com.hs.home.controller.UserInfo;
 import org.apache.ibatis.session.SqlSession;
@@ -92,7 +93,6 @@ public class AN1000Service {
 		} catch (Exception e) {
 			throw new RuntimeException("휴가 등록 에러 발생", e);
 		}
-
 	}
 
 	/**
@@ -112,6 +112,19 @@ public class AN1000Service {
 			holidayInfoUpdate(param, user, Type.MINUS);
 		} catch (Exception e) {
 			throw new RuntimeException("휴가 신청 취소 에러 발생", e);
+		}
+	}
+
+	public Map<String, Object> an1000PrintByUser(An1000PrintDto dto, UserInfo user) {
+		try {
+			if (user.getUSER_NM().equals(dto.getUserNm())) {
+				dto.setUserId(user.getUSER_ID());
+				return sqlSession.selectOne("an1000Mapper.an1000PrintByUser", dto);
+			} else {
+				throw new RuntimeException("an1000PrintByUser.else");
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("휴가신청서 출력 조회 중 에러 발생", e);
 		}
 	}
 
