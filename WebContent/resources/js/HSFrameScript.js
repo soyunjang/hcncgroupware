@@ -957,7 +957,7 @@ function toast(title, message, type){
 	    	x: "center"
 	    	, y: "middle"
 	    }
-		, delay: 1000
+		, delay: 9000
 	});
 }
 
