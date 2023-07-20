@@ -61,7 +61,6 @@
 	</update>
 
 	<select id="an1000PrintByUser" parameterType="com.hs.an.dto.An1000PrintDto" resultType="map">
-
 		SELECT U.USER_ID,
 			   U.USER_NM,
 			   (SELECT D.DEPT_NAME FROM DEPT_INFO D WHERE D.DEPT_ID = U.DEPT_CD) AS DEPT_NM,
@@ -77,7 +76,7 @@
 			   H.EMERGENCY,
 			   H.REG_DT
 		FROM USER_INFO U INNER JOIN HOLIDAY_PERSON H ON U.USER_ID = H.USER_ID
-		WHERE U.USER_ID = 'admin'
+		WHERE U.USER_ID = #{userId}
 		  AND H.USE_YN = 'Y'
 		  AND (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD = 'HOLIDAY' AND SYS_ITEM_CD LIKE H.HOLIDAY_TYPE) LIKE #{holidayType}
 		  AND H.HOLIDAY_START = #{holidayStart}
