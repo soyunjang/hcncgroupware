@@ -38,7 +38,7 @@ public class SA1000Controller {
    	 * @param	Model 	model 	
    	 * @return	String 	result	판매품의서관리 페이지ID
    	 */
-	@RequestMapping(value = "/sa1000", method = RequestMethod.GET)
+	@RequestMapping(value = "/sa1000")
 	public String sa1000(Locale locale, Model model) {
 		return "SA/SA1000";
 	}
