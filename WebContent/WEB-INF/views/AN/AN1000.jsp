@@ -226,8 +226,7 @@
 				let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
 				let valueArr = [rowData.GRADE_CD, rowData.GRADE_NM, rowData.HOLIDAY_CNT, rowData.HOLIDAY_START, rowData.HOLIDAY_END, rowData.HOLIDAY_REASON, rowData.HOLIDAY_TYPE, rowData.USER_NM];
 				let nameArr = ["gradeCd", "gradeNm", "holidayCnt", "holidayStart", "holidayEnd", "holidayReason", "holidayType","userNm"];
-				console.log(rowData.length);
-				if (rowData.length > 1) {
+				if (rowData.length > 1 || (rowData instanceof Array == true && rowData instanceof Object == true) ) {
 					toast("정보", "출력할 휴가를 선택해주시기 바랍니다.", "info");
 					return false;
 				}
@@ -502,13 +501,6 @@
 				]
 				, focus: function (event, ui) {}
 			}).css("z-index", 1000).prev(".ui-dialog-titlebar").css("background","#266f80").css("color","#fff");
-		};
-
-		window.onload = () => {
-			setTimeout(() => {
-				let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
-				console.log(rowData)
-			}, 1000);
 		};
 
 		$('#pop01_sel01_TYPE').change(() => {
