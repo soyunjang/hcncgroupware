@@ -1,17 +1,15 @@
 package com.hs.home.service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-
 import com.hs.an.dto.HolidayOfficeNotSubmitDto;
 import com.hs.an.dto.UserAndHolidayInfoDto;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.util.List;
+import java.util.Map;
 
 @Service("homeService")
 public class HomeService {
@@ -24,9 +22,7 @@ public class HomeService {
 	/* 사용자 정보 조회 */
 	public Map<String,Object> loginCheck(Map<String, Object> param) {
 		
-		Map<String,Object> rMap = new HashMap<String, Object>();
-		
-		rMap = sqlSession.selectOne("homeMapper.loginCheck", param);
+		Map<String,Object> rMap = sqlSession.selectOne("homeMapper.loginCheck", param);
 		return rMap;
 	}
 	

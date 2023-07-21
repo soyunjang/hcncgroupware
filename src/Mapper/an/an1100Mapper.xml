@@ -34,12 +34,12 @@
 		WHERE U.DEPT_CD LIKE '%' + #{DEPT} + '%'
 		  AND U.USER_NM LIKE '%' + #{USER_NM} + '%'
 		  AND U.USE_YN LIKE 'Y'
-		GROUP BY U.USER_NM
-				, U.GRADE_CD
-				, U.ENTER_DT
-				, HI.HOLIDAY_TOTAL
-				, HI.HOLIDAY_USE
-				, HI.HOLIDAY_REMAIN
-				, HI.HOLIDAY_DEDUCT;
+		GROUP BY U.USER_NM,
+				 U.GRADE_CD,
+				 U.ENTER_DT,
+				 HI.HOLIDAY_TOTAL,
+				 HI.HOLIDAY_USE,
+				 HI.HOLIDAY_REMAIN,
+				 HI.HOLIDAY_DEDUCT;
 	</select>
 </mapper>

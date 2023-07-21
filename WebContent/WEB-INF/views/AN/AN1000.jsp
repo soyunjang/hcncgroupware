@@ -401,11 +401,9 @@
 				, title: titlePop
 				, width: 900
 				, modal: true
-				, open: function (event, ui) {
+				, open: function () {
 					if(action == "C"){
-						popReset("viewForm1");			 			
-
-			 			let date = new Date();
+						popReset("viewForm1");
 						document.getElementById('pop01_date01_REG').valueAsDate = new Date();
 					}
 					else if(action == "U"){
@@ -507,11 +505,44 @@
 			holidayDateCheck();
 		});
 		$('#pop01_date01_START').change(() => {
+			checkStartDateAndEndDate();
+			holidayOverlapCheck();
 			holidayDateCheck();
 		});
 		$('#pop01_date01_END').change(() => {
+			holidayOverlapCheck();
 			holidayDateCheck();
 		});
+
+		/**
+		 * 휴가기간 중복 체크
+		 */
+		function holidayOverlapCheck() {
+			let ids = $("#table1").jqGrid('getRowData');
+
+			const checkStart = new Date($('#pop01_date01_START').val());
+			const checkEnd = new Date($('#pop01_date01_END').val());
+
+			if (checkStart != '' && checkEnd != '') {
+				ids.forEach(item => {
+					let itemStart = new Date(item.HOLIDAY_START);
+					let itemEnd = new Date(item.HOLIDAY_END);
+					let check = [
+						itemStart <= checkStart && checkEnd <= itemEnd,
+						itemStart <= checkStart && (checkStart <= itemEnd && itemEnd <= checkEnd),
+						checkStart <= itemStart && (itemStart <= checkEnd && checkEnd <= itemEnd),
+						(checkStart <= itemStart && checkStart <=checkEnd) && itemEnd <= checkEnd
+					]
+					if (check.indexOf(true) >= 0) {
+						console.log(check.indexOf(true));
+						toast("경고", "휴가기간 중복으로 확인해 주세요.(" + $('#pop01_date01_START').val() + "~" + $('#pop01_date01_END').val()+")", "error");
+						$('#pop01_date01_START').val("")
+						$('#pop01_date01_END').val("");
+						return;
+					}
+				});
+			}
+		}
 
 		/**
 		 * 반차 체크 및 휴가기간 체크(휴가시작일 >= 휴가종료일)
@@ -520,8 +551,8 @@
 			const HALF_CHECK = ($('#pop01_sel01_TYPE').val() == 'HALF01' || $('#pop01_sel01_TYPE').val() == 'HALF02'
 					|| $('#pop01_sel01_TYPE').val() == 'CIVIL01' || $('#pop01_sel01_TYPE').val() == 'CIVIL02');
 			const OFFICE_CHECK = ($('#pop01_sel01_TYPE').val() == 'OFFICE01' || $('#pop01_sel01_TYPE').val() == 'OFFICE02');
-			let startValue = $('#pop01_date01_START').val();
-			let endValue = $('#pop01_date01_END').val();
+			let startDate = $('#pop01_date01_START').val();
+			let endDate = $('#pop01_date01_END').val();
 
 			if (HALF_CHECK) {
 				// 반차 및 민방위인 경우
@@ -532,15 +563,13 @@
 				$("#pop01_date01_START").val($("#holidayOfficeValue").val())
 				$("#pop01_date01_END").val($("#holidayOfficeValue").val())
 				$('#pop01_txt01_COUNT').val('1');
-			} else if (startValue != '' && endValue != '') {
+			} else if (startDate != '' && endDate != '') {
 				// 반차, 민방위, 공식 휴무일이 아닌 경우
-				if (new Date(startValue) > new Date(endValue)) {
+				if (new Date(startDate) > new Date(endDate)) {
 					toast("경고", "휴가기간을 확인해 주세요.", "error");
-					$('#pop01_date01_END').val(startValue);
+					$('#pop01_date01_END').val(startDate);
 				}
-				let year = new Date(startValue).getFullYear();
-				let month = new Date(startValue).getMonth() + 1;
-				let url = '/an1000/publicHoliday?year=' + year + '&month=' + month;
+				let url = '/an1000/publicHoliday?startDate=' + startDate + '&endDate=' + endDate;
 				getAjaxJsonData(url, '', 'holidayDateCount', 'GET');
 			}
 		}
@@ -549,13 +578,8 @@
 		 * 휴가일수 계산(주말, 공휴일 제외)
 		 */
 		function holidayDateCount(data){
-			let apiArray = [];
-			for (let i = 0; i < data.length; i++) {
-				let year = (data[i]).toString().substring(0, 4);
-				let month = (data[i]).toString().substring(4, 6);
-				let day = (data[i]).toString().substring(6, 8);
-				apiArray.push(new Date(year + "-" + month + "-" + day));
-			}
+			let dataArray = new Array();
+			data.forEach(date => dataArray.push(new Date(date)));
 
 			const holiday_start = $('#pop01_date01_START');
 			const holiday_end = $('#pop01_date01_END');
@@ -581,9 +605,9 @@
 				} else {
 					count = difference / dayTime + 1 - (weekend * 2);
 				}
-				apiArray.forEach(item => {
-					if (end >= item && start <= item) {
-						if (item.getDay() == 0 || item.getDay() == 6) {
+				dataArray.forEach(date => {
+					if (end >= date && start <= date) {
+						if (date.getDay() == 0 || date.getDay() == 6) {
 							return;
 						} else {
 							count = count - 1;
@@ -593,5 +617,16 @@
 				holiday_count.val(count);
 			}
 		};
+
+		/**
+		 * 휴가 시작일, 휴가 종료일 체크
+		 */
+		function checkStartDateAndEndDate() {
+			if ($('#pop01_date01_END').val() == "") {
+				$('#pop01_date01_END').val($('#pop01_date01_START').val());
+			} else if ($('#pop01_date01_END').val() != "" && new Date($('#pop01_date01_END').val()) < new Date($('#pop01_date01_START').val())) {
+				$('#pop01_date01_END').val($('#pop01_date01_START').val());
+			}
+		}
 	</script>
 </html>

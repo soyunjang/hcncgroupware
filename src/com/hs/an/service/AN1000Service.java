@@ -2,6 +2,7 @@ package com.hs.an.service;
 
 import com.hs.an.dto.An1000PrintDto;
 import com.hs.an.dto.HolidayInfoDto;
+import com.hs.an.dto.HolidayPublicDto;
 import com.hs.home.controller.UserInfo;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,7 @@ public class AN1000Service {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final String[] HOLIDAY_CHECK_TYPE = {"ANNUAL", "HALF01", "HALF02", "OFFICE01"};
+
 	protected enum Type {
 		PLUS, MINUS
 	}
@@ -40,9 +43,7 @@ public class AN1000Service {
 		Map<String, Object> param = new HashMap();
 		param.put("USER_ID", user.getUSER_ID());
 
-		Map<String, Object> rMap = sqlSession.selectOne("an1000Mapper.an1000InfoSel", param);
-
-		return rMap;
+		return sqlSession.selectOne("an1000Mapper.an1000InfoSel", param);
 	}
 
 	/**
@@ -54,19 +55,7 @@ public class AN1000Service {
 
 		param.put("USER_ID", user.getUSER_ID());
 
-		List<Map<String, Object>> rList = sqlSession.selectList("an1000Mapper.an1000Sel", param);
-		List<Map<String, Object>> holidayCode = getHolidayCode();
-
-		return rList.stream().map(item -> {
-			String holidayType = (String) item.get("HOLIDAY_TYPE");
-			holidayCode.forEach(code -> {
-				String sysItemCd = (String) code.get("SYS_ITEM_CD");
-				if (holidayType.equals(sysItemCd)) {
-					item.put("HOLIDAY_TYPE", code.get("SYS_ITEM_NAME"));
-				}
-			});
-			return item;
-		}).collect(Collectors.toList());
+		return sqlSession.selectList("an1000Mapper.an1000Sel", param);
 	}
 
 	/**
@@ -115,6 +104,9 @@ public class AN1000Service {
 		}
 	}
 
+	/**
+	 * 휴가 출력 조회
+	 */
 	public Map<String, Object> an1000PrintByUser(An1000PrintDto dto, UserInfo user) {
 		try {
 			if (user.getUSER_NM().equals(dto.getUserNm())) {
@@ -205,6 +197,32 @@ public class AN1000Service {
 			logger.info("after: {}", dto);
 			sqlSession.update("an1000Mapper.an1000HolidayInfoUpdate", dto);
 		}
+	}
+
+	public List<String> an1000PublicHolidaySel(String startDate, String endDate) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("startDate", startDate);
+		map.put("endDate", endDate);
+		return sqlSession.selectList("an1000Mapper.an1000PublicHolidaySel", map);
+	}
+
+	public void an1000PublicHolidaySave(List<HolidayPublicDto> result) {
+		List<String> list = an1000PublicHolidaySel(LocalDate.now().toString(), "");
+
+		try {
+			if (list.isEmpty()) {
+				sqlSession.insert("an1000Mapper.an1000PublicHolidaySave", result);
+			} else {
+				List<String> replaceList = list.stream().map(item -> item.replace("-", "")).collect(Collectors.toList());
+				List<HolidayPublicDto> collect = result.stream().filter(res -> replaceList.indexOf(res.getPublicDay()) < 0).collect(Collectors.toList());
+				if (!collect.isEmpty()) {
+					sqlSession.insert("an1000Mapper.an1000PublicHolidaySave", collect);
+				}
+			}
+		} catch (Exception e) {
+			new RuntimeException("공휴일 저장 에러 발생", e);
+		}
+
 	}
 
 }
