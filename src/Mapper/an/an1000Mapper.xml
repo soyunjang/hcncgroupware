@@ -12,7 +12,7 @@
 			   HOLIDAY_DEDUCT,
 			   REG_DT
 		FROM HOLIDAY_INFO
-		WHERE USER_ID LIKE #{USER_ID};
+		WHERE USER_ID LIKE #{USER_ID}
 	</select>
 
 	<select id="an1000Sel" parameterType="map" resultType="map">
@@ -30,7 +30,8 @@
 			   H.EMERGENCY
 		FROM HOLIDAY_PERSON H
 				 LEFT OUTER JOIN USER_INFO U ON H.USER_ID = U.USER_ID
-		WHERE H.USER_ID = #{USER_ID} AND H.USE_YN = 'Y';
+		WHERE H.USER_ID = #{USER_ID} AND H.USE_YN = 'Y'
+		ORDER BY H.HOLIDAY_START DESC
 	</select>
 
 	<insert id="an1000Save" parameterType="map">

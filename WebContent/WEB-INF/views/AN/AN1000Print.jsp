@@ -347,7 +347,7 @@
 					<div class="sign-space2">
 						<span>위와 같이 휴가를 신청하오니 재가 바랍니다.</span>
 						<span class="date">${HolidayPrintInfo.REG_DT}</span>
-						<span class="space2-item"><span class="common-text">소</span>속 : ${HolidayPrintInfo.HolidayPrintInfo}</span>
+						<span class="space2-item"><span class="common-text">소</span>속 : ${HolidayPrintInfo.DEPT_NM}</span>
 						<span class="space2-item"><span class="common-text">성</span>명<span class="common-text2"> : ${HolidayPrintInfo.USER_NM}</span>(인)</span>
 					</div>
 				</td>
