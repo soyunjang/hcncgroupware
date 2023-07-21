@@ -113,7 +113,7 @@ function searchbox() {
 
 function searchboxHover() {
 	$(document).on('mouseenter', '.search-wrap', function(e) {
-     	console.log('.search-wrap > mouseenter > e', e);
+     	// console.log('.search-wrap > mouseenter > e', e);
      	
      	if($('.srch-btn').find($('.srch-btn ul li a')).hasClass('btn-open') == true){
      		
