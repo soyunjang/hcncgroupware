@@ -12,8 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hs.co.service.CO1100Service;
@@ -73,5 +75,27 @@ public class CO1100Controller {
 		}
 
 		return rtnMap;
+	}
+
+	@RequestMapping(value = "/co1100MergeData")
+	public String CO1100_MERGEDATA(@RequestBody Map<String, Object> param, HttpSession session, ModelMap model) {
+		logger.debug("CO1100Controller > co1100MergeData :: {}", param);
+
+		int resultCnt  = co1100Service.co1100MergeData(param, session);
+		model.addAttribute("result", resultCnt);
+		return "jsonView";
+	}
+
+	@RequestMapping(value = "/co1100Print")
+	public String CO1100_PRINT(@RequestParam Map<String, Object> param, HttpSession session, ModelMap model) throws Exception {
+		model.addAttribute("param", param);
+
+		Map<String, Object> co1000List = co1100Service.selectCO1000List(param);
+		model.addAttribute("co1000List", co1000List);
+
+		List<Map<String, Object>> co1001List = co1100Service.selectCO1001List(param);
+		model.addAttribute("co1001List", co1001List);
+
+		return "CO/CO1100Print";
 	}
 }

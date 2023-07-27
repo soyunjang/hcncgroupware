@@ -124,5 +124,12 @@ public class CommonContoller {
 		List<Map<String, Object>> list = commonService.selectLists(params);
 		return list;
 	}
-	
+
+	@RequestMapping(value = "/selectSalesNum")
+	public @ResponseBody List<Map<String, Object>> selectSalesNum(@RequestParam Map<String, Object> params, HttpSession session) {
+		logger.debug("CommonController >> selectSalesNum :: {}", params);
+
+		List<Map<String, Object>> list = commonService.selectSalesNum(params, session);
+		return list;
+	}
 }

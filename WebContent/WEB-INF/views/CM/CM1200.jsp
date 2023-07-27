@@ -282,6 +282,13 @@
 		});
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 버튼
+		/* 엑셀 버튼 */
+		$("#btn01_EXCEL").on({
+			click: function(){
+				exportExcel("table1", "사용자 관리");
+			}
+		});
+
 		/* 검색 버튼 */
 		$("#btn01_SEARCH").on({
 			click: function(){
@@ -382,10 +389,10 @@
 					, {name: 'BIRTHDAY'			, align: 'center'	, width: '9%'	, hidden: false}					
 					, {name: 'EMAIL'			, align: 'left'		, width: '12%'	, hidden: false}				
 					, {name: 'PHONE_NUM'		, align: 'left'		, width: '12%'	, hidden: false}				
-					, {name: 'USE_YN'			, align: 'center' 	, width: '5%'	, hidden: false}				
+					, {name: 'USE_YN'			, align: 'left' 	, width: '6%'	, hidden: false}
 					, {name: 'AUTH_TYPE_CD'		, align: 'left'		, width: '0%'	, hidden: true}					
 					, {name: 'AUTH_TYPE_NAME'	, align: 'left'		, width: '7%'	, hidden: false}					
-					, {name: 'MEMO'				, align: 'left'		, width: '14%'	, hidden: false}
+					, {name: 'MEMO'				, align: 'left'		, width: '13%'	, hidden: false}
 				]
 				, autowidth: false
 				, shrinkToFit: false

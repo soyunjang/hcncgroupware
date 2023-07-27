@@ -66,7 +66,6 @@
 		content: none;
 	}
 	
-
 	html {
 	    font-size: 8px;
 	}
@@ -120,12 +119,7 @@
 	    display: flex;
 	    justify-content: space-between;
 	}
-	
-	.container-middle {
-	    display: flex;
-	
-	}
-	
+
 	.con-section {
 	    box-shadow: inherit;
 	    margin: 0px;
@@ -162,14 +156,10 @@
 	    margin: 10px 0;
 	    font-size: 1.1rem;
 	}
-	/*span {*/
-	/*    zoom: 0.8;*/
-	/*}*/
-	
+
 	.purchase-merge, .input-merge, .expenses-merge {
 	    width: 50px;
 	}
-	
 	
 	.btn-box {
 	    display: flex;
@@ -185,9 +175,6 @@
 	    letter-spacing: 2.6px;
 		writing-mode: tb;
 		height: 100px !important;
-	}
-	.column-common {
-	    width: 5%;
 	}
 	.common-sign1 {
 	    height: 20px;
@@ -267,6 +254,7 @@
 	    min-width: 200px;
 	    text-align: left;
 	    padding: 5px;
+		white-space: break-spaces;
 	}
 	
 	#client, #project-name {
@@ -304,8 +292,7 @@
 	.title-table-td2 {
 	    width: 250px;
 	}
-	
-	
+
 	@media print {
 	    .btn-box {
 	        display: none;
@@ -597,7 +584,7 @@
 			        			<script type="text/javascript">
 									mmListLen = ${fn:length(sa1003List)};
 								</script>
-			        			<td><span id="obtain-num">${item.IDX + status.index + 2}</span></td>
+			        			<td><span id="obtain-num">${item.IDX + status.index + 1}</span></td>
 			        			<c:if test="${status.index == 0 }"> 
 			        				<td class="input-merge" id="manmonth">내부공수</td>
 			        			</c:if>
@@ -691,7 +678,7 @@
 		        	<tbody id="table-bottom">
 		        		<c:forEach var="item" items="${sa1004List}" varStatus="status">
 		        			<tr>
-		        				<td><span id="obtain-num">${item.IDX1 + item.IDX1 + status.index - 1}</span></td>
+		        				<td><span id="obtain-num">${item.IDX1 + item.IDX1 + status.index + 1}</span></td>
 		        				<td class="expenses-merge" rowspan="1">경비</td>
 		        				<td><span id="expenses-kind">출장경비 / 회의비 / 기타경비 등</span></td>
 		        				<td><span id=""></span></td>
@@ -889,11 +876,11 @@
 		        	<tbody id="table-middle">
 		        		<c:forEach var="item" items="${sa1007List}" varStatus="status">
 		        			<tr>
-					            <td>거래내역</td>
+					            <td colspan="3">거래내역</td>
 					            <td><span id="textarea-1">${item.DETAIL_TRANSACTIONAL}</span></td>
 					        </tr>
 					        <tr>
-					            <td>특이사항</td>
+					            <td colspan="3">특이사항</td>
 					            <td><span id="textarea-2">${item.DETAIL_SIGNIFICANT}</span></td>
 					        </tr>
 		        		</c:forEach>
@@ -901,11 +888,11 @@
 		        </c:when>
 		        <c:otherwise>
 			        <tr>
-			            <td>거래내역</td>
+			            <td colspan="3">거래내역</td>
 			            <td><span id="textarea-1"></span></td>
 			        </tr>
 			        <tr>
-			            <td>특이사항</td>
+			            <td colspan="3">특이사항</td>
 			            <td><span id="textarea-2"></span></td>
 			        </tr>
 		        </c:otherwise>

@@ -1,0 +1,201 @@
+[33mcommit 49651b9245382fc3e3b3f8a1e960c71e4c2c6c33[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Fri Jul 21 18:18:59 2023 +0900
+
+    코드 수정
+
+[33mcommit e2aabf07a05f951039b60c61b7ef5149e50440aa[m
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Fri Jul 21 17:56:35 2023 +0900
+
+    공휴일API 관련 수정 및 휴가기간 중복 체크 로직 추가
+
+[33mcommit ddf0a4aa00e209da2a04f39cc3959787f347f9c9[m
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Fri Jul 21 16:40:31 2023 +0900
+
+    console.log('.search-wrap > mouseenter > e', e); -> 주석 처리
+
+[33mcommit 6e2510f98b70050f0e0857eff51f8af3340911c2[m
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Fri Jul 21 09:20:32 2023 +0900
+
+    휴가 미선택 시 출력 창 나오는 에러 수정
+
+[33mcommit 8460c0e7d5eb952a34a2a62ea08c2178c0fcc586[m
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Thu Jul 20 19:18:14 2023 +0900
+
+    쿼리문 수정
+
+[33mcommit 7fad2bf62247444d1970e174120886d1ebd9332b[m
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Thu Jul 20 18:10:59 2023 +0900
+
+    휴가신청서 페이지 구현
+
+[33mcommit 7ac54d6bb9612a4a69004c1bd85baaa6c434c6d6[m
+Merge: 212dd86 80a7045
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Thu Jul 20 15:50:40 2023 +0900
+
+    Merge branch 'main' of https://github.com/hong2wrd/gwhcnc
+
+[33mcommit 212dd869eb0448ca78a0d3dc49c7eef2ce07bce5[m
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Thu Jul 20 15:50:32 2023 +0900
+
+    당해연도 연차 현황 및 출력 코드 수정
+
+[33mcommit 80a70457323582da49d5c5a1f3a50a6730bc9afd[m
+Author: JSY <jangdmsgml@naver.com>
+Date:   Thu Jul 20 15:49:36 2023 +0900
+
+    판매품의서 등록/조회
+
+[33mcommit 05f95400407df4517d49459f5a25d6b1641f7cf9[m
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Wed Jul 19 19:36:52 2023 +0900
+
+    휴가 신청서 출력틀 구성
+
+[33mcommit 454e7b0fe5848fe512c223c013a7b5fb3088a0d0[m
+Merge: 873a480 0b5c6e7
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Wed Jul 19 16:08:05 2023 +0900
+
+    Merge branch 'main' of https://github.com/hong2wrd/gwhcnc
+
+[33mcommit 873a4800e671bfd26e6c1635a2b6e72b1f49ed6b[m
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Wed Jul 19 15:10:40 2023 +0900
+
+    날짜별 휴가현황 코드 수정
+
+[33mcommit 0b5c6e7a12fa6f4d5251ebdba0635a1bdae9d6fa[m
+Author: JSY <jangdmsgml@naver.com>
+Date:   Wed Jul 19 14:24:48 2023 +0900
+
+    법인카드관리
+
+[33mcommit 4043f9330ca61ab28530a53d6cc80dea42fbf8b8[m
+Author: JSY <jangdmsgml@naver.com>
+Date:   Wed Jul 19 13:39:59 2023 +0900
+
+    법인카드 사용내약 조회
+
+[33mcommit 49992be836f205b4ae4d9a042d14dee7842fb159[m
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Wed Jul 19 10:04:41 2023 +0900
+
+    알림창 크기 조절 및 컬럼 삭제에 따른 Mapper 변경
+
+[33mcommit 0e52d6b94afefe14e9ec236809ca59ad5545e298[m
+Merge: e6ecae3 771e7b5
+Author: JSY <jangdmsgml@naver.com>
+Date:   Tue Jul 18 19:22:53 2023 +0900
+
+    Merge branch 'main' of https://github.com/hong2wrd/gwhcnc
+
+[33mcommit e6ecae3d524f3e786b8d287e26f689c2e7553921[m
+Author: JSY <jangdmsgml@naver.com>
+Date:   Tue Jul 18 19:21:34 2023 +0900
+
+    co1100 개인별 사용내역 등록
+
+[33mcommit 771e7b5f958a3579af73d69aec3b0cc847a86675[m
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Tue Jul 18 18:08:51 2023 +0900
+
+    HOLIDAY_PERSON USE_YN 컬럼 추가에 따른 코드 수정 및 기타
+
+[33mcommit dbad67194a8603700020f750557e9c064ed19396[m
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Tue Jul 18 14:39:26 2023 +0900
+
+    휴가 등록 시 연차 계산 및 회사 휴무 일괄 등록 처리
+
+[33mcommit b635da895e8ee8e1d35a0596cd0bdfc7eec48865[m
+Merge: 7bef92e fb5ffce
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Tue Jul 18 13:26:40 2023 +0900
+
+    Merge branch 'main' of https://github.com/hong2wrd/gwhcnc
+
+[33mcommit 7bef92ec00ee77c6cdcb6fdbe79363768f54f874[m
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Tue Jul 18 13:26:31 2023 +0900
+
+    연차 관련 로직 수정 중
+
+[33mcommit fb5ffce5765d102858eb62ae700f50f8e27fd772[m
+Author: JSY <jangdmsgml@naver.com>
+Date:   Tue Jul 18 13:21:00 2023 +0900
+
+    카드사별 사용내역 등록 업데이트
+
+[33mcommit 4c8eed0a8f28f41021b25ec546c37cc1d2dc53b8[m
+Author: JSY <jangdmsgml@naver.com>
+Date:   Mon Jul 17 18:29:35 2023 +0900
+
+    수정
+
+[33mcommit e527f4c2438f9e3102b055286fd77bef519892e8[m
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Mon Jul 17 18:26:07 2023 +0900
+
+    불필요한 코드 삭제
+
+[33mcommit 5087ddc73a0c0140f2a79624eeebc74e313d39b0[m
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Mon Jul 17 16:54:25 2023 +0900
+
+    휴가 관련 코드 수정
+
+[33mcommit e402b250d64a2b480bbaa6ce041dfcb3ba6cb815[m
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Fri Jul 14 18:03:36 2023 +0900
+
+    휴가 등록, 삭제, 조회 등 코드 구현 및 수정
+
+[33mcommit 7cb7dcc1b74dcabc9490ba5e96cb7cd974f5ced0[m
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Thu Jul 13 17:59:23 2023 +0900
+
+    연차 계산 및 공휴일 처리 등 로직 구현
+
+[33mcommit 26390dd20f929f19816430087689ffbfc61a7a1c[m
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Wed Jul 12 18:12:24 2023 +0900
+
+    휴가 등록 코드 추가
+
+[33mcommit 71b47f115a118709338a354b6c427f80a6b08aca[m
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Tue Jul 11 17:34:16 2023 +0900
+
+    grid에서 Enter 시 에러 발생 처리, 수금정보 및 매입내역 1개만 나오게 적용, 수금정보 금액 및 비율 위치 변경
+
+[33mcommit 334fea5145778fa2362253775a9f97f62d5a5d99[m
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Tue Jul 11 15:49:52 2023 +0900
+
+    UserInfo 객체에 setUSER_PW 제외
+
+[33mcommit 5db955eb660ba4de51ce72d78a17217c37a5e6da[m
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Tue Jul 11 11:27:00 2023 +0900
+
+    권한 변경 관련 코드 수정
+
+[33mcommit 5d76216a2cfd9067f64e36217b345cc3349ab087[m
+Author: TAEHONG <hong2wrd@gmail.com>
+Date:   Tue Jul 11 11:19:38 2023 +0900
+
+    initial commit
+
+[33mcommit 181b93cad3904796921a9e48a39e4d1b1db41b6f[m
+Author: TAEHONG <124547246+hong2wrd@users.noreply.github.com>
+Date:   Tue Jul 11 11:14:25 2023 +0900
+
+    Initial commit

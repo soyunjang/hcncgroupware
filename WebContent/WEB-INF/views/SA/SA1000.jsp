@@ -9,6 +9,10 @@
 				white-space: break-spaces;
 				vertical-align: baseline;
 			}
+
+			.textareaInDiv textarea {
+				background-color: #fff !important;
+			}
 		</style>
 
 		<!-- .contents-wrap 컨텐츠영역 START -->
@@ -72,13 +76,14 @@
 						<div class="title-wrap">
 	                        <div class="title-zone">
 	                            <h2 class="title1">판매품의서 목록</h2>
+								<span id="table1_cnt">0</span>
 	                        </div>
 	                        <div class="btn-right-box">
 	                            <ul>
 									<li><a href="javascript:void(0);" id="btn01_COPY">복사</a></li>
 									<li><a href="javascript:void(0);" id="btn01_PRINT">출력</a></li>
-<%--									<li><a href="javascript:void(0);" id="btn01_EXCEL">엑셀</a></li>--%>
 	                            	<li><a href="javascript:void(0);" id="btn01_CREATE">신규</a></li>
+	                            	<li><a href="javascript:void(0);" id="btn01_UPDATE">수정</a></li>
 									<li><a href="javascript:void(0);" id="btn01_SAVE">저장</a></li>
 									<li><a href="javascript:void(0);" id="btn01_COMFIRM">확정</a></li>
 	                            </ul>
@@ -224,21 +229,21 @@
 												<dl>
 													<dt>판매금액</dt>
 													<dd>
-														<input type="text" id="COLLECT_SALES_AMOUNT" class="ta-r" placeholder="판매금액(원)">
+														<input type="text" id="COLLECT_SALES_AMOUNT" class="ta-r readonly" placeholder="판매금액(원)">
 													</dd>
 												</dl>
 												<dl>
 													<dt>마진</dt>
 													<dd class="fl-fs">
-														<input type="text" id="COLLECT_MARGIN_PER" class="w65 ta-r" placeholder="비율(%)">
-														<input type="text" id="COLLECT_MARGIN" class="ta-r" placeholder="금액(원)">
+														<input type="text" id="COLLECT_MARGIN_PER" class="w70 ta-r readonly" placeholder="비율(%)">
+														<input type="text" id="COLLECT_MARGIN" class="ta-r readonly" placeholder="금액(원)">
 													</dd>
 												</dl>
 												<dl>
 													<dt>최종마진</dt>
 													<dd class="fl-fs">
-														<input type="text" id="COLLECT_FINAL_MARGIN_PER" class="w65 ta-r" placeholder="비율(%)">
-														<input type="text" id="COLLECT_FINAL_MARGIN" class="ta-r" placeholder="금액(원)">
+														<input type="text" id="COLLECT_FINAL_MARGIN_PER" class="w70 ta-r readonly" placeholder="비율(%)">
+														<input type="text" id="COLLECT_FINAL_MARGIN" class="ta-r readonly" placeholder="금액(원)">
 													</dd>
 												</dl>
 											</div>
@@ -308,7 +313,7 @@
             	</div>
 
             	<div class="con-section section-item" id="register2">
-					<div class="row row-1 row-wrap-571">
+					<div class="row row-1 row-wrap-579">
 						<div class="col col-1 wp100">
 							<section>
 								<div class="title-wrap">
@@ -330,7 +335,7 @@
             	</div>
 
             	<div class="con-section section-item" id="register3">
-					<div class="row row-1 row-wrap-571">
+					<div class="row row-1 row-wrap-579">
 						<div class="col col-1 wp100">
 							<section>
 								<div class="title-wrap">
@@ -351,7 +356,7 @@
             	</div>
 
             	<div class="con-section section-item" id="register4">
-                    <div class="row row-1 row-wrap-571">
+                    <div class="row row-1 row-wrap-579">
 						<div class="col col-1 wp100">
 							<section>
 								<div class="title-wrap">
@@ -393,19 +398,34 @@
 		var langDetail5;	// 설치비 및 서비스비용
 		var langDetail6;	// 유지보수 예상
 		var langDetail7;	// 상세내역
-		var nowDate = new Date();
 
 		/* 변수 선언 */
-		var checkAction = "";
-		var COLLECT_PAYMENTSelect = "";
-		var BUY_UNITSelect = "";
-		var BUY_COINSelect = "";
-		var BUY_ITEMSelect = "";
-		var MANHOUR_ITEMSelect = "";
-		var MANHOUR_UNITSelect = "";
+		var nowDate = new Date();
+		var mm = (nowDate.getMonth()+1) < 10 ? "0" + (nowDate.getMonth()+1) : (nowDate.getMonth()+1);
+		var yy = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
+		var today = nowDate.getFullYear() + "-" + mm + "-" + yy;
+
+		var buyPriceSum = 0;		// 매입내역 합계
+		var costTotPriceSum = 0;	// 설치비 및 서비스비용 합계
+
+		var checkAction = "";		// C-추가 / U-수정
+		var checkActionBtn = "";	// 버튼상태 : S-검색 / T-복사 / P-출력 / C-신규 / U-수정 / M-저장 / F-확정 / R-row선택
+
+		var COLLECT_PAYMENTSelect = "";	// 수금정보-지급방법 콤보박스
+		var BUY_ITEMSelect = "";		// 매입내역-품목 콤보박스
+		var BUY_UNITSelect = "";		// 매입내역-단위 콤보박스
+		var BUY_COINSelect = "";		// 매입내역-통화 콤보박스
+		var MANHOUR_ITEMSelect = "";	// 내부공수-품목 콤보박스
+		var MANHOUR_UNITSelect = "";	// 내부공수-단위 콤보박스
+
+		var salesNum = "";			// 판품번호(선택된 row / 수주현황-판품번호)
+		var salesRevision = "";		// 리비전 (선택된 row / 수주현황-리비전)
+		var maxRow = "";			// 그리드 maxrow
+
+		var lastSelection;	// 그리드 마지막 선택값
 
 		/* 공통코드_콤보박스 */
-		commonCodeSelectAdd("OFFICE_TYPE", getCommonCode('OFFICE'), 'N');
+		commonCodeSelectAdd("OFFICE_TYPE", getCommonCode('OFFICE'), 'N');	// 수주현황-사업장
 
 		/* Document가 로드되었을 때 실행되는 코드 */
 		$(document).ready(function() {
@@ -420,9 +440,7 @@
 				jQuery("#table8").jqGrid('setGridWidth', (jQuery(".table-wrap").width()-58),true);
 			}
 
-			var mm = (nowDate.getMonth()+1) < 10 ? "0" + (nowDate.getMonth()+1) : (nowDate.getMonth()+1);
-			var yy = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
-			$("#date01_REG_DT").text(nowDate.getFullYear() + "-" + mm + "-" + yy);
+			$("#date01_REG_DT").text(today);	// 작성일자
 
 			// 화면ID, 화면ID사이즈(6:CM1000/13:CM1000_Detail), 다국어
 			langHead = getLangCode("SA1000", 6, "${LANG}");
@@ -435,14 +453,14 @@
 			langDetail7 = getLangCode("SA1007", 6, "${LANG}");
 
 			new Promise(function(resolve, reject) {
-				selectBox();
+				selectBox();			// 콤보박스 조회
 				return resolve();
 			}).then(function() {
 				setTimeout(function() {
 					setButton('init');	// 버튼 재설정
-					setGrid();
-					init(); // 그리드 리사이징
-				}, 500);
+					setGrid();			// 판매품의서 목록 조회
+					init(); 			// 그리드 리사이징
+				}, 300);
 			});
 		});
 
@@ -459,100 +477,35 @@
 			$("#table8").jqGrid('setGridHeight', gridHeight + $("div#gview_table1 >  div.ui-jqgrid-hdiv").height());
 		});
 
-		function selectBox() {
-			getAjaxData("selectLists?LIST_TYPE=PAYMENT", '', 'PAYMENTSelectCallBack');
-			getAjaxData("selectLists?LIST_TYPE=UNIT", '', 'UNITSelectCallBack');
-			getAjaxData("selectLists?LIST_TYPE=COIN", '', 'COINSelectCallBack');
-			getAjaxData("selectLists?LIST_TYPE=ITEM", '', 'ITEMSelectCallBack');
-			getAjaxData("selectLists?LIST_TYPE=ITEMMM", '', 'MANHOUR_ITEMSelectCallBack');
-			getAjaxData("selectLists?LIST_TYPE=UNITMM", '', 'MANHOUR_UNITSelectCallBack');
-		}
-
-		function PAYMENTSelectCallBack (res) {
-			var kLength = res.length - 1;
-
-			$.each(res, function(index, item) {
-				if (index == kLength) {
-					COLLECT_PAYMENTSelect += item.CODE + ":" + item.VALUE;
-				} else {
-					COLLECT_PAYMENTSelect += item.CODE + ":" + item.VALUE + ";";
-				}
-			});
-		}
-
-		function UNITSelectCallBack (res) {
-			var kLength = res.length - 1;
-
-			$.each(res, function(index, item) {
-				if (index == kLength) {
-					BUY_UNITSelect += item.CODE + ":" + item.VALUE;
-				} else {
-					BUY_UNITSelect += item.CODE + ":" + item.VALUE + ";";
-				}
-			});
-		}
-
-		function COINSelectCallBack (res) {
-			var kLength = res.length - 1;
-
-			$.each(res, function(index, item) {
-				if (index == kLength) {
-					BUY_COINSelect += item.CODE + ":" + item.VALUE;
-				} else {
-					BUY_COINSelect += item.CODE + ":" + item.VALUE + ";";
-				}
-			});
-		}
-
-		function ITEMSelectCallBack (res) {
-			var kLength = res.length - 1;
-
-			$.each(res, function(index, item) {
-				if (index == kLength) {
-					BUY_ITEMSelect += item.CODE + ":" + item.VALUE;
-				} else {
-					BUY_ITEMSelect += item.CODE + ":" + item.VALUE + ";";
-				}
-			});
-		}
-
-		function MANHOUR_UNITSelectCallBack (res) {
-			var kLength = res.length - 1;
-
-			$.each(res, function(index, item) {
-				if (index == kLength) {
-					MANHOUR_UNITSelect += item.CODE + ":" + item.VALUE;
-				} else {
-					MANHOUR_UNITSelect += item.CODE + ":" + item.VALUE + ";";
-				}
-			});
-		}
-
-		function MANHOUR_ITEMSelectCallBack (res) {
-			var kLength = res.length - 1;
-
-			$.each(res, function(index, item) {
-				if (index == kLength) {
-					MANHOUR_ITEMSelect += item.CODE + ":" + item.VALUE;
-				} else {
-					MANHOUR_ITEMSelect += item.CODE + ":" + item.VALUE + ";";
-				}
-			});
-		}
-
-		function insertGrid1(condition, rowid) {
-			var maxRow = "";
+		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 그리드 추가(신규버튼 / 각 그리드 추가버튼)
+		function insertInit(table, rowid) {
+			if(checkActionBtn == "C") {
+				salesNum = $("#SALES_NUM").val();
+				salesRevision = $("#REVISION").val();
+			} else if(checkActionBtn == "R") {
+				var rowidA = $("#table1").getGridParam("selrow");
+				var rowdataA = $("#table1").getRowData(rowidA);
+				salesNum = rowdataA.SALES_NUM;
+				salesRevision = rowdataA.REVISION;
+			}
+			console.log('init salesNum : ', salesNum);
 			if(rowid == undefined || rowid == "") {
-				maxRow = $("#table2").jqGrid('getGridParam', 'reccount') + 1;
+				maxRow = $("#" + table).jqGrid('getGridParam', 'reccount') + 1;
 			} else {
 				maxRow = rowid;
 			}
+		}
+
+		function insertGrid1(condition, rowid) {
+			insertInit("table2", rowid);
 
 			$("#table2").jqGrid("addRow", {
 				rowID : maxRow,
 				initdata : {
-					'rowStatus' : '추가',
-					// 'COLLECT_CONDITION' : condition
+					'rowStatus' : '추가'
+					, 'COLLECT_CONDITION' : condition
+					, 'SALES_NUM' : salesNum
+					, 'REVISION' : salesRevision
 				},
 				position : "last",
 				useDefValues : false,
@@ -568,18 +521,15 @@
 		}
 
 		function insertGrid2(condition, rowid) {
-			var maxRow = "";
-			if(rowid == undefined || rowid == "") {
-				maxRow = $("#table3").jqGrid('getGridParam', 'reccount') + 1;
-			} else {
-				maxRow = rowid;
-			}
+			insertInit("table2", rowid);
 
 			$("#table3").jqGrid("addRow", {
 				rowID : maxRow,
 				initdata : {
-					'rowStatus' : '추가',
-					// 'BUY_ITEM' : condition
+					'rowStatus' : '추가'
+					, 'BUY_ITEM' : condition
+					, 'SALES_NUM' : salesNum
+					, 'REVISION' : salesRevision
 				},
 				position : "last",
 				useDefValues : false,
@@ -595,18 +545,15 @@
 		}
 
 		function insertGrid3(condition, rowid) {
-			var maxRow = "";
-			if(rowid == undefined || rowid == "") {
-				maxRow = $("#table4").jqGrid('getGridParam', 'reccount') + 1;
-			} else {
-				maxRow = rowid;
-			}
+			insertInit("table2", rowid);
 
 			$("#table4").jqGrid("addRow", {
 				rowID : maxRow,
 				initdata : {
-					'rowStatus' : '추가',
-					'MANHOUR_ITEM' : condition
+					'rowStatus' : '추가'
+					, 'MANHOUR_ITEM' : condition
+					, 'SALES_NUM' : salesNum
+					, 'REVISION' : salesRevision
 				},
 				position : "last",
 				useDefValues : false,
@@ -622,18 +569,15 @@
 		}
 
 		function insertGrid4(condition, rowid) {
-			var maxRow = "";
-			if(rowid == undefined || rowid == "") {
-				maxRow = $("#table5").jqGrid('getGridParam', 'reccount') + 1;
-			} else {
-				maxRow = rowid;
-			}
+			insertInit("table2", rowid);
 
 			$("#table5").jqGrid("addRow", {
 				rowID : maxRow,
 				initdata : {
-					'rowStatus' : '추가',
-					'EXPENSE_ITEM' : condition
+					'rowStatus' : '추가'
+					, 'EXPENSE_ITEM' : condition
+					, 'SALES_NUM' : salesNum
+					, 'REVISION' : salesRevision
 				},
 				position : "last",
 				useDefValues : false,
@@ -655,6 +599,8 @@
 				rowID : maxRow,
 				initdata : {
 					'rowStatus' : '추가'
+					, 'SALES_NUM' : salesNum
+					, 'REVISION' : salesRevision
 				},
 				position : "last",
 				useDefValues : false,
@@ -676,6 +622,8 @@
 				rowID : maxRow,
 				initdata : {
 					'rowStatus' : '추가'
+					, 'SALES_NUM' : salesNum
+					, 'REVISION' : salesRevision
 				},
 				position : "last",
 				useDefValues : false,
@@ -697,6 +645,8 @@
 				rowID : maxRow,
 				initdata : {
 					'rowStatus' : '추가'
+					, 'SALES_NUM' : salesNum
+					, 'REVISION' : salesRevision
 				},
 				position : "last",
 				useDefValues : false,
@@ -727,6 +677,7 @@
 			click: function(e){
 				e.preventDefault();
 
+				checkActionBtn = "S"
 				searchGridData();
 			}
 		});
@@ -737,23 +688,29 @@
 				e.preventDefault();
 
 				if (!$(this).hasClass('disable')) {
-					var searchParam = {
-							SALES_NUM : $("#SALES_NUM").val().substr(0, 12)
-							, REVISION : $("#REVISION").val()
-					};
+					checkActionBtn = "T";
+					var rowid = $("#table1").getGridParam("selrow");
+					var rowdata = $("#table1").getRowData(rowid);
 
-					getAjaxJsonData("sa1001Copy", searchParam, "copyGridDataCallBack");
+					setButton('modify');
+					inputAbled();
+
+					$("#date01_REG_DT").text(today);
+
+					updateGridData(rowdata, "copy");
+
+					searchGrid1Data(rowdata.SALES_NUM, rowdata.REVISION);
+					searchGrid2Data(rowdata.SALES_NUM, rowdata.REVISION);
+					searchGrid3Data(rowdata.SALES_NUM, rowdata.REVISION);
+					searchGrid4Data(rowdata.SALES_NUM, rowdata.REVISION);
+					searchGrid5Data(rowdata.SALES_NUM, rowdata.REVISION);
+					searchGrid6Data(rowdata.SALES_NUM, rowdata.REVISION);
+					searchGrid7Data(rowdata.SALES_NUM, rowdata.REVISION);
+
+					$("#table1").resetSelection();
 				}
 			}
 		});
-
-		function copyGridDataCallBack(res) {
-			if(res[0] == undefined) {
-				toast("성공", "복사가 완료되었습니다.", "success");
-				searchGridData();
-				checkAction = "";
-			}
-		}
 
 		/* 출력 버튼 */
 		$("#btn01_PRINT").on({
@@ -761,7 +718,9 @@
 				e.preventDefault();
 
 				if (!$(this).hasClass('disable')) {
+					checkActionBtn = "P";
 					var rowid = $("#table1").getGridParam("selrow");
+
 					if(rowid != null) {
 						var params = "?SALES_NUM=" + $("#SALES_NUM").val().substr(0, 12) + "&REVISION=" + $("#REVISION").val();
 						var url = "sa1000Print";
@@ -774,40 +733,90 @@
 			}
 		});
 
-		/* 엑셀 버튼 */
-		$("#btn01_EXCEL").on({
-			click: function(e){
-				e.preventDefault();
-
-				exportExcel("table1", "판매품의서 관리");
-			}
-		});
-
-		/* 추가 버튼 */
+		/* 신규 버튼 */
 		$("#btn01_CREATE").on({
 			click: function(e){
 				e.preventDefault();
 
-				setButton('modify');
-				$("#table1").jqGrid("resetSelection");
-				clearGridData("mody");
-
-				insertGrid1('');
-				insertGrid2('ITEM1ITEMPRINCIPAL');
-				insertGrid3('ITEMMM1PRINCIPAL');
-				insertGrid3('ITEMMM2SENIOR');
-				insertGrid3('ITEMMM3INTERMEDIATE');
-				insertGrid3('ITEMMM4JUNIOR');
-				insertGrid4('출장경비 / 회의비 / 기타경비 등');
-				insertGrid7();
+				checkActionBtn = "C";
+				new Promise(function(resolve, reject) {
+					clearGridData();
+					selectSalesNum();
+					return resolve();
+				}).then(function() {
+					setTimeout(function() {
+						new Promise(function(resolve, reject) {
+							insertGrid1('잔금');
+							insertGrid2('ITEM1ITEMPRINCIPAL');
+							insertGrid3('ITEMMM1PRINCIPAL', "1");
+							insertGrid3('ITEMMM2SENIOR', "2");
+							insertGrid3('ITEMMM3INTERMEDIATE', "3");
+							insertGrid3('ITEMMM4JUNIOR', "4");
+							insertGrid4('출장경비 / 회의비 / 기타경비 등');
+							insertGrid7();
+							return resolve();
+						}).then(function() {
+							setTimeout(function() {
+								saveNewData();
+							}, 300);
+						});
+					}, 300);
+				});
 			}
 		});
+
+		/* 수정 버튼 */
+		$("#btn01_UPDATE").on({
+			click: function(e){
+				e.preventDefault();
+
+				checkActionBtn = "U";
+				checkAction = "U";
+
+				var rowid = $("#table1").getGridParam("selrow");
+				var rowdata = $("#table1").getRowData(rowid);
+
+				if(rowdata.SALES_CONFIRM == "확정") {
+					updatePreVersion();
+				} else {
+					setButton('modify');
+					inputAbled();
+
+					$("#date01_REG_DT").text(rowdata.OBTAIN_REG_DT);
+
+					updateGridData(rowdata);
+
+					searchGrid1Data(rowdata.SALES_NUM, rowdata.REVISION);
+					searchGrid2Data(rowdata.SALES_NUM, rowdata.REVISION);
+					searchGrid3Data(rowdata.SALES_NUM, rowdata.REVISION);
+					searchGrid4Data(rowdata.SALES_NUM, rowdata.REVISION);
+					searchGrid5Data(rowdata.SALES_NUM, rowdata.REVISION);
+					searchGrid6Data(rowdata.SALES_NUM, rowdata.REVISION);
+					searchGrid7Data(rowdata.SALES_NUM, rowdata.REVISION);
+				}
+			}
+		});
+
+		/*확정된 판매품의서 이전버전으로 수정*/
+		function updatePreVersion(){
+			var searchParam = {
+				SALES_NUM : $("#SALES_NUM").val().substr(0, 12)
+				, REVISION : $("#REVISION").val()
+			};
+
+			getAjaxJsonData("sa1000UpVersoin", searchParam, "updatePreVersionCallBack");
+		};
+
+		function updatePreVersionCallBack(data){
+			searchGridData();
+		};
 
 		/* 저장 버튼 */
 		$('#btn01_SAVE').on('click', function(e) {
 			e.preventDefault();
 
 			if (!$(this).hasClass('disable')) {
+				checkActionBtn = "M";
 				var formArray = [ 'SA1000DataForm' ];
 				var chk = checkRequiredValidation(formArray);
 
@@ -845,10 +854,12 @@
 						return;
 					}
 
-					if(checkAction == "U") {
-						if(isEmpty($("#OBTAIN_REASON").val())){
-							alert("변경사유를 입력해 주세요.");
-							return;
+					if($("#table1").getRowData($("#table1").getGridParam("selrow")).SALES_CONFIRM == "확정") {
+						if(checkAction == "U") {
+							if(isEmpty($("#OBTAIN_REASON").val())){
+								alert("변경사유를 입력해 주세요.");
+								return;
+							}
 						}
 					}
 
@@ -884,12 +895,13 @@
 				e.preventDefault();
 
 				if (!$(this).hasClass('disable')) {
+					checkActionBtn = "F";
 					var searchParam = {
 							SALES_NUM : $("#SALES_NUM").val().substr(0, 12)
 							, REVISION : $("#REVISION").val()
 					};
 
-					getAjaxJsonData("sa1001Confirm", searchParam, "confirmGridDataCallBack");
+					getAjaxJsonData("sa1000Confirm", searchParam, "confirmGridDataCallBack");
 				}
 			}
 		});
@@ -908,12 +920,7 @@
 				e.preventDefault();
 
 				if (!$(this).hasClass('disable')) {
-					// var rowid = $("#table2").jqGrid('getGridParam', 'reccount');
-					// $('#table2').jqGrid("delRowData", rowid); // 잔금 삭제
-					// insertGrid1('중도금' + (rowid - 1));
-					// insertGrid1('잔금');
-
-					insertGrid1('');
+					insertGrid1('잔금');
 				}
 			}
 		});
@@ -970,6 +977,7 @@
 				e.preventDefault();
 
 				if (!$(this).hasClass('disable')) {
+					var rowid = $("#table6").getGridParam("selrow");
 					$('#table6').jqGrid("delRowData", rowid);
 				}
 			}
@@ -998,203 +1006,32 @@
 			}
 		});
 
-		function inputDisabled() {
-			$('#OFFICE_TYPE').attr("disabled", true);
-			$('#PROJECT_NM').attr("disabled", true);
-			$('#OBTAIN_ACCOUNT').attr("disabled", true);
-			$('#OBTAIN_SALES_PIC').attr("disabled", true);
-			$('#OBTAIN_CONTRACT_DT').attr("disabled", true);
-			$('#OBTAIN_ITEM').attr("disabled", true);
-			$('#OBTAIN_ITEM_CNT').attr("disabled", true);
-			$('#OBTAIN_PM').attr("disabled", true);
-			$('#OBTAIN_PROJECT_START').attr("disabled", true);
-			$('#OBTAIN_PROJECT_END').attr("disabled", true);
-
-			$('#COLLECT_UNIT_PRICE').attr("disabled", true);
-			$('#COLLECT_SALES_AMOUNT').attr("disabled", true);
-			$('#COLLECT_MARGIN_PER').attr("disabled", true);
-			$('#COLLECT_MARGIN').attr("disabled", true);
-			$('#COLLECT_FINAL_MARGIN_PER').attr("disabled", true);
-			$('#COLLECT_FINAL_MARGIN').attr("disabled", true);
-		}
-
-		function inputAbled() {
-			$('#OFFICE_TYPE').attr("disabled", false);
-			$('#PROJECT_NM').attr("disabled", false);
-			$('#OBTAIN_ACCOUNT').attr("disabled", false);
-			$('#OBTAIN_SALES_PIC').attr("disabled", false);
-			$('#OBTAIN_CONTRACT_DT').attr("disabled", false);
-			$('#OBTAIN_ITEM').attr("disabled", false);
-			$('#OBTAIN_ITEM_CNT').attr("disabled", false);
-			$('#OBTAIN_PM').attr("disabled", false);
-			$('#OBTAIN_PROJECT_START').attr("disabled", false);
-			$('#OBTAIN_PROJECT_END').attr("disabled", false);
-
-			$('#COLLECT_UNIT_PRICE').attr("disabled", false);
-			$('#COLLECT_SALES_AMOUNT').attr("disabled", false);
-			$('#COLLECT_MARGIN_PER').attr("disabled", false);
-			$('#COLLECT_MARGIN').attr("disabled", false);
-			$('#COLLECT_FINAL_MARGIN_PER').attr("disabled", false);
-			$('#COLLECT_FINAL_MARGIN').attr("disabled", false);
-		}
-
-		/* 버튼 재설정 */
-		function setButton(status, btnId) {
-			if(status == "init") {
-				$('#btn01_COPY').addClass('disable');
-				$('#btn01_PRINT').addClass('disable');
-				$('#btn01_SAVE').addClass('disable');
-				$('#btn01_COMFIRM').addClass('disable');
-				$('#btn01_INSERT').addClass('disable');
-				$('#btn01_DELETE').addClass('disable');
-				$('#btn02_INSERT').addClass('disable');
-				$('#btn02_DELETE').addClass('disable');
-				$('#btn03_INSERT').addClass('disable');
-				$('#btn03_DELETE').addClass('disable');
-				$('#btn04_INSERT').addClass('disable');
-				$('#btn04_DELETE').addClass('disable');
-
-				inputDisabled();
-
-			} else if(status == "selectRow") {
-				$('#btn01_COPY').removeClass('disable');
-				$('#btn01_PRINT').removeClass('disable');
-				$('#btn01_SAVE').removeClass('disable');
-				$('#btn01_COMFIRM').removeClass('disable');
-				$('#btn01_INSERT').removeClass('disable');
-				$('#btn01_DELETE').removeClass('disable');
-				$('#btn02_INSERT').removeClass('disable');
-				$('#btn02_DELETE').removeClass('disable');
-				$('#btn03_INSERT').removeClass('disable');
-				$('#btn03_DELETE').removeClass('disable');
-				$('#btn04_INSERT').removeClass('disable');
-				$('#btn04_DELETE').removeClass('disable');
-
-			} else if(status == "modify") {
-// 				$('#btn01_COPY').removeClass('disable');
-// 				$('#btn01_PRINT').removeClass('disable');
-				$('#btn01_SAVE').removeClass('disable');
-// 				$('#btn01_COMFIRM').removeClass('disable');
-				$('#btn01_INSERT').removeClass('disable');
-				$('#btn01_DELETE').removeClass('disable');
-				$('#btn02_INSERT').removeClass('disable');
-				$('#btn02_DELETE').removeClass('disable');
-				$('#btn03_INSERT').removeClass('disable');
-				$('#btn03_DELETE').removeClass('disable');
-				$('#btn04_INSERT').removeClass('disable');
-				$('#btn04_DELETE').removeClass('disable');
-
-				$("#table2").clearGridData();
-			} else if(status == "disable") {
-				$("#" + btnId).addClass('disable');
-			} else if(status == "able") {
-				$("#" + btnId).removeClass('disable');
-			}
-		}
-
-		/*프로젝트 기간 변경시 validation*/
-		function checkProjectDate() {
-			var start = $("#OBTAIN_PROJECT_START").val();
-			var end = $("#OBTAIN_PROJECT_END").val();
-
-			if(start > end) {
-				toast("경고", "종료날짜보다 시작날짜가 클 수 없습니다.", "error");
-				return false;
-			}
-		}
-
-		/*판매금액 계싼 (수량 * 단가)*/
-		function changeUnitPrice() {
-			var cnt = $("#OBTAIN_ITEM_CNT").val().replaceAll(",", "");
-			var unit = $("#COLLECT_UNIT_PRICE").val().replaceAll(",", "");
-
-			if(cnt.length > 0) {
-				$("#OBTAIN_ITEM_CNT").val(Number($("#OBTAIN_ITEM_CNT").val()).toLocaleString('ko-KR'));
-			}
-
-			if(unit.length > 0) {
-				$("#COLLECT_UNIT_PRICE").val(Number($("#COLLECT_UNIT_PRICE").val()).toLocaleString('ko-KR'));
-			}
-			$("#COLLECT_SALES_AMOUNT").val(parseInt(cnt) * parseInt(unit));
-			$("#COLLECT_SALES_AMOUNT").val(Number($("#COLLECT_SALES_AMOUNT").val()).toLocaleString('ko-KR'));
-		}
-
-		/* 계약일자 변경시 환율조회 이벤트 */
-		function changeContractDt(contractDT) {
-			if(contractDT != undefined || contractDT != null) {
-				var params = {
-						CONTRACT_DT : contractDT
-				}
-			} else {
-				var params = {
-						CONTRACT_DT : $("#OBTAIN_CONTRACT_DT").val()
-				}
-			}
-
-			$("#currency_VAL").text("");
-			if($("#OBTAIN_CONTRACT_DT").val().length > 0) {
-				if($("#date01_REG_DT").text().trim() >= $("#OBTAIN_CONTRACT_DT").val()){
-					getAjaxJsonData("sa1000SelExchange", params, "selectExchangeCallback");
-				} else {
-					toast("경고", "오늘자 이후 환율은 조회할 수 없습니다.", "error");
-					return false;
-				}
-			}
-		}
-
-		function selectExchangeCallback(data){
-			for(var i = 0; i < data.length; i++) {
-				if(data[i].cur_unit == "CNH") {
-					// 위안화
-					var rCNH = "위안 " + data[i].bkpr + "원 / ";
-				}
-
-				if(data[i].cur_unit == "EUR") {
-					// 유로
-					var rEUR = "유로 " + data[i].bkpr + "원 / ";
-				}
-
-				if(data[i].cur_unit == "JPY(100)") {
-					// 엔화
-					var rJPY = "엔화 " + data[i].bkpr + "원 / ";
-				}
-
-				if(data[i].cur_unit == "USD") {
-					// 달러
-					var rUSD = "달러 " + data[i].bkpr + "원";
-				}
-			}
-
-			console.log("환율 : " + rCNH + rEUR + rJPY + rUSD);
-			$("#currency_VAL").text(rCNH + rEUR + rJPY + rUSD);
-		};
-
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: confirm
 		/* confirm 확인버튼 클릭시 */
 		function confirmYes(action){
 			var params = {
-					OFFICE_TYPE : $("#OFFICE_TYPE").val()
-					, SALES_NUM : $("#SALES_NUM").val().substr(0, 12)
-					, REVISION : $("#REVISION").val()
-					, PROJECT_NM : $("#PROJECT_NM").val()
-					, OBTAIN_ACCOUNT : $("#OBTAIN_ACCOUNT").val()
-					, OBTAIN_SALES_PIC : $("#OBTAIN_SALES_PIC").val()
-					, OBTAIN_CONTRACT_DT : $("#OBTAIN_CONTRACT_DT").val()
-					, OBTAIN_ITEM : $("#OBTAIN_ITEM").val()
-					, OBTAIN_PM : $("#OBTAIN_PM").val()
-					, OBTAIN_PROJECT_START : $("#OBTAIN_PROJECT_START").val()
-					, OBTAIN_PROJECT_END : $("#OBTAIN_PROJECT_END").val()
-					, OBTAIN_ITEM_CNT : parseInt($("#OBTAIN_ITEM_CNT").val())
-					, OBTAIN_REASON : $("#OBTAIN_REASON").val()
-					, COLLECT_UNIT_PRICE : parseInt($("#COLLECT_UNIT_PRICE").val().replaceAll(",", ""))
-					, COLLECT_SALES_AMOUNT : parseInt($("#COLLECT_SALES_AMOUNT").val().replaceAll(",", ""))
-					, COLLECT_MARGIN_PER : parseFloat($("#COLLECT_MARGIN_PER").val())
-					, COLLECT_MARGIN : parseInt($("#COLLECT_MARGIN").val().replaceAll(",", ""))
-					, COLLECT_FINAL_MARGIN_PER : parseFloat($("#COLLECT_FINAL_MARGIN_PER").val())
-					, COLLECT_FINAL_MARGIN : parseInt($("#COLLECT_FINAL_MARGIN").val().replaceAll(",", ""))
+				OFFICE_TYPE : $("#OFFICE_TYPE").val()
+				, SALES_NUM : $("#SALES_NUM").val().substr(0, 12)
+				, REVISION : $("#REVISION").val()
+				, PROJECT_NM : $("#PROJECT_NM").val()
+				, OBTAIN_ACCOUNT : $("#OBTAIN_ACCOUNT").val()
+				, OBTAIN_SALES_PIC : $("#OBTAIN_SALES_PIC").val()
+				, OBTAIN_CONTRACT_DT : $("#OBTAIN_CONTRACT_DT").val()
+				, OBTAIN_ITEM : $("#OBTAIN_ITEM").val()
+				, OBTAIN_PM : $("#OBTAIN_PM").val()
+				, OBTAIN_PROJECT_START : $("#OBTAIN_PROJECT_START").val()
+				, OBTAIN_PROJECT_END : $("#OBTAIN_PROJECT_END").val()
+				, OBTAIN_ITEM_CNT : parseInt($("#OBTAIN_ITEM_CNT").val())
+				, OBTAIN_REASON : $("#OBTAIN_REASON").val()
+				, COLLECT_UNIT_PRICE : parseInt($("#COLLECT_UNIT_PRICE").val().replaceAll(",", ""))
+				, COLLECT_SALES_AMOUNT : parseInt($("#COLLECT_SALES_AMOUNT").val().replaceAll(",", ""))
+				, COLLECT_MARGIN_PER : parseFloat($("#COLLECT_MARGIN_PER").val())
+				, COLLECT_MARGIN : parseInt($("#COLLECT_MARGIN").val().replaceAll(",", ""))
+				, COLLECT_FINAL_MARGIN_PER : parseFloat($("#COLLECT_FINAL_MARGIN_PER").val())
+				, COLLECT_FINAL_MARGIN : parseInt($("#COLLECT_FINAL_MARGIN").val().replaceAll(",", ""))
 			}
 
-			getAjaxJsonData("sa1000Save", params, "saveCallback");
+			getAjaxJsonData("sa1000Update", params, "saveCallback");
 		}
 
 		function saveCallback(res) {
@@ -1206,6 +1043,7 @@
 			if (data != null) {
 				toast("성공", "저장이 완료되었습니다.", "success");
 				searchGridData();
+				setButton('reload');
 				checkAction = "";
 			}
 		}
@@ -1218,10 +1056,8 @@
 					$('#' + tb).jqGrid('setCell', idsTb2[i], 'rowStatus', '수정');
 				}
 			}
-
-
 		}
-		var lastSelection;
+
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 그리드
 		/* jqGrid 셋팅 */
 		function setGrid(){
@@ -1234,7 +1070,7 @@
 				}
 				, colNames: langHead
 				, colModel: [
-					{name: 'SALES_NUM'						, align: 'center'	, width: '9%'	, hidden: false}
+					{name: 'SALES_NUM'						, align: 'left'		, width: '9%'	, hidden: false}
 					, {name: 'REVISION'						, align: 'center'	, width: '0%'	, hidden: true}
 					, {name: 'PRE_VERSION'					, align: 'center'	, width: '5%'	, hidden: true}
 					, {name: 'SALES_CONFIRM'				, align: 'center'	, width: '4%'	, hidden: false}
@@ -1245,7 +1081,7 @@
 					, {name: 'OBTAIN_PM'					, align: 'center' 	, width: '5%'	, hidden: false}
 					, {name: 'OBTAIN_REG_DT'				, align: 'center' 	, width: '7%'	, hidden: false}
 					, {name: 'OBTAIN_UPT_DT'				, align: 'center'	, width: '7%'	, hidden: false}
-					, {name: 'OBTAIN_REASON'				, align: 'center'	, width: '10%'	, hidden: false}
+					, {name: 'OBTAIN_REASON'				, align: 'left'		, width: '10%'	, hidden: false}
 					, {name: 'OFFICE_TYPE'					, align: 'center'	, width: '0%'	, hidden: true}
 					, {name: 'OBTAIN_CONTRACT_DT'			, align: 'center'	, width: '0%'	, hidden: true}
 					, {name: 'OBTAIN_ITEM'					, align: 'center'	, width: '0%'	, hidden: true}
@@ -1265,17 +1101,18 @@
 				, rownumbers : true //자동으로 번호 부여
 				, onSelectRow : function(rowid){
 					var rowdata = $("#table1").getRowData(rowid);
+					checkActionBtn = "R";
 					checkAction = "U";
 
 					if(rowdata.SALES_CONFIRM == "미확정") {
-						setButton('selectRow');
-						inputAbled();
+						setButton('selectRowConfirmN');
 					} else {
-						inputDisabled();
+						setButton('selectRowConfirmY');
 					}
 
 					$("#date01_REG_DT").text(rowdata.OBTAIN_REG_DT);
 
+					inputDisabled();
 					updateGridData(rowdata);
 
 					searchGrid1Data(rowdata.SALES_NUM, rowdata.REVISION);
@@ -1290,36 +1127,16 @@
 
 			searchGridData();
 
-			function myelem (value, options) {
-				var el = document.createElement("input");
-				el.type = "text";
-				el.value = value;
-				return el;
-			}
-
-			function myvalue(elem, operation, value) {
-				if (operation === 'get') {
-					if (elem.length > 0) {
-						if ($.isNumeric($(elem).val()))
-							return $(elem).val();
-						else
-							return $(elem).val("");
-					} else
-						return $(elem).val("");
-				} else if (operation === 'set') {
-					$('input', elem).val(value);
-				}
-			}
-
 			function currencyFmatterPER(cellvalue, options, rowObject) {
-				var returnText = "";
-				if(typeof(cellvalue) == 'number') {
-					returnText = cellvalue + "%";
-				} else if(typeof(cellvalue) == 'string') {
-					returnText = cellvalue;
+				if(cellvalue != undefined) {
+					if(cellvalue != "") {
+						return cellvalue + "%";
+					} else {
+						return "";
+					}
+				} else {
+					return "";
 				}
-
-				return returnText;
 			}
 
 			$("#table2").jqGrid({
@@ -1357,10 +1174,8 @@
 																									                    }
 																									                }
 					}
-					, {name: 'COLLECT_PRICE'		, align: 'right'	, width: '8%', editable: true	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}
-						// , edittype:'custom', editoptions: {custom_element: myelem, custom_value:myvalue}
-					}
-					, {name: 'COLLECT_PER'			, align: 'center'	, width: '4%', editable: true	, formatter : currencyFmatterPER}
+					, {name: 'COLLECT_PRICE'		, align: 'right'	, width: '8%', editable: true	, formatter : "integer"	, formatoptions : {defaultValue : "", thousandsSeparator : ","}}
+					, {name: 'COLLECT_PER'			, align: 'right'	, width: '4%', editable: true	, formatter : "integer"	, formatter : currencyFmatterPER}
 					, {name: 'SALES_NUM'			, align: 'center'	, width: '0%', hidden: true}
 					, {name: 'REVISION'				, align: 'center'	, width: '0%', hidden: true}
 				]
@@ -1406,13 +1221,13 @@
 				, colModel: [
 					{name: 'rowStatus'			, align:'center'	, width: '3%'	, editable: false}
 					, {name:'BUY_ITEM'			, align: 'center'	, width: '6%'	, editable: true	, formatter: 'select' , edittype: 'select' , editoptions: {value: BUY_ITEMSelect}}
-					, {name: 'BUY_CNT'			, align: 'center'	, width: '4%'	, editable: true}
+					, {name: 'BUY_CNT'			, align: 'center'	, width: '3%'	, editable: true}
 					, {name: 'BUY_UNIT'			, align: 'center'	, width: '4%'	, editable: true	, formatter: 'select' , edittype: 'select' , editoptions: {value: BUY_UNITSelect}}
 					, {name: 'BUY_COIN'			, align: 'center'	, width: '4%'	, editable: true	, formatter: 'select' , edittype: 'select' , editoptions: {value: BUY_COINSelect}}
-					, {name: 'BUY_UNIT_PRICE'	, align: 'right'	, width: '6%'	, editable: true	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
-					, {name: 'BUY_PRICE'		, align: 'right'	, width: '7%'	, editable: true	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
-					, {name: 'BUY_PURCHASE'		, align: 'center'	, width: '7%'	, editable: true}
-					, {name: 'BUY_PAYMENT'		, align: 'center'	, width: '7%'	, editable: true}
+					, {name: 'BUY_UNIT_PRICE'	, align: 'right'	, width: '5%'	, editable: true	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
+					, {name: 'BUY_PRICE'		, align: 'right'	, width: '6%'	, editable: true 	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
+					, {name: 'BUY_PURCHASE'		, align: 'left'		, width: '7%'	, editable: true}
+					, {name: 'BUY_PAYMENT'		, align: 'left'		, width: '10%'	, editable: true}
 					, {name: 'BUY_MEMO'			, align: 'center'	, width: '10%'	, editable: true}
 					, {name: 'SALES_NUM'		, align: 'center'	, width: '0%'	, hidden: true}
 					, {name: 'REVISION'			, align: 'center'	, width: '0%'	, hidden: true}
@@ -1446,33 +1261,41 @@
 						}
 					});
 
-					var totPrice = 0;
-					var lastRowid = $("#table3").getRowData().length + 1;
-
+					var rOne = 0;
 					$('#table3 input#' + rowid + '_BUY_CNT').on('keyup', function(e){
-						var cnt = $('#table3 input#' + rowid + '_BUY_CNT').val();
-						var unit = $('#table3 input#' + rowid + '_BUY_UNIT_PRICE').val();
-						totCost = cnt * unit;
-						$('#table3').jqGrid('setCell', rowid, 'BUY_PRICE', totCost);
-
-						// for(var i = 1; i < lastRowid; i++) {
-						// 	var buyP = $('#table3 input#' + i.toString() + '_BUY_PRICE').val();
-						// 	totPrice += buyP;
-						// }
-						// console.log("_BUY_CNT totPrice : " + totPrice);
+						if($("#OBTAIN_CONTRACT_DT").val() == "") {
+							if(rOne < 2) {
+								rOne++;
+								alert("계약일자를 선택해주세요.");
+								return false;
+							}
+						} else {
+							table3Claculate(rowid);
+						}
 					});
 
 					$('#table3 input#' + rowid + '_BUY_UNIT_PRICE').on('keyup', function(e){
-						var cnt = $('#table3 input#' + rowid + '_BUY_CNT').val();
-						var unit = $('#table3 input#' + rowid + '_BUY_UNIT_PRICE').val();
-						totCost = cnt * unit;
-						$('#table3').jqGrid('setCell', rowid, 'BUY_PRICE', totCost);
+						if($("#OBTAIN_CONTRACT_DT").val() == "") {
+							if(rOne < 2) {
+								rOne++;
+								alert("계약일자를 선택해주세요.");
+								return false;
+							}
+						} else {
+							table3Claculate(rowid);
+						}
+					});
 
-						// for(var i = 1; i < lastRowid; i++) {
-						// 	var buyP = $('#table3 input#' + i.toString() + '_BUY_PRICE').val();
-						// 	totPrice += buyP;
-						// }
-						// console.log("_BUY_UNIT_PRICE totPrice : " + totPrice);
+					$('#table3 select#' + rowid + '_BUY_COIN').on('click', function(e){
+						if($("#OBTAIN_CONTRACT_DT").val() == "") {
+							if(rOne < 2) {
+								rOne++;
+								alert("계약일자를 선택해주세요.");
+								return false;
+							}
+						} else {
+							table3Claculate(rowid);
+						}
 					});
 				}
 			});
@@ -1494,7 +1317,8 @@
 				}
 				, colNames: langDetail3
 				, colModel: [
-					{name:'MANHOUR_ITEM'			, align: 'center'	, width: '8%'	, editable: false	, formatter: 'select' , edittype: 'select' , editoptions: {value: MANHOUR_ITEMSelect}}
+					{name: 'rowStatus'				, align:'center'	, width: '3%'	, editable: false}
+					, {name:'MANHOUR_ITEM'			, align: 'center'	, width: '8%'	, editable: false	, formatter: 'select' , edittype: 'select' , editoptions: {value: MANHOUR_ITEMSelect}}
 					, {name: 'MANHOUR_CNT'			, align: 'center'	, width: '5%'	, editable: true	, editrules: {number : true}}
 					, {name: 'MANHOUR_UNIT'			, align: 'center'	, width: '7%'	, editable: true	, formatter: 'select' , edittype: 'select' , editoptions: {value: MANHOUR_UNITSelect}}
 					, {name: 'MANHOUR_UNIT_PRICE'	, align: 'right'	, width: '10%'	, editable: true	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
@@ -1557,7 +1381,8 @@
 				}
 				, colNames: langDetail4
 				, colModel: [
-					{name:'EXPENSE_ITEM'		, align: 'center'	, width: '10%'	, editable: false}
+					{name: 'rowStatus'				, align:'center'	, width: '3%'	, editable: false}
+					, {name:'EXPENSE_ITEM'		, align: 'center'	, width: '10%'	, editable: false}
 					, {name: 'EXPENSE_PRICE'	, align: 'right'	, width: '10%'	, editable: true	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
 					, {name: 'EXPENSE_MEMO'		, align: 'left'		, width: '30%'	, editable: true}
 					, {name: 'SALES_NUM'		, align: 'center'	, width: '0%'	, hidden: true}
@@ -1603,7 +1428,8 @@
 				}
 				, colNames: langDetail5
 				, colModel: [
-					{name:'COST_VENDOR'					, align: 'center'	, width: '8%'	, editable: true}
+					{name: 'rowStatus'					, align:'center'	, width: '3%'	, editable: false}
+					, {name:'COST_VENDOR'				, align: 'center'	, width: '8%'	, editable: true}
 					, {name: 'COST_CNT'					, align: 'center'	, width: '5%'	, editable: true}
 					, {name: 'COST_ORDER_PRICE'			, align: 'right'	, width: '8%'	, editable: true	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
 					, {name: 'COST_UNIT_PRICE'			, align: 'right'	, width: '8%'	, editable: true	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
@@ -1654,6 +1480,10 @@
 						$('#table6').jqGrid('setCell', rowid, 'COST_PRICE', totCost);
 						$('#table6').jqGrid('setCell', rowid, 'COST_SERVICE_PRICE', totService);
 						$('#table6').jqGrid('setCell', rowid, 'COST_TOTAL_PRICE', totSum);
+
+						costTotPriceSum = $("#table6").jqGrid('getCol', 'COST_TOTAL_PRICE', false, 'sum');
+
+						marginCalculate();
 					});
 
 					$('#table6 input#' + rowid + '_COST_UNIT_PRICE').on('keyup', function(e){
@@ -1664,16 +1494,24 @@
 						totSum = totCost + parseInt(serviceP);
 						$('#table6').jqGrid('setCell', rowid, 'COST_PRICE', totCost);
 						$('#table6').jqGrid('setCell', rowid, 'COST_TOTAL_PRICE', totSum);
+
+						costTotPriceSum = $("#table6").jqGrid('getCol', 'COST_TOTAL_PRICE', false, 'sum');
+
+						marginCalculate();
 					});
 
 					$('#table6 input#' + rowid + '_COST_SERVICE_UNIT_PRICE').on('keyup', function(e){
 						var cnt = $('#table6 input#' + rowid + '_COST_CNT').val();
 						var unit = $('#table6 input#' + rowid + '_COST_SERVICE_UNIT_PRICE').val();
-						var costP = $('#table6 input#' + rowid + '_COST_PRICE').val();
+						var unitP = $('#table6 input#' + rowid + '_COST_UNIT_PRICE').val();
 						totCost = cnt * unit;
-						totSum = parseInt(costP) + totCost;
+						totSum = cnt * unitP + totCost;
 						$('#table6').jqGrid('setCell', rowid, 'COST_SERVICE_PRICE', totCost);
 						$('#table6').jqGrid('setCell', rowid, 'COST_TOTAL_PRICE', totSum);
+
+						costTotPriceSum = $("#table6").jqGrid('getCol', 'COST_TOTAL_PRICE', false, 'sum');
+
+						marginCalculate();
 					});
 				}
 			});
@@ -1695,9 +1533,10 @@
 				}
 				, colNames: langDetail6
 				, colModel: [
-					{name:'SM_ITEM'					, align: 'center'	, width: '200%'	, editable: true}
-					, {name: 'SM_CLASS'				, align: 'center'	, width: '200%'	, editable: true}
-					, {name: 'SM_DELIVERY_DT'		, align: 'center'	, width: '200%'	, editable: true	, editoptions: {dataInit: function (element) {
+					{name: 'rowStatus'				, align:'center'	, width: '4%'	, editable: false}
+					, {name:'SM_ITEM'				, align: 'center'	, width: '8%'	, editable: true}
+					, {name: 'SM_CLASS'				, align: 'center'	, width: '8%'	, editable: true}
+					, {name: 'SM_DELIVERY_DT'		, align: 'center'	, width: '8%'	, editable: true	, editoptions: {dataInit: function (element) {
 																											                        $(element).datepicker({
 																											                            id: 'orderDate_datePicker',
 																											                            dateFormat: 'yy-mm-dd',
@@ -1708,7 +1547,7 @@
 																											                    }
 																											                }
 					}
-					, {name: 'SM_INSPECT_DT'		, align: 'center'	, width: '200%'	, editable: true	, editoptions: {dataInit: function (element) {
+					, {name: 'SM_INSPECT_DT'		, align: 'center'	, width: '8%'	, editable: true	, editoptions: {dataInit: function (element) {
 																											                        $(element).datepicker({
 																											                            id: 'orderDate_datePicker',
 																											                            dateFormat: 'yy-mm-dd',
@@ -1719,8 +1558,8 @@
 																											                    }
 																											                }
 					}
-					, {name: 'SM_WARRANTY'			, align: 'center'	, width: '200%'	, editable: true}
-					, {name: 'SM_MAINTENANCE_DT'	, align: 'center'	, width: '200%'	, editable: true	, editoptions: {dataInit: function (element) {
+					, {name: 'SM_WARRANTY'			, align: 'center'	, width: '5%'	, editable: true}
+					, {name: 'SM_MAINTENANCE_DT'	, align: 'center'	, width: '8%'	, editable: true	, editoptions: {dataInit: function (element) {
 																											                        $(element).datepicker({
 																											                            id: 'orderDate_datePicker',
 																											                            dateFormat: 'yy-mm-dd',
@@ -1731,10 +1570,10 @@
 																											                    }
 																											                }
 					}
-					, {name: 'SM_MAINTENANCE_PRICE'	, align: 'right'	, width: '200%'	, editable: true	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
-					, {name: 'SM_BACKLINE'			, align: 'center'	, width: '200%'	, editable: true}
-					, {name: 'SM_BACKLINE_PRICE'	, align: 'right'	, width: '200%'	, editable: true	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
-					, {name: 'SM_BACKLINE_GOAL'		, align: 'right'	, width: '200%'	, editable: true	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
+					, {name: 'SM_MAINTENANCE_PRICE'	, align: 'right'	, width: '10%'	, editable: true	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
+					, {name: 'SM_BACKLINE'			, align: 'center'	, width: '13%'	, editable: true}
+					, {name: 'SM_BACKLINE_PRICE'	, align: 'right'	, width: '10%'	, editable: true	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
+					, {name: 'SM_BACKLINE_GOAL'		, align: 'right'	, width: '10%'	, editable: true	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
 					, {name: 'SALES_NUM'			, align: 'center'	, width: '0%'	, hidden: true}
 					, {name: 'REVISION'				, align: 'center'	, width: '0%'	, hidden: true}
 				]
@@ -1758,6 +1597,8 @@
 					$(this).jqGrid('editRow', rowid, {
 						keys : true,
 						onEnter : function(rowid, options, event) {
+							checkSMDate(rowid);
+
 							$(this).jqGrid("saveRow", rowid, options);
 							if(status == "추가") {
 								$(this).jqGrid('setCell', rowid, 'rowStatus', '추가');
@@ -1778,8 +1619,9 @@
 				}
 				, colNames: langDetail7
 				, colModel: [
-					{name:'DETAIL_TRANSACTIONAL'	, align: 'left'		, width: '50%'	, editable: true	, edittype: 'textarea', editoptions: {rows:"7"}	, cellattr: function () { return " class='textareaInDiv'" }}
-					, {name: 'DETAIL_SIGNIFICANT'	, align: 'left'		, width: '50%'	, editable: true	, edittype: 'textarea', editoptions: {rows:"7"}	, cellattr: function () { return " class='textareaInDiv'" }}
+					{name: 'rowStatus'				, align:'center'	, width: '3%'	, editable: false}
+					, {name:'DETAIL_TRANSACTIONAL'	, align: 'left'		, width: '30%'	, editable: true	, edittype: 'textarea', editoptions: {rows:"7"}	, cellsubmit: 'clientArray', cellattr: function () { return " class='textareaInDiv'" }}
+					, {name: 'DETAIL_SIGNIFICANT'	, align: 'left'		, width: '30%'	, editable: true	, edittype: 'textarea', editoptions: {rows:"7"}	, cellsubmit: 'clientArray', cellattr: function () { return " class='textareaInDiv'" }}
 					, {name: 'SALES_NUM'			, align: 'center'	, width: '0%'	, hidden: true}
 					, {name: 'REVISION'				, align: 'center'	, width: '0%'	, hidden: true}
 				]
@@ -1792,125 +1634,27 @@
 						$("tr#" + rowid, $(this)).addClass('update');
 						$(this).jqGrid('setCell', rowid, 'rowStatus', '수정');
 					}
-				}
-				,ondblClickRow : function(rowid, iRow, iCol, e) {
-					debugger;
+
+					$(this).jqGrid('editRow', rowid, {
+						keys : true,
+						oneditfunc : function(rowid) {
+							$("#"+rowid+"_DETAIL_SIGNIFICANT").keydown(function(e) {
+								if(e.keyCode === 9) { // tab key
+									$("#table8").jqGrid("saveRow", rowid);
+									if(status == "추가") {
+										$(this).jqGrid('setCell', rowid, 'rowStatus', '추가');
+									} else if(isEmpty(status)) {
+										$(this).jqGrid('setCell', rowid, 'rowStatus', '수정');
+									}
+								}
+							});
+						}
+					});
 				}
 			});
 		};
 
-// 		function selectSalesNum(){
-// 			var searchParam = {
-// 					OFFICE : $("#OFFICE_TYPE").val()
-// 			};
-
-// 			getAjaxJsonData("sa1000SelSalesNum", searchParam, "selectSalesNumCallBack");
-// 		};
-
-// 		function selectSalesNumCallBack(data){debugger;
-//  			$("#SALES_NUM").val("");
-// 		};
-
-		function setSalesNum(){
-			var now = new Date();
-			var office = $("#OFFICE_TYPE").val();
-			var salseNum1 = "";
-			var salseNum2 = now.getFullYear();
-			var salseNum3 = now.getMonth() + 1;
-
-			if(office == "OFFICE1SEOUL") {
-				salseNum1 = "S-";
-			} else if(office == "OFFICE2ULSAN") {
-				salseNum1 = "U-";
-			} else if(office == "OFFICE3DAEGU") {
-				salseNum1 = "D-";
-			}
-
-			salseNum2 = salseNum2.toString().substr(2, 2);
-			salseNum3 = salseNum3 < 10 ? "0" + salseNum3 + "-" : salseNum3 + "-";
-
-			$("#SALES_NUM").val("HC" + salseNum1 + salseNum2 + salseNum3);
-			$("#REVISION").val("00");
-		}
-
-		function clearGridData(action) {
-			var mm = (nowDate.getMonth()+1) < 10 ? "0" + (nowDate.getMonth()+1) : (nowDate.getMonth()+1);
-			var yy = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
-			$("#date01_REG_DT").text(nowDate.getFullYear() + "-" + mm + "-" + yy);
-
-			$("#OFFICE_TYPE").find("option:eq(0)").prop("selected", "selected");
-			setSalesNum();
- 			$("#PROJECT_NM").val("");
- 			$("#OBTAIN_ACCOUNT").val("");
- 			$("#OBTAIN_SALES_PIC").val("");
- 			$("#OBTAIN_CONTRACT_DT").val("");
- 			$("#OBTAIN_ITEM").val("");
-			$("#OBTAIN_ITEM_CNT").val("");
-			$("#OBTAIN_PM").val("");
-			$("#OBTAIN_PROJECT_START").val("");
-			$("#OBTAIN_PROJECT_END").val("");
-
- 			$("#pop01_lb01_REASON").text("");
- 			$("#OBTAIN_REASON").addClass('dis-n');
-
- 			$("#currency_VAL").text("");
-
- 			$("#COLLECT_UNIT_PRICE").val("");
- 			$("#COLLECT_SALES_AMOUNT").val("");
- 			$("#COLLECT_MARGIN_PER").val("");
- 			$("#COLLECT_MARGIN").val("");
- 			$("#COLLECT_FINAL_MARGIN_PER").val("");
- 			$("#COLLECT_FINAL_MARGIN").val("");
-
-		 	if(action == "mody") {
-				inputAbled();
-			 }
-
-			$("#table2").clearGridData();
-			$("#table3").clearGridData();
-			$("#table4").clearGridData();
-			$("#table5").clearGridData();
-			$("#table6").clearGridData();
-			$("#table7").clearGridData();
-			$("#table8").clearGridData();
-		}
-
-		/* 그리드row 클릭시 값 세팅 */
-		function updateGridData(selRowData){
-			$("#OFFICE_TYPE").val(selRowData.OFFICE_TYPE);
- 			$("#SALES_NUM").val(selRowData.SALES_NUM);
- 			$("#REVISION").val(selRowData.REVISION);
- 			$("#PROJECT_NM").val(selRowData.PROJECT_NM);
- 			$("#OBTAIN_ACCOUNT").val(selRowData.OBTAIN_ACCOUNT);
- 			$("#OBTAIN_SALES_PIC").val(selRowData.OBTAIN_SALES_PIC);
- 			$("#OBTAIN_CONTRACT_DT").val(selRowData.OBTAIN_CONTRACT_DT);
- 			$("#OBTAIN_ITEM").val(selRowData.OBTAIN_ITEM);
- 			$("#OBTAIN_PM").val(selRowData.OBTAIN_PM);
- 			$("#OBTAIN_PROJECT_START").val(selRowData.OBTAIN_PROJECT_START);
- 			$("#OBTAIN_PROJECT_END").val(selRowData.OBTAIN_PROJECT_END);
- 			$("#OBTAIN_ITEM_CNT").val(selRowData.OBTAIN_ITEM_CNT);
-
-			if(selRowData.OBTAIN_REASON.length > 0) {
-				$("#pop01_lb01_REASON").text("11. 변경사유");
-				$("#OBTAIN_REASON").removeClass('dis-n');
-				$("#OBTAIN_REASON").val(selRowData.OBTAIN_REASON);
-			}
-
-			changeContractDt(selRowData.OBTAIN_CONTRACT_DT);
-
- 			$("#COLLECT_UNIT_PRICE").val(selRowData.COLLECT_UNIT_PRICE);
- 			$("#COLLECT_SALES_AMOUNT").val(selRowData.COLLECT_SALES_AMOUNT);
- 			$("#COLLECT_MARGIN_PER").val(selRowData.COLLECT_MARGIN_PER);
- 			$("#COLLECT_MARGIN").val(selRowData.COLLECT_MARGIN);
- 			$("#COLLECT_FINAL_MARGIN_PER").val(selRowData.COLLECT_FINAL_MARGIN_PER);
- 			$("#COLLECT_FINAL_MARGIN").val(selRowData.COLLECT_FINAL_MARGIN);
-
-			if(selRowData.SALES_CONFIRM == "미확정") {
-				inputAbled();
-			}
-		}
-
-		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: CRUD
+		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: CRUD - 조회
 		/* Table 조회 */
 		function searchGridData(){
 			var searchParam = {
@@ -1928,6 +1672,13 @@
 				datatype: 'local'
 				, data: data
 			}).trigger("reloadGrid");
+
+			if(data.length > 0){
+				tableCnt = comma(data.length);
+				$("#table1_cnt").text(tableCnt);
+			} else {
+				$('#table1_cnt').text(0);
+			}
 
 			clearGridData();
 		};
@@ -2051,9 +1802,566 @@
 			}).trigger("reloadGrid");
 		};
 
-		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 유효성
+		/*최신 판품번호 조회*/
+		function selectSalesNum(){
+			var searchParam = {
+				OFFICE_TYPE : $("#OFFICE_TYPE").val()
+			};
 
+			getAjaxJsonData("sa1000SelSalesNum", searchParam, "selectSalesNumCallBack");
+		};
 
-		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: Popup
+		function selectSalesNumCallBack(data){
+			if(data.result != null) {
+				$("#SALES_NUM").val(data.result);
+			} else {
+				toast("경고", "일시적인 오류가 발생했습니다.", "error");
+				return false;
+			}
+		};
+
+		/*신규 데이터 저장*/
+		function saveNewData(){
+			var params = {
+				OFFICE_TYPE : $("#OFFICE_TYPE").val()
+				, SALES_NUM : $("#SALES_NUM").val().substr(0, 12)
+				, REVISION : $("#REVISION").val()
+				, PROJECT_NM : $("#PROJECT_NM").val()
+				, OBTAIN_ACCOUNT : $("#OBTAIN_ACCOUNT").val()
+				, OBTAIN_SALES_PIC : $("#OBTAIN_SALES_PIC").val()
+				, OBTAIN_CONTRACT_DT : $("#OBTAIN_CONTRACT_DT").val()
+				, OBTAIN_ITEM : $("#OBTAIN_ITEM").val()
+				, OBTAIN_PM : $("#OBTAIN_PM").val()
+				, OBTAIN_PROJECT_START : $("#OBTAIN_PROJECT_START").val()
+				, OBTAIN_PROJECT_END : $("#OBTAIN_PROJECT_END").val()
+				, OBTAIN_ITEM_CNT : parseInt($("#OBTAIN_ITEM_CNT").val())
+				, OBTAIN_REASON : $("#OBTAIN_REASON").val()
+				, COLLECT_UNIT_PRICE : parseInt($("#COLLECT_UNIT_PRICE").val().replaceAll(",", ""))
+				, COLLECT_SALES_AMOUNT : parseInt($("#COLLECT_SALES_AMOUNT").val().replaceAll(",", ""))
+				, COLLECT_MARGIN_PER : parseFloat($("#COLLECT_MARGIN_PER").val())
+				, COLLECT_MARGIN : parseInt($("#COLLECT_MARGIN").val().replaceAll(",", ""))
+				, COLLECT_FINAL_MARGIN_PER : parseFloat($("#COLLECT_FINAL_MARGIN_PER").val())
+				, COLLECT_FINAL_MARGIN : parseInt($("#COLLECT_FINAL_MARGIN").val().replaceAll(",", ""))
+			}
+
+			getAjaxJsonData("sa1000Save", params, "saveNewDataCallback");
+		}
+
+		function saveNewDataCallback(res) {
+			var gridArray = [ 'table2', 'table3', 'table4', 'table5', 'table6', 'table7', 'table8' ];
+			mergeGridData(gridArray, 'sa1000MergeData', 'SA1000MergeNewDataCallBack');
+		}
+
+		function SA1000MergeNewDataCallBack(data) {
+			if (data != null) {
+				new Promise(function(resolve, reject) {
+					searchGridData();
+					return resolve();
+				}).then(function() {
+					setTimeout(function() {
+						$("#table1 tr").eq(1).trigger("click");
+						clearGridData("mody");
+					}, 300);
+				});
+			}
+		}
+
+		/* 계약일자 변경시 환율조회 이벤트 */
+		function changeContractDt(contractDT) {
+			if(contractDT != undefined || contractDT != null) {
+				var params = {
+					CONTRACT_DT : contractDT
+				}
+			} else {
+				var params = {
+					CONTRACT_DT : $("#OBTAIN_CONTRACT_DT").val()
+				}
+			}
+
+			$("#currency_VAL").text("");
+			if($("#OBTAIN_CONTRACT_DT").val().length > 0) {
+				if(new Date($("#date01_REG_DT").text().trim()) >= new Date($("#OBTAIN_CONTRACT_DT").val())) {
+					getAjaxJsonData("sa1000SelExchange", params, "selectExchangeCallback");
+				} else {
+					toast("경고", "오늘자 이후 환율은 조회할 수 없습니다.", "error");
+					return false;
+				}
+			}
+		}
+
+		var cnh = "", eur = "", jpy = "", usd = "";
+		function selectExchangeCallback(data){
+			for(var i = 0; i < data.length; i++) {
+				if(data[i].cur_unit == "CNH") {
+					// 위안화
+					var rCNH = "위안 " + data[i].bkpr + "원 / ";
+					cnh = data[i].bkpr;
+				}
+
+				if(data[i].cur_unit == "EUR") {
+					// 유로
+					var rEUR = "유로 " + data[i].bkpr + "원 / ";
+					eur = data[i].bkpr;
+				}
+
+				if(data[i].cur_unit == "JPY(100)") {
+					// 엔화
+					var rJPY = "엔화 " + data[i].bkpr + "원 / ";
+					jpy = data[i].bkpr;
+				}
+
+				if(data[i].cur_unit == "USD") {
+					// 달러
+					var rUSD = "달러 " + data[i].bkpr + "원";
+					usd = data[i].bkpr;
+				}
+			}
+
+			console.log("환율 : " + rCNH + rEUR + rJPY + rUSD);
+			$("#currency_VAL").text(rCNH + rEUR + rJPY + rUSD);
+
+			var status = $(this).jqGrid('getCell', "1", 'rowStatus');
+			if(isEmpty(status)) {
+				var ids = $("#table3").jqGrid('getDataIDs');
+				console.log('ids : ', ids);
+				for(var i = 0; i < ids.length; i++) {
+					$("#table3").jqGrid('saveRow', ids[i], true, 'clientArray');
+					console.log('호출? : table3Claculate');
+					table3Claculate(ids);
+				}
+			}
+		};
+
+		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 검증
+		/*프로젝트 기간 변경시 validation*/
+		function checkProjectDate() {
+			var start = $("#OBTAIN_PROJECT_START").val();
+			var end = $("#OBTAIN_PROJECT_END").val();
+
+			if(start > end) {
+				toast("경고", "종료날짜보다 시작날짜가 클 수 없습니다.", "error");
+				return false;
+			}
+		}
+
+		function checkSMDate(rowid) {
+			var start = $('#table7 input#' + rowid + '_SM_DELIVERY_DT').val();
+			var end = $('#table7 input#' + rowid + '_SM_INSPECT_DT').val();
+
+			if(start > end) {
+				toast("경고", "검수예정일보다 납품예정일이 클 수 없습니다.", "error");
+				return false;
+			}
+		}
+
+		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 계산
+		/*판매금액 계산 (수량 * 단가)*/
+		function changeUnitPrice() {
+			var cnt = $("#OBTAIN_ITEM_CNT").val().replaceAll(",", "");
+			var unit = $("#COLLECT_UNIT_PRICE").val().replaceAll(",", "");
+
+			if(cnt.length > 0) {
+				$("#OBTAIN_ITEM_CNT").val(Number(cnt).toLocaleString('ko-KR'));
+			} else {
+				cnt = 0;
+			}
+
+			if(unit.length > 0) {
+				$("#COLLECT_UNIT_PRICE").val(Number(unit).toLocaleString('ko-KR'));
+			} else {
+				unit = 0;
+			}
+
+			$("#COLLECT_SALES_AMOUNT").val(parseInt(cnt) * parseInt(unit));
+			$("#COLLECT_SALES_AMOUNT").val(Number($("#COLLECT_SALES_AMOUNT").val()).toLocaleString('ko-KR'));
+
+			marginCalculate();
+		}
+
+		function table3Claculate(rowid) {
+			var cnt = $('#table3 input#' + rowid + '_BUY_CNT').val();
+			var unit = $('#table3 input#' + rowid + '_BUY_UNIT_PRICE').val();
+			var coin = $('#table3 select#' + rowid + '_BUY_COIN').val();
+			console.log('table3Cal coin : ', coin);
+			if(coin == "COIN2USD") {
+				totCost = cnt * unit * usd.replaceAll(",", "");
+			} else if(coin == "COIN3EUR") {
+				totCost = cnt * unit * eur.replaceAll(",", "");
+			} else if(coin == "COIN4CNH") {
+				totCost = cnt * unit * cnh.replaceAll(",", "");
+			} else if(coin == "COIN5JPY") {
+				totCost = cnt * unit * jpy.replaceAll(",", "");
+			} else {
+				totCost = cnt * unit;
+			}
+			console.log('table3Cal totCost : ', totCost);
+			// totCost = totCost.toFixed(1).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+			// console.log('table3Cal totCost last : ', totCost);
+			$('#table3').jqGrid('setCell', rowid, 'BUY_PRICE', totCost);
+
+			buyPriceSum = $("#table3").jqGrid('getCol', 'BUY_PRICE', false, 'sum');
+
+			marginCalculate();
+		}
+
+		/*마진/최종마진 금액, 비율 계산*/
+		function marginCalculate() {
+			if($("#COLLECT_SALES_AMOUNT").val().length > 0) {
+				var salesA = parseInt($("#COLLECT_SALES_AMOUNT").val().replaceAll(",", ""));	// 판매금액
+				$("#COLLECT_MARGIN").val(salesA - buyPriceSum);	// 마진금액
+				$("#COLLECT_MARGIN").val(Number($("#COLLECT_MARGIN").val()).toLocaleString('ko-KR'));
+				$("#COLLECT_FINAL_MARGIN").val(salesA - buyPriceSum - costTotPriceSum);	// 최종마진금액
+				$("#COLLECT_FINAL_MARGIN").val(Number($("#COLLECT_FINAL_MARGIN").val()).toLocaleString('ko-KR'));
+
+				var margin = parseInt($("#COLLECT_MARGIN").val().replaceAll(",", ""));	// 마진금액
+				var finalMargin = parseInt($("#COLLECT_FINAL_MARGIN").val().replaceAll(",", ""));	// 최종마진금액
+				if(salesA > 0) {
+					var maringPer = margin / salesA * 100;
+					var finalMarginPer = finalMargin / salesA * 100;
+					$("#COLLECT_MARGIN_PER").val(parseFloat(maringPer).toFixed(2) + "%");
+					$("#COLLECT_FINAL_MARGIN_PER").val(parseFloat(finalMarginPer).toFixed(2) + "%");
+				} else {
+					$("#COLLECT_MARGIN_PER").val("");
+					$("#COLLECT_FINAL_MARGIN_PER").val("");
+				}
+
+			}
+		}
+
+		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 상태(input, button)
+		function inputDisabled() {
+			$('#OFFICE_TYPE').attr("disabled", true);
+			$('#PROJECT_NM').attr("disabled", true);
+			$('#OBTAIN_ACCOUNT').attr("disabled", true);
+			$('#OBTAIN_SALES_PIC').attr("disabled", true);
+			$('#OBTAIN_CONTRACT_DT').attr("disabled", true);
+			$('#OBTAIN_ITEM').attr("disabled", true);
+			$('#OBTAIN_ITEM_CNT').attr("disabled", true);
+			$('#OBTAIN_PM').attr("disabled", true);
+			$('#OBTAIN_PROJECT_START').attr("disabled", true);
+			$('#OBTAIN_PROJECT_END').attr("disabled", true);
+			$('#OBTAIN_REASON').attr("disabled", true);
+
+			$('#COLLECT_UNIT_PRICE').attr("disabled", true);
+			$('#COLLECT_SALES_AMOUNT').attr("disabled", true);
+			$('#COLLECT_MARGIN_PER').attr("disabled", true);
+			$('#COLLECT_MARGIN').attr("disabled", true);
+			$('#COLLECT_FINAL_MARGIN_PER').attr("disabled", true);
+			$('#COLLECT_FINAL_MARGIN').attr("disabled", true);
+		}
+
+		function inputAbled() {
+			$('#OFFICE_TYPE').attr("disabled", false);
+			$('#PROJECT_NM').attr("disabled", false);
+			$('#OBTAIN_ACCOUNT').attr("disabled", false);
+			$('#OBTAIN_SALES_PIC').attr("disabled", false);
+			$('#OBTAIN_CONTRACT_DT').attr("disabled", false);
+			$('#OBTAIN_ITEM').attr("disabled", false);
+			$('#OBTAIN_ITEM_CNT').attr("disabled", false);
+			$('#OBTAIN_PM').attr("disabled", false);
+			$('#OBTAIN_PROJECT_START').attr("disabled", false);
+			$('#OBTAIN_PROJECT_END').attr("disabled", false);
+			$('#OBTAIN_REASON').attr("disabled", false);
+
+			$('#COLLECT_UNIT_PRICE').attr("disabled", false);
+			$('#COLLECT_SALES_AMOUNT').attr("disabled", false);
+			$('#COLLECT_MARGIN_PER').attr("disabled", false);
+			$('#COLLECT_MARGIN').attr("disabled", false);
+			$('#COLLECT_FINAL_MARGIN_PER').attr("disabled", false);
+			$('#COLLECT_FINAL_MARGIN').attr("disabled", false);
+		}
+
+		/* 버튼 재설정 */
+		function setButton(status, btnId) {
+			if(status == "init") {
+				$('#btn01_COPY').addClass('disable');
+				$('#btn01_PRINT').addClass('disable');
+				$('#btn01_UPDATE').addClass('disable');
+				$('#btn01_SAVE').addClass('disable');
+				$('#btn01_COMFIRM').addClass('disable');
+				$('#btn01_INSERT').addClass('disable');
+				$('#btn01_DELETE').addClass('disable');
+				$('#btn02_INSERT').addClass('disable');
+				$('#btn02_DELETE').addClass('disable');
+				$('#btn03_INSERT').addClass('disable');
+				$('#btn03_DELETE').addClass('disable');
+				$('#btn04_INSERT').addClass('disable');
+				$('#btn04_DELETE').addClass('disable');
+
+				inputDisabled();
+
+			} else if(status == "selectRowConfirmN") {
+				$('#btn01_COPY').removeClass('disable');
+
+				if($("#table1").getRowData($("#table1").getGridParam("selrow")).SALES_CONFIRM == "확정") {
+					$('#btn01_PRINT').removeClass('disable');
+				} else {
+					$('#btn01_PRINT').addClass('disable');
+				}
+
+				$('#btn01_UPDATE').removeClass('disable');
+				$('#btn01_SAVE').addClass('disable');
+				$('#btn01_COMFIRM').removeClass('disable');
+				$('#btn01_INSERT').removeClass('disable');
+				$('#btn01_DELETE').removeClass('disable');
+				$('#btn02_INSERT').removeClass('disable');
+				$('#btn02_DELETE').removeClass('disable');
+				$('#btn03_INSERT').removeClass('disable');
+				$('#btn03_DELETE').removeClass('disable');
+				$('#btn04_INSERT').removeClass('disable');
+				$('#btn04_DELETE').removeClass('disable');
+
+				inputAbled();
+
+			} else if(status == "selectRowConfirmY") {
+				$('#btn01_COPY').removeClass('disable');
+				$('#btn01_PRINT').removeClass('disable');
+				$('#btn01_UPDATE').removeClass('disable');
+				$('#btn01_SAVE').addClass('disable');
+				$('#btn01_COMFIRM').addClass('disable');
+				$('#btn01_INSERT').removeClass('disable');
+				$('#btn01_DELETE').removeClass('disable');
+				$('#btn02_INSERT').removeClass('disable');
+				$('#btn02_DELETE').removeClass('disable');
+				$('#btn03_INSERT').removeClass('disable');
+				$('#btn03_DELETE').removeClass('disable');
+				$('#btn04_INSERT').removeClass('disable');
+				$('#btn04_DELETE').removeClass('disable');
+
+				inputDisabled();
+
+			} else if(status == "modify") {
+				$('#btn01_COPY').addClass('disable');
+				$('#btn01_PRINT').addClass('disable');
+				$('#btn01_UPDATE').addClass('disable');
+				$('#btn01_SAVE').removeClass('disable');
+				$('#btn01_COMFIRM').addClass('disable');
+				$('#btn01_INSERT').removeClass('disable');
+				$('#btn01_DELETE').removeClass('disable');
+				$('#btn02_INSERT').removeClass('disable');
+				$('#btn02_DELETE').removeClass('disable');
+				$('#btn03_INSERT').removeClass('disable');
+				$('#btn03_DELETE').removeClass('disable');
+				$('#btn04_INSERT').removeClass('disable');
+				$('#btn04_DELETE').removeClass('disable');
+
+				$("#table2").clearGridData();
+
+			} else if(status == "reload") {
+				$('#btn01_COPY').removeClass('disable');
+				$('#btn01_PRINT').removeClass('disable');
+				$('#btn01_UPDATE').removeClass('disable');
+				$('#btn01_SAVE').removeClass('disable');
+				$('#btn01_COMFIRM').removeClass('disable');
+				$('#btn01_INSERT').removeClass('disable');
+				$('#btn01_DELETE').removeClass('disable');
+				$('#btn02_INSERT').removeClass('disable');
+				$('#btn02_DELETE').removeClass('disable');
+				$('#btn03_INSERT').removeClass('disable');
+				$('#btn03_DELETE').removeClass('disable');
+				$('#btn04_INSERT').removeClass('disable');
+				$('#btn04_DELETE').removeClass('disable');
+
+				inputDisabled();
+
+			} else if(status == "disable") {
+				$("#" + btnId).addClass('disable');
+
+			} else if(status == "able") {
+				$("#" + btnId).removeClass('disable');
+			}
+		}
+
+		function setSalesNum(){
+			var now = new Date();
+			var office = $("#OFFICE_TYPE").val();
+			var salseNum1 = "";
+			var salseNum2 = now.getFullYear();
+			var salseNum3 = now.getMonth() + 1;
+
+			if(office == "OFFICE1SEOUL") {
+				salseNum1 = "S-";
+			} else if(office == "OFFICE2ULSAN") {
+				salseNum1 = "U-";
+			} else if(office == "OFFICE3DAEGU") {
+				salseNum1 = "D-";
+			}
+
+			salseNum2 = salseNum2.toString().substr(2, 2);
+			salseNum3 = salseNum3 < 10 ? "0" + salseNum3 + "-" : salseNum3 + "-";
+
+			$("#SALES_NUM").val("HC" + salseNum1 + salseNum2 + salseNum3);
+			$("#REVISION").val("00");
+		}
+
+		function clearGridData(action) {
+			$("#date01_REG_DT").text(today);
+			$("#OFFICE_TYPE").find("option:eq(0)").prop("selected", "selected");
+			if(action != "mody") {
+				$("#SALES_NUM").val("");
+			}
+			$("#PROJECT_NM").val("");
+			$("#OBTAIN_ACCOUNT").val("");
+			$("#OBTAIN_SALES_PIC").val("");
+			$("#OBTAIN_CONTRACT_DT").val("");
+			$("#OBTAIN_ITEM").val("");
+			$("#OBTAIN_ITEM_CNT").val("");
+			$("#OBTAIN_PM").val("");
+			$("#OBTAIN_PROJECT_START").val("");
+			$("#OBTAIN_PROJECT_END").val("");
+
+			$("#pop01_lb01_REASON").text("");
+			$("#OBTAIN_REASON").addClass('dis-n');
+
+			$("#currency_VAL").text("");
+
+			$("#COLLECT_UNIT_PRICE").val("");
+			$("#COLLECT_SALES_AMOUNT").val("");
+			$("#COLLECT_MARGIN_PER").val("");
+			$("#COLLECT_MARGIN").val("");
+			$("#COLLECT_FINAL_MARGIN_PER").val("");
+			$("#COLLECT_FINAL_MARGIN").val("");
+
+			$("#table2").clearGridData();
+			$("#table3").clearGridData();
+			$("#table4").clearGridData();
+			$("#table5").clearGridData();
+			$("#table6").clearGridData();
+			$("#table7").clearGridData();
+			$("#table8").clearGridData();
+		}
+
+		/* 그리드row 클릭시 값 세팅 */
+		function updateGridData(selRowData, state){
+			$("#OFFICE_TYPE").val(selRowData.OFFICE_TYPE);
+
+			if(state == "copy") {
+				selectSalesNum();
+			} else {
+				$("#SALES_NUM").val(selRowData.SALES_NUM);
+			}
+
+			$("#REVISION").val(selRowData.REVISION);
+			$("#PROJECT_NM").val(selRowData.PROJECT_NM);
+			$("#OBTAIN_ACCOUNT").val(selRowData.OBTAIN_ACCOUNT);
+			$("#OBTAIN_SALES_PIC").val(selRowData.OBTAIN_SALES_PIC);
+			$("#OBTAIN_CONTRACT_DT").val(selRowData.OBTAIN_CONTRACT_DT);
+			$("#OBTAIN_ITEM").val(selRowData.OBTAIN_ITEM);
+			$("#OBTAIN_PM").val(selRowData.OBTAIN_PM);
+			$("#OBTAIN_PROJECT_START").val(selRowData.OBTAIN_PROJECT_START);
+			$("#OBTAIN_PROJECT_END").val(selRowData.OBTAIN_PROJECT_END);
+			$("#OBTAIN_ITEM_CNT").val(selRowData.OBTAIN_ITEM_CNT);
+
+			if(selRowData.SALES_CONFIRM == "확정") {
+				$("#pop01_lb01_REASON").text("11. 변경사유");
+				$("#OBTAIN_REASON").removeClass('dis-n');
+				$("#OBTAIN_REASON").val(selRowData.OBTAIN_REASON);
+			} else {
+				if(parseInt($("#REVISION").val()) > 0) {
+					$("#pop01_lb01_REASON").text("11. 변경사유");
+					$("#OBTAIN_REASON").removeClass('dis-n');
+					$("#OBTAIN_REASON").val(selRowData.OBTAIN_REASON);
+				} else {
+					$("#pop01_lb01_REASON").text("");
+					$("#OBTAIN_REASON").addClass('dis-n');
+					$("#OBTAIN_REASON").val("");
+				}
+			}
+
+			changeContractDt(selRowData.OBTAIN_CONTRACT_DT);
+
+			$("#COLLECT_UNIT_PRICE").val(selRowData.COLLECT_UNIT_PRICE);
+			$("#COLLECT_SALES_AMOUNT").val(selRowData.COLLECT_SALES_AMOUNT);
+			$("#COLLECT_MARGIN_PER").val(selRowData.COLLECT_MARGIN_PER + "%");
+			$("#COLLECT_MARGIN").val(selRowData.COLLECT_MARGIN);
+			$("#COLLECT_FINAL_MARGIN_PER").val(selRowData.COLLECT_FINAL_MARGIN_PER + "%");
+			$("#COLLECT_FINAL_MARGIN").val(selRowData.COLLECT_FINAL_MARGIN);
+
+			// if (selRowData.SALES_CONFIRM == "미확정") {
+			// 	inputAbled();
+			// }
+		}
+
+		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: Grid 콤보박스
+		function selectBox() {
+			getAjaxData("selectLists?LIST_TYPE=PAYMENT", '', 'PAYMENTSelectCallBack');
+			getAjaxData("selectLists?LIST_TYPE=UNIT", '', 'UNITSelectCallBack');
+			getAjaxData("selectLists?LIST_TYPE=COIN", '', 'COINSelectCallBack');
+			getAjaxData("selectLists?LIST_TYPE=ITEM", '', 'ITEMSelectCallBack');
+			getAjaxData("selectLists?LIST_TYPE=ITEMMM", '', 'MANHOUR_ITEMSelectCallBack');
+			getAjaxData("selectLists?LIST_TYPE=UNITMM", '', 'MANHOUR_UNITSelectCallBack');
+		}
+
+		function PAYMENTSelectCallBack (res) {
+			var kLength = res.length - 1;
+
+			$.each(res, function(index, item) {
+				if (index == kLength) {
+					COLLECT_PAYMENTSelect += item.CODE + ":" + item.VALUE;
+				} else {
+					COLLECT_PAYMENTSelect += item.CODE + ":" + item.VALUE + ";";
+				}
+			});
+		}
+
+		function UNITSelectCallBack (res) {
+			var kLength = res.length - 1;
+
+			$.each(res, function(index, item) {
+				if (index == kLength) {
+					BUY_UNITSelect += item.CODE + ":" + item.VALUE;
+				} else {
+					BUY_UNITSelect += item.CODE + ":" + item.VALUE + ";";
+				}
+			});
+		}
+
+		function COINSelectCallBack (res) {
+			var kLength = res.length - 1;
+
+			$.each(res, function(index, item) {
+				if (index == kLength) {
+					BUY_COINSelect += item.CODE + ":" + item.VALUE;
+				} else {
+					BUY_COINSelect += item.CODE + ":" + item.VALUE + ";";
+				}
+			});
+		}
+
+		function ITEMSelectCallBack (res) {
+			var kLength = res.length - 1;
+
+			$.each(res, function(index, item) {
+				if (index == kLength) {
+					BUY_ITEMSelect += item.CODE + ":" + item.VALUE;
+				} else {
+					BUY_ITEMSelect += item.CODE + ":" + item.VALUE + ";";
+				}
+			});
+		}
+
+		function MANHOUR_UNITSelectCallBack (res) {
+			var kLength = res.length - 1;
+
+			$.each(res, function(index, item) {
+				if (index == kLength) {
+					MANHOUR_UNITSelect += item.CODE + ":" + item.VALUE;
+				} else {
+					MANHOUR_UNITSelect += item.CODE + ":" + item.VALUE + ";";
+				}
+			});
+		}
+
+		function MANHOUR_ITEMSelectCallBack (res) {
+			var kLength = res.length - 1;
+
+			$.each(res, function(index, item) {
+				if (index == kLength) {
+					MANHOUR_ITEMSelect += item.CODE + ":" + item.VALUE;
+				} else {
+					MANHOUR_ITEMSelect += item.CODE + ":" + item.VALUE + ";";
+				}
+			});
+		}
 	</script>
 </html>

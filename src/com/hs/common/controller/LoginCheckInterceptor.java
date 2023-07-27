@@ -69,6 +69,8 @@ public class LoginCheckInterceptor extends HandlerInterceptorAdapter{
 					view = "main";
 				} else if(viewNM.split("/")[1].equals("SA1000Print")) {
 					view = "sa1000";
+				} else if(viewNM.split("/")[1].equals("CO1100Print")) {
+					view = "co1100";
 				} else {
 					view = viewNM.split("/")[1];
 				}

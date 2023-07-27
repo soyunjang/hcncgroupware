@@ -6,17 +6,25 @@
 <mapper namespace="co1100Mapper">
 	<!-- Table 조회 -->
 	<select id="co1100Sel" parameterType="map" resultType="map">
-		EXEC CO1100_SEL #{COMPANY}, #{CARD_NUM}, #{DATE}
+		EXEC CO1100_SEL #{COMPANY}, #{CARD_NUM}, #{DATE}, #{USER_ID}
 	</select>
 
 	<select id="co1100SelProject" parameterType="map" resultType="map">
 		SELECT SALES_NUM
 			 , PROJECT_NM
 		FROM SALES_INQUIRY_INFO
-	   WHERE PROJECT_NM LIKE '%' + #{PROJECT_NM} + '%'
+		WHERE PROJECT_NM LIKE '%' + #{PROJECT_NM} + '%'
+	</select>
+
+	<select id="co1100SelList" parameterType="map" resultType="map">
+		EXEC CO1100_SEL_LIST #{COMPANY}, #{CARD_NUM}, #{DATE}
+	</select>
+
+	<select id="co1101SelList" parameterType="map" resultType="map">
+		EXEC CO1101_SEL_LIST #{COMPANY}, #{CARD_NUM}, #{DATE}
 	</select>
 
 	<update id="co1100Save" parameterType="map">
-		EXEC CO1100_SAVE #{SALES_NUM}, #{ACCOUNT_SUB}, #{BREAKDOWN}, #{MEMO}, #{UPT_ID}, #{USE_DATE}, #{ACCOUNT}, #{COMPANY}, #{CARD_NUM}
+		EXEC CO1100_SAVE #{SALES_NUM}, #{ACCOUNT_SUB}, #{BREAKDOWN}, #{MEMO}, #{UPT_ID}, #{USE_DATE}, #{ACCOUNT}, #{COMPANY}, #{CARD_NUM}, #{USER_ID}
 	</update>
 </mapper>

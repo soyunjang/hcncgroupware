@@ -20,22 +20,22 @@
 	</select>
 	
 	<!-- Table 조회 -->
-	<select id="sa1000Selist" parameterType="map" resultType="map">
+	<select id="sa1000SelList" parameterType="map" resultType="map">
 		EXEC SA1000_SEL_LIST #{SALES_NUM}, #{REVISION}
 	</select>
 	
 	<!-- Table 조회 -->
-	<select id="sa1002Selist" parameterType="map" resultType="map">
+	<select id="sa1002SelList" parameterType="map" resultType="map">
 		EXEC SA1002_SEL_LIST #{SALES_NUM}, #{REVISION}
 	</select>
 	
 	<!-- Table 조회 -->
-	<select id="sa1003Selist" parameterType="map" resultType="map">
+	<select id="sa1003SelList" parameterType="map" resultType="map">
 		EXEC SA1003_SEL_LIST #{SALES_NUM}, #{REVISION}
 	</select>
 	
 	<!-- Table 조회 -->
-	<select id="sa1004Selist" parameterType="map" resultType="map">
+	<select id="sa1004SelList" parameterType="map" resultType="map">
 		EXEC SA1004_SEL_LIST #{SALES_NUM}, #{REVISION}
 	</select>
 	
@@ -74,50 +74,95 @@
 	</select>
 	
 	<!-- Table 저장 -->
-
-	<update id="sa1000Save" parameterType="map">
+	<insert id="sa1000Save" parameterType="map">
 		EXEC SA1000_SAVE #{OFFICE_TYPE}, #{SALES_NUM}, #{REVISION}, #{PROJECT_NM}, #{OBTAIN_ACCOUNT}, #{OBTAIN_SALES_PIC}
 					   , #{OBTAIN_CONTRACT_DT}, #{OBTAIN_ITEM}, #{OBTAIN_PM}, #{OBTAIN_PROJECT_START}
 					   , #{OBTAIN_PROJECT_END}, #{OBTAIN_ITEM_CNT}, #{OBTAIN_REASON}, #{COLLECT_UNIT_PRICE}
 					   , #{COLLECT_SALES_AMOUNT}, #{COLLECT_MARGIN_PER}, #{COLLECT_MARGIN}, #{COLLECT_FINAL_MARGIN_PER}
 					   , #{COLLECT_FINAL_MARGIN}, #{REG_ID}
-	</update>
+	</insert>
 	
-	<update id="sa1001Save" parameterType="map">
+	<insert id="sa1001Save" parameterType="map">
 		EXEC SA1001_SAVE #{COLLECT_CONDITION}, #{COLLECT_DT}, #{COLLECT_PAYMENT}, #{COLLECT_CASH_DT}, #{COLLECT_PER}, #{COLLECT_PRICE}, #{SALES_NUM}, #{REVISION}
-	</update>	
+	</insert>
 	
-	<update id="sa1002Save" parameterType="map">
+	<insert id="sa1002Save" parameterType="map">
 		EXEC SA1002_SAVE #{BUY_ITEM}, #{BUY_CNT}, #{BUY_UNIT}, #{BUY_COIN}, #{BUY_UNIT_PRICE}, #{BUY_PRICE}, #{BUY_PURCHASE}, #{BUY_PAYMENT}
 					   , #{BUY_MEMO}, #{SALES_NUM}, #{REVISION}
-	</update>
+	</insert>
 	
-	<update id="sa1003Save" parameterType="map">
+	<insert id="sa1003Save" parameterType="map">
 		EXEC SA1003_SAVE #{MANHOUR_ITEM}, #{MANHOUR_CNT}, #{MANHOUR_UNIT}, #{MANHOUR_UNIT_PRICE}, #{MANHOUR_PRICE}, #{MANHOUR_MEMO}, #{SALES_NUM}, #{REVISION}
-	</update>
+	</insert>
 	
-	<update id="sa1004Save" parameterType="map">
+	<insert id="sa1004Save" parameterType="map">
 		EXEC SA1004_SAVE #{EXPENSE_ITEM}, #{EXPENSE_PRICE}, #{EXPENSE_MEMO}, #{SALES_NUM}, #{REVISION}
-	</update>
+	</insert>
 	
-	<update id="sa1005Save" parameterType="map">
+	<insert id="sa1005Save" parameterType="map">
 		EXEC SA1005_SAVE #{COST_VENDOR}, #{COST_CNT}, #{COST_ORDER_PRICE}, #{COST_UNIT_PRICE}, #{COST_PRICE}, #{COST_SERVICE_UNIT_PRICE}
 					   , #{COST_SERVICE_PRICE}, #{COST_TOTAL_PRICE}, #{COST_MEMO}, #{SALES_NUM}, #{REVISION}
-	</update>
+	</insert>
 	
-	<update id="sa1006Save" parameterType="map">
+	<insert id="sa1006Save" parameterType="map">
 		EXEC SA1006_SAVE #{SM_ITEM}, #{SM_CLASS}, #{SM_DELIVERY_DT}, #{SM_INSPECT_DT}, #{SM_WARRANTY}, #{SM_MAINTENANCE_DT}
 					   , #{SM_MAINTENANCE_PRICE}, #{SM_BACKLINE}, #{SM_BACKLINE_PRICE}, #{SM_BACKLINE_GOAL}, #{SALES_NUM}, #{REVISION}
-	</update>
+	</insert>
 	
-	<update id="sa1007Save" parameterType="map">
+	<insert id="sa1007Save" parameterType="map">
 		EXEC SA1007_SAVE #{DETAIL_TRANSACTIONAL}, #{DETAIL_SIGNIFICANT}, #{SALES_NUM}, #{REVISION}
+	</insert>
+
+	<!-- Table 수정 -->
+	<update id="sa1000Update" parameterType="map">
+		EXEC SA1000_UPDATE #{OFFICE_TYPE}, #{SALES_NUM}, #{REVISION}, #{PROJECT_NM}, #{OBTAIN_ACCOUNT}, #{OBTAIN_SALES_PIC}
+		, #{OBTAIN_CONTRACT_DT}, #{OBTAIN_ITEM}, #{OBTAIN_PM}, #{OBTAIN_PROJECT_START}
+		, #{OBTAIN_PROJECT_END}, #{OBTAIN_ITEM_CNT}, #{OBTAIN_REASON}, #{COLLECT_UNIT_PRICE}
+		, #{COLLECT_SALES_AMOUNT}, #{COLLECT_MARGIN_PER}, #{COLLECT_MARGIN}, #{COLLECT_FINAL_MARGIN_PER}
+		, #{COLLECT_FINAL_MARGIN}, #{REG_ID}
 	</update>
-	
-	<update id="sa1000UpdateRevision" parameterType="map">
-		EXEC SA1000_UPDATE_REVISION #{SALES_NUM}, #{REVISION}, #{REG_ID}
+
+	<update id="sa1001Update" parameterType="map">
+		EXEC SA1001_UPDATE #{COLLECT_CONDITION}, #{COLLECT_DT}, #{COLLECT_PAYMENT}, #{COLLECT_CASH_DT}, #{COLLECT_PER}, #{COLLECT_PRICE}, #{SALES_NUM}, #{REVISION}
 	</update>
-	
+
+	<update id="sa1002Update" parameterType="map">
+		EXEC SA1002_UPDATE #{BUY_ITEM}, #{BUY_CNT}, #{BUY_UNIT}, #{BUY_COIN}, #{BUY_UNIT_PRICE}, #{BUY_PRICE}, #{BUY_PURCHASE}, #{BUY_PAYMENT}
+		, #{BUY_MEMO}, #{SALES_NUM}, #{REVISION}
+	</update>
+
+	<update id="sa1003Update" parameterType="map">
+		EXEC SA1003_UPDATE #{MANHOUR_ITEM}, #{MANHOUR_CNT}, #{MANHOUR_UNIT}, #{MANHOUR_UNIT_PRICE}, #{MANHOUR_PRICE}, #{MANHOUR_MEMO}, #{SALES_NUM}, #{REVISION}
+	</update>
+
+	<update id="sa1004Update" parameterType="map">
+		EXEC SA1004_UPDATE #{EXPENSE_ITEM}, #{EXPENSE_PRICE}, #{EXPENSE_MEMO}, #{SALES_NUM}, #{REVISION}
+	</update>
+
+	<update id="sa1005Update" parameterType="map">
+		EXEC SA1005_UPDATE #{COST_VENDOR}, #{COST_CNT}, #{COST_ORDER_PRICE}, #{COST_UNIT_PRICE}, #{COST_PRICE}, #{COST_SERVICE_UNIT_PRICE}
+		, #{COST_SERVICE_PRICE}, #{COST_TOTAL_PRICE}, #{COST_MEMO}, #{SALES_NUM}, #{REVISION}
+	</update>
+
+	<update id="sa1006Update" parameterType="map">
+		EXEC SA1006_UPDATE #{SM_ITEM}, #{SM_CLASS}, #{SM_DELIVERY_DT}, #{SM_INSPECT_DT}, #{SM_WARRANTY}, #{SM_MAINTENANCE_DT}
+		, #{SM_MAINTENANCE_PRICE}, #{SM_BACKLINE}, #{SM_BACKLINE_PRICE}, #{SM_BACKLINE_GOAL}, #{SALES_NUM}, #{REVISION}
+	</update>
+
+	<update id="sa1007Update" parameterType="map">
+		EXEC SA1007_UPDATE #{DETAIL_TRANSACTIONAL}, #{DETAIL_SIGNIFICANT}, #{SALES_NUM}, #{REVISION}
+	</update>
+
+	<!--확정 N -> Y-->
+	<update id="sa1000UpdateConfirm" parameterType="map">
+		EXEC SA1000_UPDATE_CONFIRM #{SALES_NUM}, #{REVISION}, #{REG_ID}
+	</update>
+
+	<!--이전버전 N -> Y-->
+	<update id="sa1000UpdateVersion" parameterType="map">
+		EXEC SA1000_UPDATE_VERSION #{SALES_NUM}, #{REVISION}, #{REG_ID}
+	</update>
+
 	<insert id="sa1000Confirm" parameterType="map">
 		SA1000_CONFIRM #{SALES_NUM}, #{REVISION}, #{REG_ID}
 	</insert>
@@ -181,4 +226,32 @@
 	<insert id="sa1007Copy" parameterType="map">
 		SA1007_COPY #{SALES_NUM}, #{REVISION}
 	</insert>
+
+	<!-- Table 삭제 -->
+	<delete id="sa1001Delete" parameterType="map">
+		EXEC SA1001_DELETE #{COLLECT_CONDITION}, #{COLLECT_DT}, #{COLLECT_PAYMENT}, #{COLLECT_CASH_DT}, #{COLLECT_PER}, #{COLLECT_PRICE}, #{SALES_NUM}, #{REVISION}
+	</delete>
+
+	<delete id="sa1002Delete" parameterType="map">
+		EXEC SA1002_DELETE #{BUY_ITEM}, #{BUY_CNT}, #{BUY_UNIT}, #{BUY_COIN}, #{BUY_UNIT_PRICE}, #{BUY_PRICE}, #{BUY_PURCHASE}, #{BUY_PAYMENT}
+		, #{BUY_MEMO}, #{SALES_NUM}, #{REVISION}
+	</delete>
+
+	<delete id="sa1003Delete" parameterType="map">
+		EXEC SA1003_DELETE #{MANHOUR_ITEM}, #{MANHOUR_CNT}, #{MANHOUR_UNIT}, #{MANHOUR_UNIT_PRICE}, #{MANHOUR_PRICE}, #{MANHOUR_MEMO}, #{SALES_NUM}, #{REVISION}
+	</delete>
+
+	<delete id="sa1004Delete" parameterType="map">
+		EXEC SA1004_DELETE #{EXPENSE_ITEM}, #{EXPENSE_PRICE}, #{EXPENSE_MEMO}, #{SALES_NUM}, #{REVISION}
+	</delete>
+
+	<delete id="sa1005Delete" parameterType="map">
+		EXEC SA1005_DELETE #{COST_VENDOR}, #{COST_CNT}, #{COST_ORDER_PRICE}, #{COST_UNIT_PRICE}, #{COST_PRICE}, #{COST_SERVICE_UNIT_PRICE}
+		, #{COST_SERVICE_PRICE}, #{COST_TOTAL_PRICE}, #{COST_MEMO}, #{SALES_NUM}, #{REVISION}
+	</delete>
+
+	<delete id="sa1006Delete" parameterType="map">
+		EXEC SA1006_DELETE #{SM_ITEM}, #{SM_CLASS}, #{SM_DELIVERY_DT}, #{SM_INSPECT_DT}, #{SM_WARRANTY}, #{SM_MAINTENANCE_DT}
+		, #{SM_MAINTENANCE_PRICE}, #{SM_BACKLINE}, #{SM_BACKLINE_PRICE}, #{SM_BACKLINE_GOAL}, #{SALES_NUM}, #{REVISION}
+	</delete>
 </mapper>

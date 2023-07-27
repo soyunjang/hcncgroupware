@@ -240,21 +240,21 @@
 				}
 				, colNames: langHead
 				, colModel: [
-					{name: 'USE_DATE'			, align: 'center'	, width: '6%'	, hidden: false}
+					{name: 'USE_DATE'			, align: 'center'	, width: '5%'	, hidden: false}
 					, {name: 'USER_ID'			, align: 'center' 	, width: '0%'	, hidden: true}
 					, {name: 'USER_NM'			, align: 'center'	, width: '4%'	, hidden: false}
-					, {name: 'SALES_NUM'		, align: 'center'	, width: '8%'	, hidden: false}
-					, {name: 'PROJECT_NM'		, align: 'left'		, width: '12%'	, hidden: false}
+					, {name: 'SALES_NUM'		, align: 'center'	, width: '7%'	, hidden: true}
+					, {name: 'PROJECT_NM'		, align: 'left'		, width: '14%'	, hidden: false}
 					, {name: 'ACCOUNT_SUB'		, align: 'left'		, width: '6%'	, hidden: false}
-					, {name: 'ACCOUNT'			, align: 'left'		, width: '12%'	, hidden: false}
+					, {name: 'ACCOUNT'			, align: 'left'		, width: '13%'	, hidden: false}
 					, {name: 'BREAKDOWN'		, align: 'left'		, width: '9%'	, hidden: false}
-					, {name: 'APPROVAL'			, align: 'right' 	, width: '4%'	, hidden: false, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
+					, {name: 'APPROVAL'			, align: 'right' 	, width: '4%'	, hidden: false, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}, summaryType: 'sum'}
 					, {name: 'REFUND'			, align: 'right' 	, width: '4%'	, hidden: false, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
 					, {name: 'MEMO'				, align: 'left' 	, width: '9%'	, hidden: false}
 				]
 				, autowidth: false
 				, shrinkToFit: false
-				, rowNum : 1000
+				, rowNum: 5000
 			});
 			
 			searchGridData();

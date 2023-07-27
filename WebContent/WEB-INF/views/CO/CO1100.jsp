@@ -7,7 +7,7 @@
 			<!-- .page-title-wrap 타이블영역 START -->
 			<div class="page-title-wrap">
 				<div class="page-title">
-					<h2>법인카드 사용내역 등록</h2>
+					<h2>개인별 사용내역 등록</h2>
 	           </div>
 	           <div class="page-btn-wrap">
 		            <ul>
@@ -54,7 +54,9 @@
 	                        </div>
 							<div class="btn-right-box">
 								<ul>
-									<li><a href="javascript:void(0);" id="btn01_EXCEL">엑셀</a></li>
+									<li><a href="javascript:void(0);" id="btn01_PRINT">출력</a></li>
+									<li><a href="javascript:void(0);" id="btn01_UPDATE">수정</a></li>
+									<li><a href="javascript:void(0);" id="btn01_SAVE">저장</a></li>
 								</ul>
 							</div>
 	                    </div> 
@@ -200,6 +202,9 @@
 		var langHead;
 		var langPop2;
 
+		var SALES_NUMSelect = "";
+		var ACCOUNT_SUBSelect = "";
+
 		commonCodeSelectAddMulti("sel01_COMPANY", getCommonCodeCard('CARD'), 'Y');
 		commonCodeSelectAdd("pop01_sel01_ACCOUNT_SUB", getCommonCodeEsc('ACCOUNT'), 'N');
 
@@ -218,10 +223,46 @@
 			langPop2 = getLangCodeDetail("CO1100_Pop2", 11, "${LANG}");
 			
 			document.getElementById('date01_DATE').value= new Date().toISOString().slice(0, 7);
-			
-			setGrid();
-			init(); //그리드 리사이징
+
+			new Promise(function(resolve, reject) {
+				selectBox();
+				return resolve();
+			}).then(function() {
+				setTimeout(function() {
+					setGrid();
+					init(); //그리드 리사이징
+				}, 500);
+			});
 		});
+
+		function selectBox() {
+			getAjaxData("selectLists?LIST_TYPE=ACCOUNT", '', 'ACCOUNT_SUBSelectCallBack');
+			getAjaxData("selectSalesNum", '', 'SALES_NUMSelectCallBack');
+		}
+
+		function SALES_NUMSelectCallBack (res) {
+			var kLength = res.length - 1;
+
+			$.each(res, function(index, item) {
+				if (index == kLength) {
+					SALES_NUMSelect += item.CODE + ":" + item.VALUE;
+				} else {
+					SALES_NUMSelect += item.CODE + ":" + item.VALUE + ";";
+				}
+			});
+		}
+
+		function ACCOUNT_SUBSelectCallBack (res) {
+			var kLength = res.length - 1;
+
+			$.each(res, function(index, item) {
+				if (index == kLength) {
+					ACCOUNT_SUBSelect += item.CODE + ":" + item.VALUE;
+				} else {
+					ACCOUNT_SUBSelect += item.CODE + ":" + item.VALUE + ";";
+				}
+			});
+		}
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 버튼
 		/* 검색 버튼 */
@@ -231,10 +272,60 @@
 			}
 		});
 
-		/* 엑셀 버튼 */
-		$("#btn01_EXCEL").on({
-			click: function(){
-				exportExcel("table1", "개인별 사용내역");
+		/* 출력 버튼 */
+		$("#btn01_PRINT").on({
+			click: function(e){
+				e.preventDefault();
+
+				if($("#sel01_COMPANY option:checked").text().split(/\s+/g)[0] == "전체") {
+					alert("카드번호를 선택해 주세요.");
+					return false;
+				} else if($("#table1_cnt").text() == "0") {
+					toast("경고", "출력할 데이터가 없습니다.", "error");
+					return false;
+				} else {
+					var params = "?COMPANY=" + $("#sel01_COMPANY").val() + "&CARD_NUM=" + $("#sel01_COMPANY option:checked").text().split(/\s+/g)[1] + "&DATE=" + $("#date01_DATE").val();
+					var url = "co1100Print";
+					window.open(url + params, 'co1100Print', 'width=1025,height=1000,top=10,left=10,toolbar=no,menubar=no,lacation=no,scrollbars=no,status=no');
+				}
+			}
+		});
+
+		$("#btn01_UPDATE").on({
+			click: function(e){
+				e.preventDefault();
+
+				var grid = $("#table1");
+				var ids = grid.jqGrid('getDataIDs');
+
+				for (var i = 0; i < ids.length; i++) {
+					grid.jqGrid('editRow',ids[i]);
+					grid.jqGrid('setCell', ids[i], 'rowStatus', '수정');
+					$("tr#" + ids[i], grid).addClass('update');
+				}
+			}
+		});
+
+		$("#btn01_SAVE").on({
+			click: function(e){
+				e.preventDefault();
+
+				var grid = $("#table1");
+				var ids = grid.jqGrid('getDataIDs');
+
+				for (var i = 0; i < ids.length; i++) {
+					grid.jqGrid('saveRow', ids[i]);
+				}
+
+				var formArray = [ 'SA1000DataForm' ];
+				var chk = checkRequiredValidation(formArray);
+
+				if (chk) {
+					confirms("수정중인 데이터를 저장하시겠습니까?", "U");
+				} else {
+					alert('수정중인 데이터가 없습니다.');
+					return;
+				}
 			}
 		});
 
@@ -248,31 +339,34 @@
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: confirm
 		/* confirm 확인버튼 클릭시 */
-		function confirmYes(){debugger;
-			var params = {
-				SALES_NUM : $("#pop01_txt01_SALE").val()
-				, ACCOUNT_SUB : $("#pop01_sel01_ACCOUNT_SUB").val()
-				, BREAKDOWN : $("#pop01_txt01_BREAKDOWN").val()
-				, MEMO : $("#pop01_txt01_MEMO").val()
-				, USE_DATE : $("#pop01_date01_USE").val()
-				, ACCOUNT : $("#pop01_txt01_ACCOUNT").val()
-				, COMPANY : $("#pop01_txt01_COMPANY").val()
-				, CARD_NUM : $("#pop01_txt01_CARD_NUM").val()
-			}
+		function confirmYes(){
+			// var params = {
+			// 	SALES_NUM : $("#pop01_txt01_SALE").val()
+			// 	, ACCOUNT_SUB : $("#pop01_sel01_ACCOUNT_SUB").val()
+			// 	, BREAKDOWN : $("#pop01_txt01_BREAKDOWN").val()
+			// 	, MEMO : $("#pop01_txt01_MEMO").val()
+			// 	, USE_DATE : $("#pop01_date01_USE").val()
+			// 	, ACCOUNT : $("#pop01_txt01_ACCOUNT").val()
+			// 	, COMPANY : $("#pop01_txt01_COMPANY").val()
+			// 	, CARD_NUM : $("#pop01_txt01_CARD_NUM").val()
+			// }
+			//
+			// getAjaxJsonData("co1100Save", params, "reLoadCallback");
+			// $("#viewForm1").dialog("close");
 
-			getAjaxJsonData("co1100Save", params, "reLoadCallback");
-			$("#viewForm1").dialog("close");
+			var gridArray = [ 'table1' ];
+			mergeGridData(gridArray, 'co1100MergeData', 'reLoadCallback');
 		}
 
 		/* 추가/수정 후 Table 재조회 */
 		function reLoadCallback(data){
-			if(data.length == 1){
-				toast("경고", "오류가 발생하였습니다.", "error");
-				return false;
-			}else{
-				popReset("viewForm1");
+			if(data.result != undefined){
+				// popReset("viewForm1");
 				toast("성공", "정상적으로 저장되었습니다.", "success");
 				searchGridData();
+			}else{
+				toast("경고", "오류가 발생하였습니다.", "error");
+				return false;
 			}
 		}
 
@@ -288,27 +382,21 @@
 				}
 				, colNames: langHead
 				, colModel: [
-					{name: 'USE_DATE'			, align: 'center'	, width: '5%'	, hidden: false}
-					, {name: 'SALES_NUM'		, align: 'center' 	, width: '7%'	, hidden: true}
-					, {name: 'PROJECT_NM'		, align: 'left' 	, width: '11%'	, hidden: false}
-					, {name: 'ACCOUNT_SUB'		, align: 'center'	, width: '0%'	, hidden: true}
-					, {name: 'ACCOUNT_NM'		, align: 'left'		, width: '4%'	, hidden: false}
-					, {name: 'ACCOUNT'			, align: 'left'		, width: '9%'	, hidden: false}
-					, {name: 'BREAKDOWN'		, align: 'left'		, width: '8%'	, hidden: false}
-					, {name: 'APPROVAL'			, align: 'right'	, width: '3%'	, hidden: false, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
-					, {name: 'REFUND'			, align: 'right'	, width: '3%'	, hidden: false, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
-					, {name: 'MEMO'				, align: 'left' 	, width: '7%'	, hidden: false}
-					, {name: 'COMPANY'			, align: 'center'	, width: '0%'	, hidden: true}
-					, {name: 'CARD_NUM'			, align: 'center'	, width: '0%'	, hidden: true}
+					{name:'USER_ID'				, align:'center'	, width: '0%' 	, hidden: true 	, editable : false}
+					, {name: 'USE_DATE'			, align: 'center'	, width: '4%'	, hidden: false	, editable: false}
+					, {name: 'SALES_NUM'		, align: 'center' 	, width: '10%'	, hidden: false	, editable : true , formatter: 'select' , edittype: 'select' , editoptions: {value: SALES_NUMSelect}}
+					, {name: 'ACCOUNT_SUB'		, align: 'center'	, width: '5%'	, hidden: false	, editable : true , formatter: 'select' , edittype: 'select' , editoptions: {value: ACCOUNT_SUBSelect}}
+					, {name: 'ACCOUNT'			, align: 'left'		, width: '8%'	, hidden: false	, editable: false}
+					, {name: 'BREAKDOWN'		, align: 'left'		, width: '7%'	, hidden: false	, editable: true}
+					, {name: 'APPROVAL'			, align: 'right'	, width: '3%'	, hidden: false	, editable: false	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
+					, {name: 'REFUND'			, align: 'right'	, width: '3%'	, hidden: false	, editable: false	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
+					, {name: 'MEMO'				, align: 'left' 	, width: '5%'	, hidden: false	, editable: true}
+					, {name: 'COMPANY'			, align: 'center'	, width: '0%'	, hidden: true	, editable: false}
+					, {name: 'CARD_NUM'			, align: 'center'	, width: '0%'	, hidden: true	, editable: false}
 				]
 				, autowidth: false
 				, shrinkToFit: false
 				, rowNum : 5000
-				, ondblClickRow : function(rowid) {
-					var rowdata = $("#table1").getRowData(rowid);
-					updateGridData(rowdata);
-					openModalPopup();
-				}
 			});
 			
 			searchGridData();

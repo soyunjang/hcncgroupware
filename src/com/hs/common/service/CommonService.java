@@ -92,5 +92,14 @@ public class CommonService {
 				
 		return sqlSession.selectList("commonMapper.selectLists", params);
 	}
-	
+
+	public List<Map<String, Object>> co1100SelProject(Map<String, Object> param) {
+
+		return sqlSession.selectList("commonMapper.co1100SelProject", param);
+	}
+
+	public List<Map<String, Object>> selectSalesNum(Map<String, Object> params, HttpSession session) {
+
+		return sqlSession.selectList("commonMapper.selectSalesNum", params);
+	}
 }

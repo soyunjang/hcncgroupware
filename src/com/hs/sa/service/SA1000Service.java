@@ -230,19 +230,32 @@ public class SA1000Service {
    	 */
 	public String sa1000SelSalesNum(Map<String, Object> param) {
 		
-		String officeType = param.get("OFFICE").toString();
-		
-		if(officeType.equals("OFFICE1SEOUL")) {
-			param.put("OFFICE_TYPE", "S");
-		} else if(officeType.equals("OFFICE2ULSAN")) {
-			param.put("OFFICE_TYPE", "U");
-		} else if(officeType.equals("OFFICE3DAEGU")) {
-			param.put("OFFICE_TYPE", "D");
-		}
-		
 		String rString = sqlSession.selectOne("sa1000Mapper.sa1000SelSalesNum", param);
 		
 		return rString;
+	}
+
+	public void sa1000Delete(Map<String, Object> param) {
+		for (String key : param.keySet()) {
+			List<Map<String, Object>> dataList = (List<Map<String, Object>>) param.get(key);
+			for (int j = 0; j < dataList.size(); j++) {
+				Map<String, Object> dataMap = dataList.get(j);
+
+				if(key == "table2") {
+					sqlSession.delete("sa1000Mapper.sa1001Delete", dataMap);
+				} else if(key == "table3") {
+					sqlSession.delete("sa1000Mapper.sa1002Delete", dataMap);
+				} else if(key == "table4") {
+					sqlSession.delete("sa1000Mapper.sa1003Delete", dataMap);
+				} else if(key == "table5") {
+					sqlSession.delete("sa1000Mapper.sa1004Delete", dataMap);
+				} else if(key == "table6") {
+					sqlSession.delete("sa1000Mapper.sa1005Delete", dataMap);
+				} else if(key == "table7") {
+					sqlSession.delete("sa1000Mapper.sa1006Delete", dataMap);
+				}
+			}
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -250,30 +263,37 @@ public class SA1000Service {
 		logger.debug("sa1000Service > sa1000MergeData :: {}", param);
 
 		int resultCnt = 0;
-		
+		sa1000Delete(param);
+
 		for (String key : param.keySet()) {
 			List<Map<String, Object>> dataList = (List<Map<String, Object>>) param.get(key);
 			for (int j = 0; j < dataList.size(); j++) {
 				Map<String, Object> dataMap = dataList.get(j);
-				logger.debug("sa1000MergeData > dataList > dataMap :: {}", dataMap);
 
 				if (dataMap.get("action").equals("C") || dataMap.get("action").equals("U")) {
 					if(key == "table2") {
-						resultCnt += sqlSession.update("sa1000Mapper.sa1001Save", dataMap);						
+						sqlSession.insert("sa1000Mapper.sa1001Save", dataMap);
+						resultCnt++;
 					} else if(key == "table3") {
-						resultCnt += sqlSession.update("sa1000Mapper.sa1002Save", dataMap);						
+						sqlSession.insert("sa1000Mapper.sa1002Save", dataMap);
+						resultCnt++;
 					} else if(key == "table4") {
-						resultCnt += sqlSession.update("sa1000Mapper.sa1003Save", dataMap);						
+						sqlSession.insert("sa1000Mapper.sa1003Save", dataMap);
+						resultCnt++;
 					} else if(key == "table5") {
-						resultCnt += sqlSession.update("sa1000Mapper.sa1004Save", dataMap);						
+						sqlSession.insert("sa1000Mapper.sa1004Save", dataMap);
+						resultCnt++;
 					} else if(key == "table6") {
-						resultCnt += sqlSession.update("sa1000Mapper.sa1005Save", dataMap);						
+						sqlSession.insert("sa1000Mapper.sa1005Save", dataMap);
+						resultCnt++;
 					} else if(key == "table7") {
-						resultCnt += sqlSession.update("sa1000Mapper.sa1006Save", dataMap);						
+						sqlSession.insert("sa1000Mapper.sa1006Save", dataMap);
+						resultCnt++;
 					} else if(key == "table8") {
-						resultCnt += sqlSession.update("sa1000Mapper.sa1007Save", dataMap);						
+						sqlSession.update("sa1000Mapper.sa1007Update", dataMap);
+						resultCnt++;
 					}
-				} 
+				}
 			}
 		}
 
@@ -295,13 +315,38 @@ public class SA1000Service {
 		
 		try {
 			param.put("REG_ID", vo.getUSER_ID().toString());
-			sqlSession.update("sa1000Mapper.sa1000Save", param);
+			sqlSession.insert("sa1000Mapper.sa1000Save", param);
 		}catch(Exception e) {
 			e.printStackTrace();
 			rtnMap.put("Errmsg", "오류가 발생하였습니다.");
 			rtnMap.put("Errstate", -1);
 		}
 		
+		return rtnMap;
+	}
+
+	/**
+	 * 메소드 설명 : 판매품의서 정보 수정
+	 * -------------------------------------------------------------------
+	 * @param	Map			param		추가할 정보(사업장/판매품의서번호/프로젝트명/거래처명/영업담당자/계약일자/품목/수량/PM/프로젝트기간/변경사유/단가/판매금액/마진/최종마진)
+	 * @param	HttpSession	session		로그인한 사용자ID
+	 * @return	Map 		rtnMap		추가 성공/실패 확인(0:성공/1:실패)
+	 */
+	@Transactional
+	public Map<String, Object> sa1000Update(Map<String, Object> param, HttpSession session) {
+
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		UserInfo vo = (UserInfo) session.getAttribute("User");
+
+		try {
+			param.put("REG_ID", vo.getUSER_ID().toString());
+			sqlSession.update("sa1000Mapper.sa1000Update", param);
+		}catch(Exception e) {
+			e.printStackTrace();
+			rtnMap.put("Errmsg", "오류가 발생하였습니다.");
+			rtnMap.put("Errstate", -1);
+		}
+
 		return rtnMap;
 	}
 
@@ -319,7 +364,24 @@ public class SA1000Service {
 		
 		try {
 			param.put("REG_ID", vo.getUSER_ID());
-			sqlSession.update("sa1000Mapper.sa1000UpdateRevision", param);
+			sqlSession.update("sa1000Mapper.sa1000UpdateConfirm", param);
+		}catch(Exception e) {
+			e.printStackTrace();
+			rtnMap.put("Errmsg", "오류가 발생하였습니다.");
+			rtnMap.put("Errstate", -1);
+		}
+
+		return rtnMap;
+	}
+
+	public Map<String, Object> sa1000UpVersoin(Map<String, Object> param, HttpSession session) {
+
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		UserInfo vo = (UserInfo) session.getAttribute("User");
+
+		try {
+			param.put("REG_ID", vo.getUSER_ID());
+			sqlSession.update("sa1000Mapper.sa1000UpdateVersion", param);
 			sqlSession.insert("sa1000Mapper.sa1000Confirm", param);
 			sqlSession.insert("sa1000Mapper.sa1001Confirm", param);
 			sqlSession.insert("sa1000Mapper.sa1002Confirm", param);
@@ -327,7 +389,6 @@ public class SA1000Service {
 			sqlSession.insert("sa1000Mapper.sa1004Confirm", param);
 			sqlSession.insert("sa1000Mapper.sa1005Confirm", param);
 			sqlSession.insert("sa1000Mapper.sa1006Confirm", param);
-			sqlSession.insert("sa1000Mapper.sa1007Confirm", param);
 		}catch(Exception e) {
 			e.printStackTrace();
 			rtnMap.put("Errmsg", "오류가 발생하였습니다.");
@@ -370,22 +431,22 @@ public class SA1000Service {
 
 	public Map<String, Object> selectSA1000List(Map<String, Object> param) {
 		logger.debug("sa1000Service > selectSA1000List :: {}", param);
-		return sqlSession.selectOne("sa1000Mapper.sa1000Selist", param);
+		return sqlSession.selectOne("sa1000Mapper.sa1000SelList", param);
 	}
 
 	public List<Map<String, Object>> selectSA1002List(Map<String, Object> param) {
 		logger.debug("sa1000Service > selectSA1002List :: {}", param);
-		return sqlSession.selectList("sa1000Mapper.sa1002Selist", param);
+		return sqlSession.selectList("sa1000Mapper.sa1002SelList", param);
 	}
 
 	public List<Map<String, Object>> selectSA1003List(Map<String, Object> param) {
 		logger.debug("sa1000Service > selectSA1003List :: {}", param);
-		return sqlSession.selectList("sa1000Mapper.sa1003Selist", param);
+		return sqlSession.selectList("sa1000Mapper.sa1003SelList", param);
 	}
 	
 	public List<Map<String, Object>> selectSA1004List(Map<String, Object> param) {
 		logger.debug("sa1000Service > selectSA1004List :: {}", param);
-		return sqlSession.selectList("sa1000Mapper.sa1004Selist", param);
+		return sqlSession.selectList("sa1000Mapper.sa1004SelList", param);
 	}
 	
 	public List<Map<String, Object>> selectSA1005List(Map<String, Object> param) {

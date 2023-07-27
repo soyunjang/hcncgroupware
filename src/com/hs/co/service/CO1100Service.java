@@ -62,4 +62,35 @@ public class CO1100Service {
 
 		return rtnMap;
 	}
+
+	public int co1100MergeData(Map<String, Object> param, HttpSession session) {
+
+		int resultCnt = 0;
+		UserInfo vo = (UserInfo) session.getAttribute("User");
+
+		for (String key : param.keySet()) {
+			List<Map<String, Object>> dataList = (List<Map<String, Object>>) param.get(key);
+			for (int j = 0; j < dataList.size(); j++) {
+				dataList.get(j).put("UPT_ID", vo.getUSER_ID());
+				Map<String, Object> dataMap = dataList.get(j);
+
+				if (dataMap.get("action").equals("U")) {
+					if(key == "table1") {
+						sqlSession.insert("co1100Mapper.co1100Save", dataMap);
+						resultCnt++;
+					}
+				}
+			}
+		}
+
+		return resultCnt;
+	}
+
+	public Map<String, Object> selectCO1000List(Map<String, Object> param) {
+		return sqlSession.selectOne("co1100Mapper.co1100SelList", param);
+	}
+
+	public List<Map<String, Object>> selectCO1001List(Map<String, Object> param) {
+		return sqlSession.selectList("co1100Mapper.co1101SelList", param);
+	}
 }

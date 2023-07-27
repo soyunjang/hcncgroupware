@@ -168,10 +168,11 @@ public class SA1000Controller {
    	 * @return	String	string	판매품의서 번호
    	 */
 	@RequestMapping(value = "/sa1000SelSalesNum")
-	public String SA1000_SEL_SALESNUM(@RequestBody Map<String, Object> param) {
+	public String SA1000_SEL_SALESNUM(@RequestBody Map<String, Object> param, ModelMap model) {
 		
 		String rString = sa1000Service.sa1000SelSalesNum(param);
-		return rString;
+		model.addAttribute("result", rString);
+		return "jsonView";
 	}
 	
 	/**
@@ -200,10 +201,7 @@ public class SA1000Controller {
    	 */
 	@RequestMapping(value = "/sa1000Save")
 	public @ResponseBody Map<String, Object> SA1000_SAVE(@RequestBody Map<String, Object> param, HttpSession session) {
-		
-		logger.info("SA1000_SAVE");
-		logger.info(param.toString());
-		
+
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
 		
 		try {
@@ -218,13 +216,36 @@ public class SA1000Controller {
 	}
 
 	/**
+	 * 메소드 설명 : 판매품의서 정보 수정
+	 * -------------------------------------------------------------------
+	 * @param	Map			param		추가할 정보(사업장/판매품의서번호/프로젝트명/거래처명/영업담당자/계약일자/품목/수량/PM/프로젝트기간/변경사유/단가/판매금액/마진/최종마진)
+	 * @param	HttpSession	session		로그인한 사용자ID
+	 * @return	Map 		rtnMap		추가 성공/실패 확인(0:성공/1:실패)
+	 */
+	@RequestMapping(value = "/sa1000Update")
+	public @ResponseBody Map<String, Object> SA1000_UPDATE(@RequestBody Map<String, Object> param, HttpSession session) {
+
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		try {
+			rtnMap = sa1000Service.sa1000Update(param, session);
+		}catch(Exception e) {
+			e.printStackTrace();
+			rtnMap.put("Errmsg", "오류가 발생하였습니다.");
+			rtnMap.put("Errstate", -1);
+		}
+
+		return rtnMap;
+	}
+
+	/**
    	 * 메소드 설명 : 판매품의서 정보 확정
    	 * -------------------------------------------------------------------
    	 * @param	Map			param		확정할 정보(사업장/판매품의서번호/프로젝트명/거래처명/영업담당자/계약일자/품목/수량/PM/프로젝트기간/변경사유/단가/판매금액/마진/최종마진)
    	 * @param	HttpSession	session		로그인한 사용자ID
    	 * @return	Map 		rtnMap		추가 성공/실패 확인(0:성공/1:실패)
    	 */
-	@RequestMapping(value = "/sa1001Confirm")
+	@RequestMapping(value = "/sa1000Confirm")
 	public @ResponseBody Map<String, Object> SA1000_CONFIRM(@RequestBody Map<String, Object> param, HttpSession session, ModelMap model) {
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
 		
@@ -236,6 +257,21 @@ public class SA1000Controller {
 			rtnMap.put("Errstate", -1);
 		}
 	
+		return rtnMap;
+	}
+
+	@RequestMapping(value = "/sa1000UpVersoin")
+	public @ResponseBody Map<String, Object> SA1000_UP_VERSION(@RequestBody Map<String, Object> param, HttpSession session, ModelMap model) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		try {
+			rtnMap = sa1000Service.sa1000UpVersoin(param, session);
+		}catch(Exception e) {
+			e.printStackTrace();
+			rtnMap.put("Errmsg", "오류가 발생하였습니다.");
+			rtnMap.put("Errstate", -1);
+		}
+
 		return rtnMap;
 	}
 
@@ -263,7 +299,6 @@ public class SA1000Controller {
 
 	@RequestMapping(value = "/sa1000Print")
 	public String SA1000_PRINT(@RequestParam Map<String, Object> param, HttpSession session, ModelMap model) throws Exception {
-		logger.debug("SA1000Controller > sa1000Print :: {}", param);
 		model.addAttribute("param", param);
 
 		Map<String, Object> sa1000List = sa1000Service.selectSA1000List(param);
