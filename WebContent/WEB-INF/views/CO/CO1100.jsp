@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
+	<style>
+		.table-wrap .ui-jqgrid-bdiv{overflow-y:scroll; height:88% !important; max-height:calc(100% - 37px); background-color:#f9f9f9;
+	</style>
 	<body>
 		<!-- .contents-wrap 컨텐츠영역 START -->
 		<div class="contents-wrap an1100-page">
@@ -397,6 +400,20 @@
 				, autowidth: false
 				, shrinkToFit: false
 				, rowNum : 5000
+				, gridComplete: function() {
+					var sumA = $("#table1").jqGrid('getCol', 'APPROVAL', false, 'sum');
+					var sumR = $("#table1").jqGrid('getCol', 'REFUND', false, 'sum');
+					$("#table1").jqGrid('footerData', 'set', {USE_DATE: '총 계', APPROVAL: sumA, REFUND: sumR});
+
+					$('table.ui-jqgrid-ftable tr:first').children("td").css("background-color", "#dbdcdf");
+					$('table.ui-jqgrid-ftable tr:first').children("td").css("border-top", "1px solid #eaeaea;");
+					$('table.ui-jqgrid-ftable tr:first').children("td").css("font-weight", "500");
+					$('table.ui-jqgrid-ftable tr:first').children("td").css("height", "32px");
+					$('table.ui-jqgrid-ftable tr:first td:eq(0), table.ui-jqgrid-ftable tr:first td:eq(6)').css("padding-right","15px");
+					$('table.ui-jqgrid-ftable tr:first td:eq(0), table.ui-jqgrid-ftable tr:first td:eq(7)').css("padding-right","15px");
+				}
+				, userDataOnFooter: true
+				, footerrow: true
 			});
 			
 			searchGridData();

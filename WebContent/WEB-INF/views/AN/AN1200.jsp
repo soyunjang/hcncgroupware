@@ -56,25 +56,25 @@
 		            </div>
 				</div>
 			</div>
-			<div class="search-zone">
-				<div class="search-wrap">
-					<div class="sch-box">
+			<div class="search-zone-info">
+				<div class="search-wrap-info">
+					<div class="sch-box-info">
 						<dl>
 							<dt>총원</dt>
 							<dd>
-								<input type="text" id="txt01_TOTAL" value="${UsersCount}" readonly>
+								<input type="text" id="txt01_TOTAL" value="${UsersCount}" class="readonly ta-r">
 							</dd>
 						</dl>
 						<dl>
 							<dt>사용인원</dt>
 							<dd>
-								<input type="text" id="txt01_USE" readonly>
+								<input type="text" id="txt01_USE" class="readonly ta-r">
 							</dd>
 						</dl>
 						<dl>
 							<dt>미사용인원</dt>
 							<dd>
-								<input type="text" id="txt01_UNUSE" readonly>
+								<input type="text" id="txt01_UNUSE" class="readonly ta-r">
 							</dd>
 						</dl>
 					</div>
@@ -145,7 +145,7 @@
 		function holidayUseCount() {
 			setTimeout(() => {
 				let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
-				console.log(rowData);
+				console.log('holidayUseCount rowData : ', rowData);
 				let total = parseInt($("#txt01_TOTAL").val())
 				let count = 0;
 				rowData.forEach(data => {
@@ -154,7 +154,7 @@
 						count++;
 					}
 				});
-				console.log(count);
+				console.log('holidayUseCount count : ', count);
 				$("#txt01_USE").val(count);
 				$("#txt01_UNUSE").val(total - count);
 			}, 100);
@@ -172,6 +172,7 @@
 				// holidayUseCount();
 			}
 		});
+
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: confirm
 		
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 그리드
@@ -245,22 +246,21 @@
 					unUse++;
 				}
 			});
-			console.log(rowData.length)
-			console.log(total);
-			console.log(use);
-			console.log(unUse);
+			console.log('searchGridDataCallBack rowData.length : ', rowData.length);
+			console.log('searchGridDataCallBack total : ', total);
+			console.log('searchGridDataCallBack use : ', use);
+			console.log('searchGridDataCallBack unUse : ', unUse);
 
 			if (use > 0 && unUse == 0) {
 				$("#txt01_USE").val(use);
-				$("#txt01_UNUSE").val(total - use);
+				$("#txt01_UNUSE").val(rowData.length - use);
 			} else if (use == 0 && unUse > 0) {
-				$("#txt01_USE").val(total - unUse);
+				$("#txt01_USE").val(rowData.length - unUse);
 				$("#txt01_UNUSE").val(unUse);
 			} else {
 				$("#txt01_USE").val(use);
 				$("#txt01_UNUSE").val(unUse);
 			}
-
 		};
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 유효성

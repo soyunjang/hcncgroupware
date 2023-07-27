@@ -57,6 +57,7 @@
 						<div class="title-wrap">
 							<div class="title-zone">
 								<h2 class="title1">시스템코드 목록</h2>
+								<span id="table1_cnt">0</span>
 							</div>
 							<div class="btn-right-box">
 								<ul>
@@ -75,6 +76,7 @@
 						<div class="title-wrap">
 							<div class="title-zone">
 								<h2 class="title2">세부코드 목록</h2>
+								<span id="table2_cnt">0</span>
 							</div>
 							<div class="btn-right-box">
 								<ul>
@@ -393,6 +395,12 @@
 				datatype: 'local'
 				, data: data
 			}).trigger("reloadGrid");
+
+			if(data.length > 0){
+				$("#table1_cnt").text(comma(data.length));
+			} else {
+				$('#table1_cnt').text(0);
+			}
 			
 			$("#table2").clearGridData();
 			$("#table1").jqGrid('setSelection', 1, true);
@@ -414,6 +422,12 @@
 				datatype: 'local'
 				, data: data
 			}).trigger("reloadGrid");
+
+			if(data.length > 0){
+				$("#table2_cnt").text(comma(data.length));
+			} else {
+				$('#table2_cnt').text(0);
+			}
 			
 			if(gridSetChK2 == "Y"){
 				$("#table2").setSelection(1, true);

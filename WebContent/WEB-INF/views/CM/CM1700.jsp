@@ -74,6 +74,7 @@
 								<div class="title-wrap">
 									<div class="title-zone">
 										<h2 class="title1">접속조회 목록</h2>
+										<span id="table1_cnt">0</span>
 									</div>
 									<div class="btn-right-box">
 						               <ul>
@@ -129,6 +130,7 @@
 								<div class="title-wrap">
 									<div class="title-zone">
 										<h2 class="title2">메뉴접근조회 목록</h2>
+										<span id="table2_cnt">0</span>
 									</div>
 									<div class="btn-right-box">
 						               <ul>
@@ -184,6 +186,7 @@
 								<div class="title-wrap">
 									<div class="title-zone">
 										<h2 class="title3">권한그룹변경조회 목록</h2>
+										<span id="table3_cnt">0</span>
 									</div>
 									<div class="btn-right-box">
 						               <ul>
@@ -239,6 +242,7 @@
 								<div class="title-wrap">
 									<div class="title-zone">
 										<h2 class="title4">사용자정보변경조회 목록</h2>
+										<span id="table4_cnt">0</span>
 									</div>
 									<div class="btn-right-box">
 						               <ul>

@@ -3,16 +3,8 @@
 <html>
 	<body>
 		<style>
-			.textareaInDiv {
-				height: 147px;
-				overflow: auto;
-				white-space: break-spaces;
-				vertical-align: baseline;
-			}
-
-			.textareaInDiv textarea {
-				background-color: #fff !important;
-			}
+			.textareaInDiv {height: 147px; overflow: auto; white-space: break-spaces; vertical-align: baseline;}
+			.textareaInDiv textarea {background-color: #fff !important;}
 		</style>
 
 		<!-- .contents-wrap 컨텐츠영역 START -->
@@ -488,7 +480,7 @@
 				salesNum = rowdataA.SALES_NUM;
 				salesRevision = rowdataA.REVISION;
 			}
-			console.log('init salesNum : ', salesNum);
+
 			if(rowid == undefined || rowid == "") {
 				maxRow = $("#" + table).jqGrid('getGridParam', 'reccount') + 1;
 			} else {
@@ -1917,16 +1909,13 @@
 				}
 			}
 
-			console.log("환율 : " + rCNH + rEUR + rJPY + rUSD);
 			$("#currency_VAL").text(rCNH + rEUR + rJPY + rUSD);
 
 			var status = $(this).jqGrid('getCell', "1", 'rowStatus');
 			if(isEmpty(status)) {
 				var ids = $("#table3").jqGrid('getDataIDs');
-				console.log('ids : ', ids);
 				for(var i = 0; i < ids.length; i++) {
 					$("#table3").jqGrid('saveRow', ids[i], true, 'clientArray');
-					console.log('호출? : table3Claculate');
 					table3Claculate(ids);
 				}
 			}
@@ -1982,7 +1971,7 @@
 			var cnt = $('#table3 input#' + rowid + '_BUY_CNT').val();
 			var unit = $('#table3 input#' + rowid + '_BUY_UNIT_PRICE').val();
 			var coin = $('#table3 select#' + rowid + '_BUY_COIN').val();
-			console.log('table3Cal coin : ', coin);
+
 			if(coin == "COIN2USD") {
 				totCost = cnt * unit * usd.replaceAll(",", "");
 			} else if(coin == "COIN3EUR") {
@@ -1994,9 +1983,7 @@
 			} else {
 				totCost = cnt * unit;
 			}
-			console.log('table3Cal totCost : ', totCost);
-			// totCost = totCost.toFixed(1).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
-			// console.log('table3Cal totCost last : ', totCost);
+
 			$('#table3').jqGrid('setCell', rowid, 'BUY_PRICE', totCost);
 
 			buyPriceSum = $("#table3").jqGrid('getCol', 'BUY_PRICE', false, 'sum');

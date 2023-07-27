@@ -8,27 +8,18 @@
 		
 	*{margin:0;padding:0;}
 	html, body{height:100%;}
-	ol, ul, li, dl, dt, dd {
-		list-style: none;
-	}
+	ol, ul, li, dl, dt, dd {list-style: none;}
 	fieldset {width:100%; border:0px;}
 	noscript, caption, legend {display:block;position:absolute;width:0;height:0;text-indent:-9999999px;overflow:hidden;}
 	
-	table {
-		border-collapse: collapse;
-		border-spacing: 0;
-	}
+	table {border-collapse: collapse; border-spacing: 0;}
 	a {text-decoration:none; vertical-align:middle;}
 	a:active, visited, link {text-decoration:none;}
 	a:hover {text-decoration:none;}
 	button{cursor:pointer;}
 	
-	ins {
-		text-decoration: none;
-	}
-	del {
-		text-decoration: line-through;
-	}
+	ins {text-decoration: none;}
+	del {text-decoration: line-through;}
 	
 	html, body, div, span, applet, object, iframe,
 	h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -53,42 +44,27 @@
 	
 	/* HTML5 display-role reset for older browsers */
 	article, aside, details, figcaption, figure, 
-	footer, header, hgroup, menu, nav, section {
-		display: block;
-	}
+	footer, header, hgroup, menu, nav, section {display: block;}
 	
-	blockquote, q {
-		quotes: none;
-	}
+	blockquote, q {quotes: none;}
 	blockquote:before, blockquote:after,
-	q:before, q:after {
-		content: '';
-		content: none;
-	}
+	q:before, q:after {content: ''; content: none;}
 	
-	html {
-	    font-size: 8px;
-	}
+	html {font-size: 8px;}
 	body {
 	    display: flex;
 	    justify-content: center;
 	    margin: 0;
 	    padding: 0;
 	}
-	input:focus, textarea:focus {
-	    outline: none;
-	}
+	input:focus, textarea:focus {outline: none;}
 	input::-webkit-outer-spin-button,
 	input::-webkit-inner-spin-button {
 	    -webkit-appearance: none;
 	    margin: 0;
 	}
-	img {
-	    width: 100px;
-	}
-	table-0 {
-	    font-size: 8px;
-	}
+	img {width: 100px;}
+	table-0 {font-size: 8px;}
 	
 	.table-input {
 	    width: 100%;
@@ -120,55 +96,22 @@
 	    justify-content: space-between;
 	}
 
-	.con-section {
-	    box-shadow: inherit;
-	    margin: 0px;
-	}
+	.con-section {box-shadow: inherit; margin: 0px;}
 	#register-1 {
 	    justify-content: space-between;
 	    align-items: center;
 	    margin-top: 10px;
 	}
-	table {
-	    border: 2px solid black;
-	    box-sizing: border-box;
-	}
-	th, td {
-	    border: 1px solid black;
-	    zoom: 0.8;
-	}
-	td:not(.common-sign1, .sign-date, .sign-space, .textarea-box) {
-	    text-align: center;
-	    vertical-align: middle;
-	    height: 20px;
-	}
-	.td-middle {
-	    width: 80px;
-	}
-	.td-short {
-	    width: 30px;
-	}
-	
-	li {
-	    list-style: none;
-	}
-	p {
-	    margin: 10px 0;
-	    font-size: 1.1rem;
-	}
-
-	.purchase-merge, .input-merge, .expenses-merge {
-	    width: 50px;
-	}
-	
-	.btn-box {
-	    display: flex;
-	    justify-content: flex-end;
-	}
-	.btn-box input {
-	    margin-top: 20px;
-	    margin-left: 10px;
-	}
+	table {border: 2px solid black; box-sizing: border-box;}
+	th, td {border: 1px solid black; zoom: 0.8;}
+	td:not(.common-sign1, .sign-date, .sign-space, .textarea-box) {text-align: center; vertical-align: middle; height: 20px;}
+	.td-middle {width: 80px;}
+	.td-short {width: 30px;}
+	li {list-style: none;}
+	p {margin: 10px 0; font-size: 1.1rem;}
+	.purchase-merge, .input-merge, .expenses-merge {width: 50px;}
+	.btn-box {display: flex; justify-content: flex-end;}
+	.btn-box input {margin-top: 20px; margin-left: 10px;}
 	.column-text {
 	    line-height: 14px;
 	    width: 25px;
@@ -182,9 +125,7 @@
 	    vertical-align: middle;
 	    text-align: center;
 	}
-	.sign-space {
-	    height: 70px;
-	}
+	.sign-space {height: 70px;}
 	.sign-date {
 	    height: 10px;
 	    text-align: center;
@@ -203,32 +144,18 @@
 	}
 	
 	/* section2 */
-	#register-2 {
-	    flex-direction: column;
-	}
-	#project-name {
-	    text-align: center;
-	}
+	#register-2 {flex-direction: column;}
+	#project-name {text-align: center;}
 	
 	/* section3 */
-	#register-3 {
-	    flex-direction: column;
-	}
-	.register-3-title {
-	    display: flex;
-	    justify-content: space-between;
-	}
+	#register-3 {flex-direction: column;}
+	.register-3-title {display: flex; justify-content: space-between;}
 	
 	/* section4 */
-	#register-4 {
-	    flex-direction: column;
-	}
+	#register-4 {flex-direction: column;}
 	
 	/* section5 */
-	#register-5 {
-	    flex-direction: column;
-	    align-items: flex-end;
-	}
+	#register-5 {flex-direction: column; align-items: flex-end;}
 	#register-5 input {
 	    width: 150px;
 	    font-size: 1.5rem;
@@ -239,14 +166,10 @@
 	}
 	
 	/* section6 */
-	#register-6 {
-	    flex-direction: column;
-	}
+	#register-6 {flex-direction: column;}
 	
 	/* section7 */
-	#register-7 {
-	    flex-direction: column;
-	}
+	#register-7 {flex-direction: column;}
 	
 	#textarea-1, #textarea-2 {
 	    display: block;
@@ -257,14 +180,8 @@
 		white-space: break-spaces;
 	}
 	
-	#client, #project-name {
-	    display: inline-block;
-	}
-	
-	#unit-price {
-	    display: inline-block;
-	    width: 50px;
-	}
+	#client, #project-name {display: inline-block;}
+	#unit-price {display: inline-block; width: 50px;}
 	
 	.margin-box {
 	    width: 150px;
@@ -274,29 +191,14 @@
 	    border-bottom: 1px solid black;
 	}
 	
-	#total-margin {
-	    font-size: 12px;
-	    font-weight: bold;
-	}
-	
-	.td-a {
-	    width: 75px;
-	}
-	
-	.title-table-tr {
-	    height: 30px;
-	}
-	.title-table-td {
-	    width: 150px;
-	}
-	.title-table-td2 {
-	    width: 250px;
-	}
+	#total-margin {font-size: 12px; font-weight: bold;}
+	.td-a {width: 75px;}
+	.title-table-tr {height: 30px;}
+	.title-table-td {width: 150px;}
+	.title-table-td2 {width: 250px;}
 
 	@media print {
-	    .btn-box {
-	        display: none;
-	    }
+	    .btn-box {display: none;}
 	}
 </style>
 

@@ -51,6 +51,7 @@
 						<div class="title-wrap">
 	                        <div class="title-zone">
 	                            <h2 class="title1">사용자 목록</h2>
+								<span id="table1_cnt">0</span>
 	                        </div>
 	                        <div class="btn-right-box">
 	                            <ul>
@@ -500,6 +501,12 @@
 				datatype: 'local'
 				, data: data
 			}).trigger("reloadGrid");
+
+			if(data.length > 0){
+				$("#table1_cnt").text(comma(data.length));
+			} else {
+				$('#table1_cnt').text(0);
+			}
 
 			$("#table1").jqGrid('setSelection', 1, true);
 		};

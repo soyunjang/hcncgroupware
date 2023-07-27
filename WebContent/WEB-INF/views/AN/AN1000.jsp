@@ -8,9 +8,6 @@
 			<div class="page-title-wrap">
 				<div class="page-title">
 					<h2>연차등록</h2>
-					<ul class="title-btn">
-						<li><a href="javascript:reset();" id="btn01_REFLESH" class="btn-refresh" title="검색조건 초기화"></a></li>
-					</ul>
 	           </div>
 	           <div class="page-btn-wrap">
 		            <ul>
@@ -213,13 +210,6 @@
 		});
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 버튼
-		/* 초기화 버튼 */
-		$("#btn01_RESET").on({
-			click: function() {
-				reset();
-			}
-		});
-
 		/* 출력 버튼 */
 		$("#btn01_PRINT").on({
 			click: function(){
