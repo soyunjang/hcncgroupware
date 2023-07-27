@@ -65,11 +65,10 @@ public class HomeController {
 			map.put("PASSWORD", userPw); // 비밀번호 암호화
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+ 		}
 
 		// 사용자 정보 조회
 		Map<String, Object> loginInfo = homeService.loginCheck(map);
-		System.out.println("loginInfo = " + loginInfo.toString());
 
 		if (loginInfo != null) {
 			UserInfo vo = new UserInfo();
