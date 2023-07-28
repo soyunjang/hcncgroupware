@@ -120,17 +120,17 @@
 										<td>
 											<input type="date" id="pop01_date01_REG" name="pop01_date01_START" disabled>
 										</td>
-										<th class="req">5.비상연락망</th>
+										<th>5.비상연락망</th>
 										<td>
 			                            	<input type="text" id="pop01_txt01_EMERGENCY" Placeholder="비상연락망" class="wp100">
 										</td>
 									</tr>
 									<tr>
-										<th class="req">6.담당업무</th>
+										<th>6.담당업무</th>
 										<td>
 											<input type="text" id="pop01_txt01_TASK" Placeholder="담당업무" class="wp100">
 										</td>
-										<th class="req">7.업무인수자</th>
+										<th>7.업무인수자</th>
 										<td>
 											<input type="text" id="pop01_txt01_ACQUIRER" Placeholder="업무인수자" class="wp100">
 										</td>
@@ -410,19 +410,10 @@
 							if($('#pop01_date01_START').val() == ''){
 								toast("경고", "휴가시작일을 입력해주세요.", "error");
 								return false;
-							}else if($('#pop01_date01_END').val() == ''){
+							} else if($('#pop01_date01_END').val() == ''){
 								toast("경고", "휴가종료일을 입력해주세요.", "error");
 								return false;
-							}else if($('#pop01_txt01_EMERGENCY').val() == ''){
-								toast("경고", "비상연락망을 입력해주세요.", "error");
-								return false;
-							}else if($('#pop01_txt01_TASK').val() == ''){
-								toast("경고", "담당업무을 입력해주세요.", "error");
-								return false;
-							}else if($('#pop01_txt01_ACQUIRER').val() == ''){
-								toast("경고", "업무인수자을 입력해주세요.", "error");
-								return false;
-							}else if($('#pop01_txt01_REASON').val() == ''){
+							} else if($('#pop01_txt01_REASON').val() == ''){
 								toast("경고", "사유을 입력해주세요.", "error");
 								return false;
 							}
@@ -552,7 +543,7 @@
 				// 공식 휴무일(연차 및 출근)
 				$("#pop01_date01_START").val($("#holidayOfficeValue").val())
 				$("#pop01_date01_END").val($("#holidayOfficeValue").val())
-				$('#pop01_txt01_COUNT').val('1');
+				$('#pop01_txt01_COUNT').val('0');
 			} else if (startDate != '' && endDate != '') {
 				// 반차, 민방위, 공식 휴무일이 아닌 경우
 				if (new Date(startDate) > new Date(endDate)) {

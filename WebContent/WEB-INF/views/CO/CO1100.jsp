@@ -208,6 +208,9 @@
 		var SALES_NUMSelect = "";
 		var ACCOUNT_SUBSelect = "";
 
+		var chkEditForm = "false";
+		var lastid = 0;
+
 		commonCodeSelectAddMulti("sel01_COMPANY", getCommonCodeCard('CARD'), 'Y');
 		commonCodeSelectAdd("pop01_sel01_ACCOUNT_SUB", getCommonCodeEsc('ACCOUNT'), 'N');
 
@@ -232,6 +235,7 @@
 				return resolve();
 			}).then(function() {
 				setTimeout(function() {
+					chkEditForm = "false";
 					setGrid();
 					init(); //그리드 리사이징
 				}, 500);
@@ -297,6 +301,9 @@
 		$("#btn01_UPDATE").on({
 			click: function(e){
 				e.preventDefault();
+				console.log('btn01_UPDATE ', chkEditForm);
+				chkEditForm = "true";
+				buttonFormat();
 
 				var grid = $("#table1");
 				var ids = grid.jqGrid('getDataIDs');
@@ -312,6 +319,9 @@
 		$("#btn01_SAVE").on({
 			click: function(e){
 				e.preventDefault();
+				console.log('btn01_SAVE ', chkEditForm);
+				chkEditForm = "false";
+				buttonFormat();
 
 				var grid = $("#table1");
 				var ids = grid.jqGrid('getDataIDs');
@@ -329,14 +339,6 @@
 					alert('수정중인 데이터가 없습니다.');
 					return;
 				}
-			}
-		});
-
-		/* 사용내역 수정 팝업의 프로젝트 팝업 버튼 */
-		$("#pop01_btn01_SALES").on({
-			click: function(e){
-				e.preventDefault();
-				openModalPopup_Project();
 			}
 		});
 
@@ -373,6 +375,16 @@
 			}
 		}
 
+		function buttonFormat(cellvalue, options, rowObject) {
+			if(chkEditForm == "true") {
+				$('#btn01_PROJECT').removeClass('disable');
+				return '<button type="button" id="btn01_PROJECT" class="btnPopup" onclick=\"openModalPopup_Project()\">버튼</button>';
+			} else {
+				$('#btn01_PROJECT').addClass('disable');
+				return '<button type="button" id="btn01_PROJECT" class="btnPopup" onclick=\"openModalPopup_Project()\">버튼</button>';
+			}
+		}
+
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 그리드
 		/* jqGrid 셋팅 */
 		function setGrid(){
@@ -387,19 +399,23 @@
 				, colModel: [
 					{name:'USER_ID'				, align:'center'	, width: '0%' 	, hidden: true 	, editable : false}
 					, {name: 'USE_DATE'			, align: 'center'	, width: '4%'	, hidden: false	, editable: false}
-					, {name: 'SALES_NUM'		, align: 'center' 	, width: '10%'	, hidden: false	, editable : true , formatter: 'select' , edittype: 'select' , editoptions: {value: SALES_NUMSelect}}
-					, {name: 'ACCOUNT_SUB'		, align: 'center'	, width: '5%'	, hidden: false	, editable : true , formatter: 'select' , edittype: 'select' , editoptions: {value: ACCOUNT_SUBSelect}}
-					, {name: 'ACCOUNT'			, align: 'left'		, width: '8%'	, hidden: false	, editable: false}
-					, {name: 'BREAKDOWN'		, align: 'left'		, width: '7%'	, hidden: false	, editable: true}
+					, {name: 'SALES_NUM'		, align: 'center' 	, width: '5%'	, hidden: false	, editable : false}
+					, {name: 'PROJECT_NM'		, align: 'center' 	, width: '3%'	, hidden: false	, editable : false , formatter: buttonFormat}
+					, {name: 'ACCOUNT_SUB'		, align: 'left'		, width: '5%'	, hidden: false	, editable : true , formatter: 'select' , edittype: 'select' , editoptions: {value: ACCOUNT_SUBSelect}}
+					, {name: 'ACCOUNT'			, align: 'left'		, width: '9%'	, hidden: false	, editable: false}
+					, {name: 'BREAKDOWN'		, align: 'left'		, width: '9%'	, hidden: false	, editable: true}
 					, {name: 'APPROVAL'			, align: 'right'	, width: '3%'	, hidden: false	, editable: false	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
 					, {name: 'REFUND'			, align: 'right'	, width: '3%'	, hidden: false	, editable: false	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
-					, {name: 'MEMO'				, align: 'left' 	, width: '5%'	, hidden: false	, editable: true}
+					, {name: 'MEMO'				, align: 'left' 	, width: '9%'	, hidden: false	, editable: true}
 					, {name: 'COMPANY'			, align: 'center'	, width: '0%'	, hidden: true	, editable: false}
 					, {name: 'CARD_NUM'			, align: 'center'	, width: '0%'	, hidden: true	, editable: false}
 				]
 				, autowidth: false
 				, shrinkToFit: false
 				, rowNum : 5000
+				, onSelectRow : function(rowid, status, e) {
+					lastidD = rowid;
+				}
 				, gridComplete: function() {
 					var sumA = $("#table1").jqGrid('getCol', 'APPROVAL', false, 'sum');
 					var sumR = $("#table1").jqGrid('getCol', 'REFUND', false, 'sum');
@@ -415,7 +431,17 @@
 				, userDataOnFooter: true
 				, footerrow: true
 			});
-			
+
+			var newWidth = $("#table1_SALES_NUM").width() + $("#table1_PROJECT_NM").outerWidth(true) + 1;
+			console.log('newWidth : ', newWidth);
+			jQuery("#table1").jqGrid("setLabel", "SALES_NUM", "<em style='font-style: inherit;'>판품번호</em>", "", {
+												style : "width: " + newWidth + "px;",
+												colspan : "2"
+											});
+			jQuery("#table1").jqGrid("setLabel", "PROJECT_NM", "", "", {
+				style : "display: none"
+			});
+
 			searchGridData();
 
 			$("#table2").jqGrid({
@@ -434,9 +460,9 @@
 				, ondblClickRow : function(rowid){
 					var rowdata = $("#table2").getRowData(rowid);
 
-					$("#pop01_txt01_SALE").val(rowdata.SALES_NUM);
-					$("#pop01_txt01_PROJECT").val(rowdata.PROJECT_NM);
-
+					// $("#pop01_txt01_SALE").val(rowdata.SALES_NUM);
+					// $("#pop01_txt01_PROJECT").val(rowdata.PROJECT_NM);
+					$("#table1").jqGrid('setCell', lastidD, "SALES_NUM", rowdata.SALES_NUM);
 					$("#viewForm2").dialog("close");
 				}
 			});
@@ -559,50 +585,53 @@
 
 		/* 프로젝트 조회 팝업 */
 		function openModalPopup_Project(){
-			// 화면ID, 화면ID사이즈(ex. 6:CM1000 / 13:CM1000_Detail), 팝업ID, 다국어
-			var returnPopup = getLangCodePopup("CO1100_Pop2", 11, "viewForm2", "${LANG}");
-			var titlePop = returnPopup[0];
-			var pop02_btn01_FINISH = returnPopup[1];
-			var pop02_btn01_CLOSE = returnPopup[2];
+			if (!$(this).hasClass('disable')) {
+				// 화면ID, 화면ID사이즈(ex. 6:CM1000 / 13:CM1000_Detail), 팝업ID, 다국어
+				var returnPopup = getLangCodePopup("CO1100_Pop2", 11, "viewForm2", "${LANG}");
+				var titlePop = returnPopup[0];
+				var pop02_btn01_FINISH = returnPopup[1];
+				var pop02_btn01_CLOSE = returnPopup[2];
 
-			$("#viewForm2").dialog({
-				autoOpen: true
-				, title: titlePop
-				, width: 850
-				, modal: true
-				, open: function (event, ui) {
-					searchGridDataProject();
-				}
-				, close: function () {
-					$(this).dialog("close");
-				}
-				, buttons: [
-					{
-						text : pop02_btn01_FINISH,
-						click : function(){
-							var rowid = $("#table2").getGridParam("selrow");
-							if(rowid < 1){
-								toast("정보", "선택된 프로젝트가 없습니다.", "info");
-								return false;
-							} else {
-								var rowdata = $("#table2").getRowData(rowid);
+				$("#viewForm2").dialog({
+					autoOpen: true
+					, title: titlePop
+					, width: 850
+					, modal: true
+					, open: function (event, ui) {
+						searchGridDataProject();
+					}
+					, close: function () {
+						$(this).dialog("close");
+					}
+					, buttons: [
+						{
+							text : pop02_btn01_FINISH,
+							click : function(){
+								var rowid = $("#table2").getGridParam("selrow");
+								if(rowid < 1){
+									toast("정보", "선택된 프로젝트가 없습니다.", "info");
+									return false;
+								} else {
+									var rowdata = $("#table2").getRowData(rowid);
 
-								$("#pop01_txt01_SALE").val(rowdata.SALES_NUM);
-								$("#pop01_txt01_PROJECT").val(rowdata.PROJECT_NM);
+									$("#table1").jqGrid('setCell', lastidD, "SALES_NUM", rowdata.SALES_NUM);
+									// $("#pop01_txt01_SALE").val(rowdata.SALES_NUM);
+									// $("#pop01_txt01_PROJECT").val(rowdata.PROJECT_NM);
+								}
+
+								$(this).dialog("close");
 							}
-
-							$(this).dialog("close");
 						}
-					}
-					, {
-						text : pop02_btn01_CLOSE,
-						click : function () {
-							$(this).dialog("close");
+						, {
+							text : pop02_btn01_CLOSE,
+							click : function () {
+								$(this).dialog("close");
+							}
 						}
-					}
-				]
-				, focus: function (event, ui) {}
-			}).css("z-index", 1000).prev(".ui-dialog-titlebar").css("background","#266f80").css("color","#fff");
+					]
+					, focus: function (event, ui) {}
+				}).css("z-index", 1000).prev(".ui-dialog-titlebar").css("background","#266f80").css("color","#fff");
+			}
 		};
 	</script>
 </html>

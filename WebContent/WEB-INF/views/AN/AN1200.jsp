@@ -120,7 +120,7 @@
 		/* 공통코드_다국어 */
 		let langHead;
 		
-		commonCodeSelectAdd("sel01_DEPT", getCommonCode('DEPT'), 'Y');
+		commonCodeSelectAdd("sel01_DEPT", getCommonCodeEsc('DEPT'), 'Y');
 		commonCodeSelectAdd("sel01_USE", getCommonCode('USE'), 'Y');
 
 		/* Document가 로드되었을 때 실행되는 코드 */
@@ -240,10 +240,10 @@
 			let use = 0;
 			let unUse = 0;
 			rowData.forEach(data => {
-				if (data.HOLIDAY_CNT != "") {
-					use++;
-				} else {
+				if (data.HOLIDAY_CNT == "" || data.HOLIDAY_CNT == "0") {
 					unUse++;
+				} else {
+					use++;
 				}
 			});
 			console.log('searchGridDataCallBack rowData.length : ', rowData.length);

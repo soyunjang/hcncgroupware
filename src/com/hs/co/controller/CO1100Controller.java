@@ -41,6 +41,13 @@ public class CO1100Controller {
 		return "CO/CO1100";
 	}
 
+	@RequestMapping(value = "/co1100Project")
+	public String co1100Project(Locale locale, Model model, @RequestParam Map<String, Object> param) {
+		model.addAttribute("param", param);
+
+		return "CO/CO1100Project";
+	}
+
 	/**
    	 * 메소드 설명 : 휴가사용현황 조회
    	 * -------------------------------------------------------------------

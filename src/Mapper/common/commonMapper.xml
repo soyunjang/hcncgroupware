@@ -59,8 +59,8 @@
     </select>
 
     <select id="selectSalesNum" parameterType="map" resultType="map">
-        SELECT DISTINCT A.SALES_NUM AS CODE
-             , A.PROJECT_NM AS VALUE
+        SELECT DISTINCT A.PROJECT_NM AS CODE
+             , A.SALES_NUM AS VALUE
           FROM SALES_INQUIRY_INFO A
     </select>
 </mapper>
