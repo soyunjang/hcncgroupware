@@ -174,7 +174,7 @@
 		function co1000MergeDataCallBack(res) {
 			if(res != undefined || res != null) {
 				if(Math.abs(res.insertCnt) > 0) {
-					toast("성공", "정상적으로 " + res.insertCnt + "건이 저장되었습니다.", "success");
+					toast("성공", "정상적으로 " + res.insertCnt + "건이 업로드되었습니다.", "success");
 
 					searchGridData();
 				} else {
@@ -204,14 +204,14 @@
 
 		function co1000SaveCallBack(res) {
 			if(res[0] == undefined || res[0] == null) {
-				toast("성공", "정상적으로 " + tableCnt + "건이 업로드되었습니다.", "success");
+				toast("성공", "정상적으로 " + tableCnt + "건이 저장되었습니다.", "success");
 
 				searchGridData();
 
 				$("#file01_FILE").val("");
 				$("#txt01_FILE_NM").val("");
 			} else {
-				toast("오류", "업로드를 실패하였습니다.", "error");
+				toast("오류", "저장에 실패하였습니다.", "error");
 				return false;
 			}
 

@@ -45,7 +45,7 @@ public class ExceptionHandler extends HandlerExceptionResolverComposite {
 				e.printStackTrace();
 			}
 			
-			commonService.insertExceptionLog(param);
+//			commonService.insertExceptionLog(param);
 		}
 		
 		return super.resolveException(request, response, handler, ex);

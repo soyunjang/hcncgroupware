@@ -36,7 +36,7 @@
     
     <!-- 예외사항 저장 -->
     <insert id="insertExceptionLog" parameterType="map">
-		EXEC EXCEPTIONLOG_INS #{USER_ID}, #{USER_IP}, #{EVNT_NM}, #{false}, #{EVNT_DETAIL}, #{EVNT_SVRY}, #{PROG_NM}, #{HOST_NM}
+		EXEC EXCEPTIONLOG_INS #{USER_ID}, #{USER_IP}, #{EVNT_CD}, #{EVNT_NM}, #{EVNT_DETAIL}, #{EVNT_SVRY}, #{PROG_NM}, #{HOST_NM}
     </insert>
     
     <!-- 권한부여/변경 사항 저장 -->

@@ -7,7 +7,7 @@
 			<!-- .page-title-wrap 타이블영역 START -->
 			<div class="page-title-wrap">
 				<div class="page-title">
-					<h2>연차등록</h2>
+					<h2>휴가등록</h2>
 	           </div>
 	           <div class="page-btn-wrap">
 		            <ul>
@@ -417,6 +417,18 @@
 								toast("경고", "사유을 입력해주세요.", "error");
 								return false;
 							}
+							debugger;
+							var idsH = $("#table1").jqGrid('getDataIDs');
+							
+							for (var i = 0; i < idsH.length; i++) {
+								var retH = $("#table1").jqGrid('getRowData', idsH[i]);
+								
+								if(retH.HOLIDAY_START == $("#pop01_date01_START").val()) {
+									toast("오류", "이미 존재하는 휴가입니다.", "error");
+									return;
+								}
+							}
+							
 							confirms("저장 하시겠습니까?", "C");
 						}
 					}
@@ -531,7 +543,8 @@
 		function holidayDateCheck() {
 			const HALF_CHECK = ($('#pop01_sel01_TYPE').val() == 'HALF01' || $('#pop01_sel01_TYPE').val() == 'HALF02'
 					|| $('#pop01_sel01_TYPE').val() == 'CIVIL01' || $('#pop01_sel01_TYPE').val() == 'CIVIL02');
-			const OFFICE_CHECK = ($('#pop01_sel01_TYPE').val() == 'OFFICE01' || $('#pop01_sel01_TYPE').val() == 'OFFICE02');
+			const OFFICE_CHECK = ($('#pop01_sel01_TYPE').val() == 'OFFICE01');
+			const OFFICE_CHECK2 = ($('#pop01_sel01_TYPE').val() == 'OFFICE02');
 			let startDate = $('#pop01_date01_START').val();
 			let endDate = $('#pop01_date01_END').val();
 
@@ -540,6 +553,11 @@
 				$('#pop01_date01_END').val($('#pop01_date01_START').val());
 				$('#pop01_txt01_COUNT').val('0.5');
 			} else if (OFFICE_CHECK) {
+				// 공식 휴무일(연차)
+				$("#pop01_date01_START").val($("#holidayOfficeValue").val())
+				$("#pop01_date01_END").val($("#holidayOfficeValue").val())
+				$('#pop01_txt01_COUNT').val('1');
+			} else if (OFFICE_CHECK2) {
 				// 공식 휴무일(연차 및 출근)
 				$("#pop01_date01_START").val($("#holidayOfficeValue").val())
 				$("#pop01_date01_END").val($("#holidayOfficeValue").val())

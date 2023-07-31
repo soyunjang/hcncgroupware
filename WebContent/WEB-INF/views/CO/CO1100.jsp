@@ -208,7 +208,7 @@
 		var SALES_NUMSelect = "";
 		var ACCOUNT_SUBSelect = "";
 
-		var chkEditForm = "false";
+		var chkEditForm = false;
 		var lastid = 0;
 
 		commonCodeSelectAddMulti("sel01_COMPANY", getCommonCodeCard('CARD'), 'Y');
@@ -235,7 +235,7 @@
 				return resolve();
 			}).then(function() {
 				setTimeout(function() {
-					chkEditForm = "false";
+					chkEditForm = false;
 					setGrid();
 					init(); //그리드 리사이징
 				}, 500);
@@ -302,7 +302,7 @@
 			click: function(e){
 				e.preventDefault();
 				console.log('btn01_UPDATE ', chkEditForm);
-				chkEditForm = "true";
+				chkEditForm = true;
 				buttonFormat();
 
 				var grid = $("#table1");
@@ -320,7 +320,7 @@
 			click: function(e){
 				e.preventDefault();
 				console.log('btn01_SAVE ', chkEditForm);
-				chkEditForm = "false";
+				chkEditForm = false;
 				buttonFormat();
 
 				var grid = $("#table1");
@@ -376,13 +376,7 @@
 		}
 
 		function buttonFormat(cellvalue, options, rowObject) {
-			if(chkEditForm == "true") {
-				$('#btn01_PROJECT').removeClass('disable');
-				return '<button type="button" id="btn01_PROJECT" class="btnPopup" onclick=\"openModalPopup_Project()\">버튼</button>';
-			} else {
-				$('#btn01_PROJECT').addClass('disable');
-				return '<button type="button" id="btn01_PROJECT" class="btnPopup" onclick=\"openModalPopup_Project()\">버튼</button>';
-			}
+			return '<button type="button" id="btn01_PROJECT" class="btnPopup" onclick=\"openModalPopup_Project()\"></button>';
 		}
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 그리드
@@ -397,7 +391,8 @@
 				}
 				, colNames: langHead
 				, colModel: [
-					{name:'USER_ID'				, align:'center'	, width: '0%' 	, hidden: true 	, editable : false}
+					{name: 'rowStatus'			, align:'center'	, width: '0%'	, hidden: true 	, editable: false}
+					, {name:'USER_ID'			, align:'center'	, width: '0%' 	, hidden: true 	, editable : false}
 					, {name: 'USE_DATE'			, align: 'center'	, width: '4%'	, hidden: false	, editable: false}
 					, {name: 'SALES_NUM'		, align: 'center' 	, width: '5%'	, hidden: false	, editable : false}
 					, {name: 'PROJECT_NM'		, align: 'center' 	, width: '3%'	, hidden: false	, editable : false , formatter: buttonFormat}
@@ -585,7 +580,7 @@
 
 		/* 프로젝트 조회 팝업 */
 		function openModalPopup_Project(){
-			if (!$(this).hasClass('disable')) {
+			if (chkEditForm == true) {
 				// 화면ID, 화면ID사이즈(ex. 6:CM1000 / 13:CM1000_Detail), 팝업ID, 다국어
 				var returnPopup = getLangCodePopup("CO1100_Pop2", 11, "viewForm2", "${LANG}");
 				var titlePop = returnPopup[0];

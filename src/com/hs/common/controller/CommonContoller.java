@@ -78,7 +78,7 @@ public class CommonContoller {
 	}
 
 	@RequestMapping(value = "/insertExceptionLog")
-	public void insertExceptionLog(@RequestBody Map<String, Object> param, HttpServletRequest request){
+	public void insertExceptionLog(@RequestBody Map<String, Object> param, HttpServletRequest request, Exception ex){
 		
 		HttpSession session = request.getSession(false);
 		
@@ -86,16 +86,19 @@ public class CommonContoller {
 			UserInfo vo = (UserInfo) session.getAttribute("User"); 
 			param.put("USER_ID", vo.getUSER_ID());
 			param.put("USER_IP", vo.getUSER_IP());
+			param.put("EVNT_CD", "임시에러코드");
+			param.put("EVNT_NM", "임시에러명");
+			param.put("EVNT_DETAIL", ex.getMessage());
 			param.put("EVNT_SVRY", "임시이벤트심각도");
 			param.put("PROG_NM", "");
 			
 			try {
-				param.put("hostNm", InetAddress.getLocalHost().getHostName());
+				param.put("HOST_NM", InetAddress.getLocalHost().getHostName());
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			}
 			
-			commonService.insertExceptionLog(param);
+//			commonService.insertExceptionLog(param);
 		}
 	}
 	

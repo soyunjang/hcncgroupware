@@ -415,6 +415,7 @@
 		var maxRow = "";			// 그리드 maxrow
 
 		var lastSelection;	// 그리드 마지막 선택값
+		var buyCoin = "COIN1KRW";
 
 		/* 공통코드_콤보박스 */
 		commonCodeSelectAdd("OFFICE_TYPE", getCommonCode('OFFICE'), 'N');	// 수주현황-사업장
@@ -473,10 +474,10 @@
 			if(checkActionBtn == "C") {
 				salesNum = $("#SALES_NUM").val();
 				salesRevision = $("#REVISION").val();
-			} else if(checkActionBtn == "R") {
+			} else {
 				var rowidA = $("#table1").getGridParam("selrow");
 				var rowdataA = $("#table1").getRowData(rowidA);
-				salesNum = rowdataA.SALES_NUM;
+				salesNum = rowdataA.SALES_NUM.substr(0, 12);
 				salesRevision = rowdataA.REVISION;
 			}
 
@@ -680,6 +681,8 @@
 
 				if (!$(this).hasClass('disable')) {
 					checkActionBtn = "T";
+					checkAction = "C";
+
 					var rowid = $("#table1").getGridParam("selrow");
 					var rowdata = $("#table1").getRowData(rowid);
 
@@ -817,11 +820,28 @@
 						return;
 					}
 
-					if($("#table1").getRowData($("#table1").getGridParam("selrow")).SALES_CONFIRM == "확정") {
-						if(checkAction == "U") {
-							if(isEmpty($("#OBTAIN_REASON").val())){
-								alert("변경사유를 입력해 주세요.");
-								return;
+					var cnt = $("#OBTAIN_ITEM_CNT").val().replaceAll(",", "");
+					var unit = $("#COLLECT_UNIT_PRICE").val().replaceAll(",", "");
+
+					if(cnt.length > 0 && unit.length == 0) {
+						toast("경고", "단가를 입력해주세요.", "error");
+						return false;
+					}
+
+					if(unit.length > 0 && cnt.length == 0) {
+						toast("경고", "수량을 입력해주세요.", "error");
+						return false;
+					}
+
+					if(parseInt($("#REVISION").val()) > 0) {
+						if($("#table1").getRowData($("#table1").getGridParam("selrow")).PRE_VERSION == "N") {
+							if($("#table1").getRowData($("#table1").getGridParam("selrow")).SALES_CONFIRM == "미확정") {
+								if(checkAction == "U") {
+									if(isEmpty($("#OBTAIN_REASON").val())){
+										alert("변경사유를 입력해 주세요.");
+										return;
+									}
+								}
 							}
 						}
 					}
@@ -994,6 +1014,15 @@
 
 				getAjaxJsonData("sa1000Confirm", searchParam, "confirmGridDataCallBack");
 			}
+		}
+
+		function confirmNo(action) {
+			var searchParam = {
+				SALES_NUM : $("#SALES_NUM").val().substr(0, 12)
+				, REVISION : $("#REVISION").val()
+			};
+
+			getAjaxJsonData("sa1000Confirm", searchParam, "confirmGridDataCallBack");
 		}
 
 		/*신규 데이터 저장*/
@@ -1237,15 +1266,15 @@
 				, colNames: langDetail2
 				, colModel: [
 					{name: 'rowStatus'			, align:'center'	, width: '3%'	, editable: false}
-					, {name:'BUY_ITEM'			, align: 'center'	, width: '6%'	, editable: true	, formatter: 'select' , edittype: 'select' , editoptions: {value: BUY_ITEMSelect}}
+					, {name:'BUY_ITEM'			, align: 'center'	, width: '7%'	, editable: true	, formatter: 'select' , edittype: 'select' , editoptions: {value: BUY_ITEMSelect}}
 					, {name: 'BUY_CNT'			, align: 'center'	, width: '3%'	, editable: true}
-					, {name: 'BUY_UNIT'			, align: 'center'	, width: '4%'	, editable: true	, formatter: 'select' , edittype: 'select' , editoptions: {value: BUY_UNITSelect}}
+					, {name: 'BUY_UNIT'			, align: 'center'	, width: '5%'	, editable: true	, formatter: 'select' , edittype: 'select' , editoptions: {value: BUY_UNITSelect}}
 					, {name: 'BUY_COIN'			, align: 'center'	, width: '4%'	, editable: true	, formatter: 'select' , edittype: 'select' , editoptions: {value: BUY_COINSelect}}
 					, {name: 'BUY_UNIT_PRICE'	, align: 'right'	, width: '5%'	, editable: true	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
 					, {name: 'BUY_PRICE'		, align: 'right'	, width: '6%'	, editable: true 	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
 					, {name: 'BUY_PURCHASE'		, align: 'left'		, width: '7%'	, editable: true}
-					, {name: 'BUY_PAYMENT'		, align: 'left'		, width: '10%'	, editable: true}
-					, {name: 'BUY_MEMO'			, align: 'center'	, width: '10%'	, editable: true}
+					, {name: 'BUY_PAYMENT'		, align: 'left'		, width: '8%'	, editable: true}
+					, {name: 'BUY_MEMO'			, align: 'center'	, width: '8%'	, editable: true}
 					, {name: 'SALES_NUM'		, align: 'center'	, width: '0%'	, hidden: true}
 					, {name: 'REVISION'			, align: 'center'	, width: '0%'	, hidden: true}
 				]
@@ -1280,7 +1309,6 @@
 
 					var rOne = 0;
 					$('#table3 input#' + rowid + '_BUY_CNT').on('keyup', function(e){
-						console.log('_BUY_CNT');
 						if($("#OBTAIN_CONTRACT_DT").val() == "") {
 							if(rOne == 0) {
 								rOne++;
@@ -1293,7 +1321,6 @@
 					});
 
 					$('#table3 input#' + rowid + '_BUY_UNIT_PRICE').on('keyup', function(e){
-						console.log('_BUY_UNIT_PRICE');
 						if($("#OBTAIN_CONTRACT_DT").val() == "") {
 							if(rOne == 0) {
 								rOne++;
@@ -1306,7 +1333,9 @@
 					});
 
 					$('#table3 select#' + rowid + '_BUY_COIN').on('click', function(e){
-						console.log('_BUY_COIN');
+						console.log('_BUY_COIN : ', $('#table3 select#' + rowid + '_BUY_COIN').val());
+						buyCoin = $('#table3 select#' + rowid + '_BUY_COIN').val();
+						console.log('buyCoin : ', buyCoin);
 						if($("#OBTAIN_CONTRACT_DT").val() == "") {
 							if(rOne < 2) {
 								rOne++;
@@ -1842,6 +1871,44 @@
 		function selectSalesNumCallBack(data){
 			if(data.result != null) {
 				$("#SALES_NUM").val(data.result);
+				$("#REVISION").val('00');
+
+				var ids2 = $("#table2").jqGrid('getDataIDs');
+				var ids3 = $("#table3").jqGrid('getDataIDs');
+				var ids4 = $("#table4").jqGrid('getDataIDs');
+				var ids5 = $("#table5").jqGrid('getDataIDs');
+				var ids6 = $("#table6").jqGrid('getDataIDs');
+				var ids7 = $("#table7").jqGrid('getDataIDs');
+				var ids8 = $("#table8").jqGrid('getDataIDs');
+
+				for (var i = 0; i < ids2.length; i++) {
+					$('#table2').jqGrid('setCell', ids2[i], 'SALES_NUM', $("#SALES_NUM").val());
+					$('#table2').jqGrid('setCell', ids2[i], 'REVISION', $("#REVISION").val());
+				}
+				for (var i = 0; i < ids3.length; i++) {
+					$('#table3').jqGrid('setCell', ids3[i], 'SALES_NUM', $("#SALES_NUM").val());
+					$('#table3').jqGrid('setCell', ids3[i], 'REVISION', $("#REVISION").val());
+				}
+				for (var i = 0; i < ids4.length; i++) {
+					$('#table4').jqGrid('setCell', ids4[i], 'SALES_NUM', $("#SALES_NUM").val());
+					$('#table4').jqGrid('setCell', ids4[i], 'REVISION', $("#REVISION").val());
+				}
+				for (var i = 0; i < ids5.length; i++) {
+					$('#table5').jqGrid('setCell', ids5[i], 'SALES_NUM', $("#SALES_NUM").val());
+					$('#table5').jqGrid('setCell', ids5[i], 'REVISION', $("#REVISION").val());
+				}
+				for (var i = 0; i < ids6.length; i++) {
+					$('#table6').jqGrid('setCell', ids6[i], 'SALES_NUM', $("#SALES_NUM").val());
+					$('#table6').jqGrid('setCell', ids6[i], 'REVISION', $("#REVISION").val());
+				}
+				for (var i = 0; i < ids7.length; i++) {
+					$('#table7').jqGrid('setCell', ids7[i], 'SALES_NUM', $("#SALES_NUM").val());
+					$('#table7').jqGrid('setCell', ids7[i], 'REVISION', $("#REVISION").val());
+				}
+				for (var i = 0; i < ids8.length; i++) {
+					$('#table8').jqGrid('setCell', ids8[i], 'SALES_NUM', $("#SALES_NUM").val());
+					$('#table8').jqGrid('setCell', ids8[i], 'REVISION', $("#REVISION").val());
+				}
 			} else {
 				toast("경고", "일시적인 오류가 발생했습니다.", "error");
 				return false;
@@ -1952,6 +2019,27 @@
 				unit = 0;
 			}
 
+
+			if(cnt.length > 0 && unit == 0) {
+				$("#COLLECT_SALES_AMOUNT").val(parseInt(cnt) * parseInt(unit));
+				$("#COLLECT_SALES_AMOUNT").val(Number($("#COLLECT_SALES_AMOUNT").val()).toLocaleString('ko-KR'));
+
+				marginCalculate();
+
+				toast("경고", "단가를 입력해주세요.", "error");
+				return false;
+			}
+
+			if(unit.length > 0 && cnt == 0) {
+				$("#COLLECT_SALES_AMOUNT").val(parseInt(cnt) * parseInt(unit));
+				$("#COLLECT_SALES_AMOUNT").val(Number($("#COLLECT_SALES_AMOUNT").val()).toLocaleString('ko-KR'));
+
+				marginCalculate();
+
+				toast("경고", "수량을 입력해주세요.", "error");
+				return false;
+			}
+
 			$("#COLLECT_SALES_AMOUNT").val(parseInt(cnt) * parseInt(unit));
 			$("#COLLECT_SALES_AMOUNT").val(Number($("#COLLECT_SALES_AMOUNT").val()).toLocaleString('ko-KR'));
 
@@ -1966,7 +2054,8 @@
 			var unitRow = parseFloat($('#table3 input#' + rowid + '_BUY_UNIT_PRICE').val());
 			var cntSel = parseInt($('#table3 tr').eq(rowid).children('td:eq("3")').text());
 			var coinSel = $('#table3 tr').eq(rowid).children('td:eq("5")').text();
-			var unitSel = parseFloat($('#table3 tr').eq(parseInt(rowid)).children('td:eq("6")').text().replaceAll(",", ""));
+			var unitSel = buyCoin;
+			// var unitSel = parseFloat($('#table3 tr').eq(parseInt(rowid)).children('td:eq("6")').text().replaceAll(",", ""));
 			console.log('table3Claculate unit : ', unitRow, unitSel);
 			if(isNaN(cntRow)) {
 				cnt = cntSel;
@@ -2001,6 +2090,12 @@
 		function marginCalculate() {
 			if($("#COLLECT_SALES_AMOUNT").val().length > 0) {
 				var salesA = parseInt($("#COLLECT_SALES_AMOUNT").val().replaceAll(",", ""));	// 판매금액
+				// var ids3 = $("#table3").jqGrid('getDataIDs');
+				//
+				// for (var i = 0; i < ids3.length; i++) {
+				// }
+				buyPriceSum = $("#table3").jqGrid('getCol', 'BUY_PRICE', false, 'sum');
+				console.log('buyPriceSum : ', buyPriceSum);
 				$("#COLLECT_MARGIN").val(salesA - buyPriceSum);	// 마진금액
 				$("#COLLECT_MARGIN").val(Number($("#COLLECT_MARGIN").val()).toLocaleString('ko-KR'));
 				$("#COLLECT_FINAL_MARGIN").val(salesA - buyPriceSum - costTotPriceSum);	// 최종마진금액
@@ -2215,12 +2310,12 @@
 			if(selRowData.SALES_CONFIRM == "확정") {
 				$("#pop01_lb01_REASON").text("11. 변경사유");
 				$("#OBTAIN_REASON").removeClass('dis-n');
-				$("#OBTAIN_REASON").val(selRowData.OBTAIN_REASON);
+				$("#OBTAIN_REASON").val("");
 			} else {
 				if(parseInt($("#REVISION").val()) > 0) {
 					$("#pop01_lb01_REASON").text("11. 변경사유");
 					$("#OBTAIN_REASON").removeClass('dis-n');
-					$("#OBTAIN_REASON").val(selRowData.OBTAIN_REASON);
+					$("#OBTAIN_REASON").val("");
 				} else {
 					$("#pop01_lb01_REASON").text("");
 					$("#OBTAIN_REASON").addClass('dis-n');

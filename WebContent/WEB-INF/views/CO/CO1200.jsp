@@ -306,11 +306,10 @@
 
 			if(data.length > 0){
 				$("#table1_cnt").text(comma(data.length));
+				searchInfoData();
 			} else {
 				$('#table1_cnt').text(0);
 			}
-
-			searchInfoData();
 		};
 
 		function searchInfoData(){
