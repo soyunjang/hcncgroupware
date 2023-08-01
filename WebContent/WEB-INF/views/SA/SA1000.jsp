@@ -415,7 +415,6 @@
 		var maxRow = "";			// 그리드 maxrow
 
 		var lastSelection;	// 그리드 마지막 선택값
-		var buyCoin = "COIN1KRW";
 
 		/* 공통코드_콤보박스 */
 		commonCodeSelectAdd("OFFICE_TYPE", getCommonCode('OFFICE'), 'N');	// 수주현황-사업장
@@ -513,7 +512,7 @@
 		}
 
 		function insertGrid2(condition, rowid) {
-			insertInit("table2", rowid);
+			insertInit("table3", rowid);
 
 			$("#table3").jqGrid("addRow", {
 				rowID : maxRow,
@@ -537,7 +536,7 @@
 		}
 
 		function insertGrid3(condition, rowid) {
-			insertInit("table2", rowid);
+			insertInit("table4", rowid);
 
 			$("#table4").jqGrid("addRow", {
 				rowID : maxRow,
@@ -561,7 +560,7 @@
 		}
 
 		function insertGrid4(condition, rowid) {
-			insertInit("table2", rowid);
+			insertInit("table5", rowid);
 
 			$("#table5").jqGrid("addRow", {
 				rowID : maxRow,
@@ -1316,7 +1315,22 @@
 								return false;
 							}
 						} else {
-							table3Claculate(rowid);
+							var buyCoin1 = new Array();
+							var idsH = $("#table3").jqGrid('getDataIDs');
+							for(var i = 1; i <= idsH.length; i++) {
+								var retH = $("#table3").jqGrid('getRowData', i);
+
+								if(retH.rowStatus != "수정") {
+									buyCoin1.push(retH);
+								} else {
+									if($('#table3 input#' + i + '_BUY_CNT').val() == undefined) {
+										buyCoin1.push(retH);
+									} else {
+										buyCoin1.push({"BUY_CNT" : $('#table3 input#' + i + '_BUY_CNT').val(), "BUY_COIN" : $('#table3 select#' + i + '_BUY_COIN').val(), "BUY_UNIT_PRICE" : $('#table3 input#' + i + '_BUY_UNIT_PRICE').val()});
+									}
+								}
+							}
+							table3Claculate(buyCoin1);
 						}
 					});
 
@@ -1328,14 +1342,27 @@
 								return false;
 							}
 						} else {
-							table3Claculate(rowid);
+							var buyCoin2 = new Array();
+							var idsH = $("#table3").jqGrid('getDataIDs');
+							for(var i = 1; i <= idsH.length; i++) {
+								var retH = $("#table3").jqGrid('getRowData', i);
+
+								if(retH.rowStatus != "수정") {
+									buyCoin2.push(retH);
+								} else {
+									if($('#table3 input#' + i + '_BUY_CNT').val() == undefined) {
+										buyCoin2.push(retH);
+									} else {
+										buyCoin2.push({"BUY_CNT" : $('#table3 input#' + i + '_BUY_CNT').val(), "BUY_COIN" : $('#table3 select#' + i + '_BUY_COIN').val(), "BUY_UNIT_PRICE" : $('#table3 input#' + i + '_BUY_UNIT_PRICE').val()});
+									}
+								}
+							}
+							table3Claculate(buyCoin2);
 						}
 					});
 
 					$('#table3 select#' + rowid + '_BUY_COIN').on('click', function(e){
 						console.log('_BUY_COIN : ', $('#table3 select#' + rowid + '_BUY_COIN').val());
-						buyCoin = $('#table3 select#' + rowid + '_BUY_COIN').val();
-						console.log('buyCoin : ', buyCoin);
 						if($("#OBTAIN_CONTRACT_DT").val() == "") {
 							if(rOne < 2) {
 								rOne++;
@@ -1343,7 +1370,22 @@
 								return false;
 							}
 						} else {
-							table3Claculate(rowid, $('#table3 select#' + rowid + '_BUY_COIN').val());
+							var buyCoin3 = new Array();
+							var idsH = $("#table3").jqGrid('getDataIDs');
+							for(var i = 1; i <= idsH.length; i++) {
+								var retH = $("#table3").jqGrid('getRowData', i);
+
+								if(retH.rowStatus != "수정") {
+									buyCoin3.push(retH);
+								} else {
+									if($('#table3 input#' + i + '_BUY_CNT').val() == undefined) {
+										buyCoin3.push(retH);
+									} else {
+										buyCoin3.push({"BUY_CNT" : $('#table3 input#' + i + '_BUY_CNT').val(), "BUY_COIN" : $('#table3 select#' + i + '_BUY_COIN').val(), "BUY_UNIT_PRICE" : $('#table3 input#' + i + '_BUY_UNIT_PRICE').val()});
+									}
+								}
+							}
+							table3Claculate(buyCoin3);
 						}
 					});
 				}
@@ -1772,6 +1814,10 @@
 				datatype: 'local'
 				, data: data
 			}).trigger("reloadGrid");
+
+			if(data.length > 0) {
+				buyCoinData();
+			}
 		};
 
 		function searchGrid3Data(num, revision){
@@ -1966,17 +2012,19 @@
 
 				$("#currency_VAL").text(rCNH + rEUR + rJPY + rUSD);
 
-				var status = $("#table3").jqGrid('getCell', "1", 'rowStatus');
-				if(!isEmpty(status)) {
-					var ids = $("#table3").jqGrid('getDataIDs');
-					for(var i = 0; i < ids.length; i++) {
-						$("#table3").jqGrid('saveRow', ids[i], true, 'clientArray');
-						table3Claculate(ids);
-					}
-				}
+				// var status = $("#table3").jqGrid('getCell', "1", 'rowStatus');
+				// if(!isEmpty(status)) {
+				// 	var ids = $("#table3").jqGrid('getDataIDs');
+				// 	for(var i = 0; i < ids.length; i++) {
+				// 		$("#table3").jqGrid('saveRow', ids[i], true, 'clientArray');
+				// 		table3Claculate(ids);
+				// 	}
+				// }
 			} else {
 				$("#currency_VAL").text("");
 			}
+
+			table3Claculate();
 ``		};
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 검증
@@ -2002,6 +2050,17 @@
 		}
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 계산
+		function buyCoinData() {
+			var buyCoin = new Array();
+			var idsH = $("#table3").jqGrid('getDataIDs');
+			for(var i = 0; i < idsH.length; i++) {
+				var retH = $("#table3").jqGrid('getRowData', idsH[i]);
+				buyCoin.push(retH);
+			}
+
+			table3Claculate(buyCoin);
+		}
+
 		/*판매금액 계산 (수량 * 단가)*/
 		function changeUnitPrice() {
 			var cnt = $("#OBTAIN_ITEM_CNT").val().replaceAll(",", "");
@@ -2046,41 +2105,60 @@
 			marginCalculate();
 		}
 
-		function table3Claculate(rowid, coinRow) {
-			rowid = parseInt(rowid);
-			var cnt, coin, unit;
-			var cntRow = parseInt($('#table3 input#' + rowid + '_BUY_CNT').val());
-			var coinRow = coinRow;
-			var unitRow = parseFloat($('#table3 input#' + rowid + '_BUY_UNIT_PRICE').val());
-			var cntSel = parseInt($('#table3 tr').eq(rowid).children('td:eq("3")').text());
-			var coinSel = $('#table3 tr').eq(rowid).children('td:eq("5")').text();
-			var unitSel = buyCoin;
-			// var unitSel = parseFloat($('#table3 tr').eq(parseInt(rowid)).children('td:eq("6")').text().replaceAll(",", ""));
-			console.log('table3Claculate unit : ', unitRow, unitSel);
-			if(isNaN(cntRow)) {
-				cnt = cntSel;
-				coin = coinSel;
-				unit = unitSel;
-			} else {
-				cnt = cntRow;
-				coin = coinRow;
-				unit = unitRow;
+		function table3Claculate(buyCoin) {
+			// rowid = parseInt(rowid);
+			// var cnt, coin, unit;
+			// var cntRow = parseInt($('#table3 input#' + rowid + '_BUY_CNT').val());
+			// var coinRow = coinRow;
+			// var unitRow = parseFloat($('#table3 input#' + rowid + '_BUY_UNIT_PRICE').val());
+			// var cntSel = parseInt($('#table3 tr').eq(rowid).children('td:eq("3")').text());
+			// var coinSel = $('#table3 tr').eq(rowid).children('td:eq("5")').text();
+			// debugger;
+			// var unitSel = buyCoin;
+			// // var unitSel = parseFloat($('#table3 tr').eq(parseInt(rowid)).children('td:eq("6")').text().replaceAll(",", ""));
+			// console.log('table3Claculate unit : ', unitRow, unitSel);
+			// if(isNaN(cntRow)) {
+			// 	cnt = cntSel;
+			// 	coin = coinSel;
+			// 	unit = unitSel;
+			// } else {
+			// 	cnt = cntRow;
+			// 	coin = coinRow;
+			// 	unit = unitRow;
+			// }
+
+			if(buyCoin == undefined) {
+				var buyCoin = new Array();
+				var idsH = $("#table3").jqGrid('getDataIDs');
+				for(var i = 0; i < idsH.length; i++) {
+					var retH = $("#table3").jqGrid('getRowData', idsH[i]);
+					buyCoin.push(retH);
+				}
 			}
 
-			if(coin == "달러" || coin == "COIN2USD") {
-				totCost = cnt * unit * usd.replaceAll(",", "");
-			} else if(coin == "유로" || coin == "COIN3EUR") {
-				totCost = cnt * unit * eur.replaceAll(",", "");
-			} else if(coin == "위안" || coin == "COIN4CNH") {
-				totCost = cnt * unit * cnh.replaceAll(",", "");
-			} else if(coin == "엔화" || coin == "COIN5JPY") {
-				totCost = cnt * unit * jpy.replaceAll(",", "");
-			} else {
-				totCost = cnt * unit;
+			var cnt, coin, unit, totCost;
+			if(buyCoin != undefined) {
+				for(var i = 0; i < buyCoin.length; i++) {
+					cnt = parseInt(buyCoin[i].BUY_CNT);
+					coin = buyCoin[i].BUY_COIN;
+					unit = parseFloat(buyCoin[i].BUY_UNIT_PRICE);
+
+					if(coin == "COIN2USD") {
+						totCost = cnt * unit * usd.replaceAll(",", "");
+					} else if(coin == "COIN3EUR") {
+						totCost = cnt * unit * eur.replaceAll(",", "");
+					} else if(coin == "COIN4CNH") {
+						totCost = cnt * unit * cnh.replaceAll(",", "");
+					} else if(coin == "COIN5JPY") {
+						totCost = cnt * unit * jpy.replaceAll(",", "");
+					} else {
+						totCost = cnt * unit;
+					}
+
+					console.log('changeContractDt : ', usd, eur, cnh, jpy);
+					$('#table3').jqGrid('setCell', i+1, 'BUY_PRICE', totCost.toFixed(1));
+				}
 			}
-
-			$('#table3').jqGrid('setCell', rowid, 'BUY_PRICE', totCost.toFixed(1));
-
 			buyPriceSum = $("#table3").jqGrid('getCol', 'BUY_PRICE', false, 'sum');
 
 			marginCalculate();
