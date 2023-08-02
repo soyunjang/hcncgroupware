@@ -25,6 +25,6 @@
 	</select>
 
 	<update id="co1100Save" parameterType="map">
-		EXEC CO1100_SAVE #{SALES_NUM}, #{ACCOUNT_SUB}, #{BREAKDOWN}, #{MEMO}, #{UPT_ID}, #{USE_DATE}, #{ACCOUNT}, #{COMPANY}, #{CARD_NUM}, #{USER_ID}
+		EXEC CO1100_SAVE #{SALES_NUM}, #{ACCOUNT_SUB}, #{APPROVAL_NUM}, #{BREAKDOWN}, #{MEMO}, #{UPT_ID}, #{USE_DATE}, #{ACCOUNT}, #{COMPANY}, #{CARD_NUM}, #{USER_ID}
 	</update>
 </mapper>

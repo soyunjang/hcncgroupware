@@ -10,7 +10,7 @@
 	</select>
 
 	<insert id="co1000InsTmp" parameterType="map">
-		EXEC CO1000_INS_TMP #{COMPANY}, #{CARD_NUM}, #{USE_DATE}, #{ACCOUNT}, #{APPROVAL}, #{REFUND}, #{FILE_NM}
+		EXEC CO1000_INS_TMP #{COMPANY}, #{CARD_NUM}, #{USE_DATE}, #{APPROVAL_NUM}, #{ACCOUNT}, #{APPROVAL}, #{REFUND}, #{FILE_NM}
 	</insert>
 
 	<insert id="co1000Save" parameterType="map">

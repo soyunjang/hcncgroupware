@@ -312,7 +312,7 @@
 					, COMPANY : $("#pop01_sel01_COMPANY").val()
 					, CARD_NUM : document.getElementById('pop01_txt01_CARD_NUM').value
 					, CVS : $("#pop01_txt01_CVS").val()
-					, LIMIT : $("#pop01_txt01_LIMIT").val()
+					, LIMIT : $("#pop01_txt01_LIMIT").val().replaceAll(",", "")
 					, CARD_DT : $("#pop01_date01_CARD_DT").val()
 					, ISSUANCE_DT : $("#pop01_date01_ISSUANCE_DT").val()
 					, PROVIDE_DT : $("#pop01_date01_PROVIDE_DT").val()

@@ -179,10 +179,22 @@
 					searchGridData();
 				} else {
 					toast("오류", "업로드를 실패하였습니다.", "error");
+					$("#file01_FILE").val("");
+					$("#txt01_FILE_NM").val("");
+
+					$("#table1").clearGridData();
+					$("#table1_cnt").text(0);
+					closeLoadingPanel();
 					return false;
 				}
 			} else {
 				toast("오류", "업로드를 실패하였습니다.", "error");
+				$("#file01_FILE").val("");
+				$("#txt01_FILE_NM").val("");
+
+				$("#table1").clearGridData();
+				$("#table1_cnt").text(0);
+				closeLoadingPanel();
 				return false;
 			}
 
@@ -235,6 +247,7 @@
 					{name: 'COMPANY'			, align: 'center'	, width: '5%'	, hidden: false}				
 					, {name: 'CARD_NUM'			, align: 'center' 	, width: '8%'	, hidden: false}							
 					, {name: 'USE_DATE'			, align: 'center'	, width: '6%'	, hidden: false}				
+					, {name: 'APPROVAL_NUM'		, align: 'center'	, width: '4%'	, hidden: false}
 					, {name: 'ACCOUNT'			, align: 'center' 	, width: '10%'	, hidden: false}
 					, {name: 'APPROVAL'			, align: 'right'	, width: '8%'	, hidden: false , formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}					
 					, {name: 'REFUND'			, align: 'right'	, width: '8%'	, hidden: false , formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}

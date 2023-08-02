@@ -403,7 +403,8 @@
 				, colModel: [
 					{name: 'rowStatus'			, align:'center'	, width: '0%'	, hidden: true 	, editable: false}
 					, {name:'USER_ID'			, align:'center'	, width: '0%' 	, hidden: true 	, editable : false}
-					, {name: 'USE_DATE'			, align: 'center'	, width: '4%'	, hidden: false	, editable: false}
+					, {name: 'USE_DATE'			, align: 'left'		, width: '5%'	, hidden: false	, editable: false}
+					, {name: 'APPROVAL_NUM'		, align: 'center'	, width: '3%'	, hidden: false	, editable: false}
 					, {name: 'SALES_NUM'		, align: 'center' 	, width: '5%'	, hidden: false	, editable : false}
 					, {name: 'PROJECT_NM'		, align: 'center' 	, width: '3%'	, hidden: false	, editable : false , formatter: buttonFormat}
 					, {name: 'ACCOUNT_SUB'		, align: 'left'		, width: '5%'	, hidden: false	, editable : true , formatter: 'select' , edittype: 'select' , editoptions: {value: ACCOUNT_SUBSelect}}
@@ -411,7 +412,7 @@
 					, {name: 'BREAKDOWN'		, align: 'left'		, width: '9%'	, hidden: false	, editable: true}
 					, {name: 'APPROVAL'			, align: 'right'	, width: '3%'	, hidden: false	, editable: false	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
 					, {name: 'REFUND'			, align: 'right'	, width: '3%'	, hidden: false	, editable: false	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
-					, {name: 'MEMO'				, align: 'left' 	, width: '9%'	, hidden: false	, editable: true}
+					, {name: 'MEMO'				, align: 'left' 	, width: '8%'	, hidden: false	, editable: true}
 					, {name: 'COMPANY'			, align: 'center'	, width: '0%'	, hidden: true	, editable: false}
 					, {name: 'CARD_NUM'			, align: 'center'	, width: '0%'	, hidden: true	, editable: false}
 				]
@@ -437,7 +438,7 @@
 				, footerrow: true
 			});
 
-			var newWidth = $("#table1_SALES_NUM").width() + $("#table1_PROJECT_NM").outerWidth(true) + 1;
+			var newWidth = $("#table1_SALES_NUM").width() + $("#table1_PROJECT_NM").outerWidth(true) - 5;
 			console.log('newWidth : ', newWidth);
 			jQuery("#table1").jqGrid("setLabel", "SALES_NUM", "<em style='font-style: inherit;'>판품번호</em>", "", {
 												style : "width: " + newWidth + "px;",
@@ -606,6 +607,7 @@
 					, width: 850
 					, modal: true
 					, open: function (event, ui) {
+						$("#pop02_txt01_PROJECT").val("");
 						searchGridDataProject();
 					}
 					, close: function () {

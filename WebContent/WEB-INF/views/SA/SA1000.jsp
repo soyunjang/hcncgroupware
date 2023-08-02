@@ -473,6 +473,9 @@
 			if(checkActionBtn == "C") {
 				salesNum = $("#SALES_NUM").val();
 				salesRevision = $("#REVISION").val();
+			} else if(checkActionBtn == "T") {
+				salesNum = $("#SALES_NUM").val();
+				salesRevision = $("#REVISION").val();
 			} else {
 				var rowidA = $("#table1").getGridParam("selrow");
 				var rowdataA = $("#table1").getRowData(rowidA);
@@ -758,6 +761,7 @@
 			}
 		});
 
+		// var selRowSalesNum = "";
 		/* 수정 버튼 */
 		$("#btn01_UPDATE").on({
 			click: function(e){
@@ -770,6 +774,8 @@
 				var rowdata = $("#table1").getRowData(rowid);
 
 				if(rowdata.SALES_CONFIRM == "확정") {
+					// selRowSalesNum = rowdata.SALES_NUM;
+					// console.log('selRowSalesNum : ', selRowSalesNum);
 					updatePreVersion();
 				} else {
 					setButton('modify');
@@ -1278,7 +1284,7 @@
 					, {name: 'BUY_PRICE'		, align: 'right'	, width: '6%'	, editable: true 	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
 					, {name: 'BUY_PURCHASE'		, align: 'left'		, width: '7%'	, editable: true}
 					, {name: 'BUY_PAYMENT'		, align: 'left'		, width: '8%'	, editable: true}
-					, {name: 'BUY_MEMO'			, align: 'center'	, width: '8%'	, editable: true}
+					, {name: 'BUY_MEMO'			, align: 'left'		, width: '8%'	, editable: true}
 					, {name: 'SALES_NUM'		, align: 'center'	, width: '0%'	, hidden: true}
 					, {name: 'REVISION'			, align: 'center'	, width: '0%'	, hidden: true}
 				]
@@ -1772,7 +1778,16 @@
 			if(data.length > 0) {
 				tableCnt = comma(data.length);
 				$("#table1_cnt").text(tableCnt);
-				$("#table1 tr").eq(1).trigger("click");
+
+				// if(selRowSalesNum.length > 0) {
+				// 	for(var i = 0; i < data.length; i++) {
+				// 		if(data[i].SALES_NUM == selRowSalesNum.substr(0, 13)) {
+				// 			$("#table1 tr").eq(i+1).trigger("click");
+				// 		}
+				// 	}
+				// } else {
+					$("#table1 tr").eq(1).trigger("click");
+				// }
 			} else {
 				$('#table1_cnt').text(0);
 			}
@@ -1784,6 +1799,8 @@
 			} else if(data.length == 0) {
 				setButton('init');
 			}
+
+			// selRowSalesNum = "";
 			inputDisabled();
 		};
 
@@ -2393,19 +2410,25 @@
 			$("#OBTAIN_PROJECT_END").val(selRowData.OBTAIN_PROJECT_END);
 			$("#OBTAIN_ITEM_CNT").val(selRowData.OBTAIN_ITEM_CNT);
 
-			if(selRowData.SALES_CONFIRM == "확정") {
-				$("#pop01_lb01_REASON").text("11. 변경사유");
-				$("#OBTAIN_REASON").removeClass('dis-n');
+			if(state == "copy") {
+				$("#pop01_lb01_REASON").text("");
+				$("#OBTAIN_REASON").addClass('dis-n');
 				$("#OBTAIN_REASON").val("");
 			} else {
-				if(parseInt($("#REVISION").val()) > 0) {
+				if(selRowData.SALES_CONFIRM == "확정") {
 					$("#pop01_lb01_REASON").text("11. 변경사유");
 					$("#OBTAIN_REASON").removeClass('dis-n');
 					$("#OBTAIN_REASON").val("");
 				} else {
-					$("#pop01_lb01_REASON").text("");
-					$("#OBTAIN_REASON").addClass('dis-n');
-					$("#OBTAIN_REASON").val("");
+					if(parseInt($("#REVISION").val()) > 0) {
+						$("#pop01_lb01_REASON").text("11. 변경사유");
+						$("#OBTAIN_REASON").removeClass('dis-n');
+						$("#OBTAIN_REASON").val("");
+					} else {
+						$("#pop01_lb01_REASON").text("");
+						$("#OBTAIN_REASON").addClass('dis-n');
+						$("#OBTAIN_REASON").val("");
+					}
 				}
 			}
 

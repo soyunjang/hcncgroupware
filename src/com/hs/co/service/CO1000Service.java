@@ -113,15 +113,20 @@ public class CO1000Service {
 					paramMap.put("USE_DATE", cell.getStringCellValue());
 				}
 
-				cell = row.getCell(3);	// 행의 4번째 열(거래처)
+				cell = row.getCell(3);	// 행의 4번째 열(승인번호)
+				if (null != cell)
+					paramMap.put("APPROVAL_NUM", cell.getStringCellValue());
+
+
+				cell = row.getCell(4);	// 행의 5번째 열(거래처)
 				if (null != cell)
 					paramMap.put("ACCOUNT", cell.getStringCellValue());
-									
-				cell = row.getCell(4);	// 행의 5번째 열(승인금액)
+
+				cell = row.getCell(5);	// 행의 6번째 열(승인금액)
 				if (null != cell)
 					paramMap.put("APPROVAL", cell.getNumericCellValue());
 
-				cell = row.getCell(5);	// 행의 5번째 열(취소금액)
+				cell = row.getCell(6);	// 행의 7번째 열(취소금액)
 				if (null != cell)
 					paramMap.put("REFUND", cell.getNumericCellValue());
 
@@ -139,7 +144,6 @@ public class CO1000Service {
 	
 	public int getHSSF(MultipartFile excelFile, @RequestParam Map<String, Object> param) {
 		
-		Map<String, Object> paramMap = new HashMap<String, Object>();
 		Workbook workbook;
 		int insertCnt = 0;
 
@@ -147,8 +151,9 @@ public class CO1000Service {
 			workbook = new HSSFWorkbook(excelFile.getInputStream());
 			// 첫번째 시트 불러오기
 			HSSFSheet sheet = (HSSFSheet) workbook.getSheetAt(0);
-	
+
 			for (int i = 1; i < sheet.getLastRowNum() + 1; i++) {
+				Map<String, Object> paramMap = new HashMap<String, Object>();
 				HSSFRow row = sheet.getRow(i);
 	
 				// 행이 존재하기 않으면 패스
@@ -172,16 +177,21 @@ public class CO1000Service {
 //					paramMap.put("USE_DATE", yyyy + "-" + mm + "-" + dd);
 					paramMap.put("USE_DATE", cell.getStringCellValue());
 				}
-									
-				cell = row.getCell(3);	// 행의 4번째 열(거래처)
+
+				cell = row.getCell(3);	// 행의 4번째 열(승인번호)
+				if (null != cell)
+					paramMap.put("APPROVAL_NUM", cell.getStringCellValue());
+
+
+				cell = row.getCell(4);	// 행의 5번째 열(거래처)
 				if (null != cell)
 					paramMap.put("ACCOUNT", cell.getStringCellValue());
 									
-				cell = row.getCell(4);	// 행의 5번째 열(승인금액)
+				cell = row.getCell(5);	// 행의 6번째 열(승인금액)
 				if (null != cell)
 					paramMap.put("APPROVAL", cell.getNumericCellValue());
 
-				cell = row.getCell(5);	// 행의 5번째 열(취소금액)
+				cell = row.getCell(6);	// 행의 7번째 열(취소금액)
 				if (null != cell)
 					paramMap.put("REFUND", cell.getNumericCellValue());
 
