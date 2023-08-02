@@ -1016,39 +1016,43 @@
 		}
 
 		function confirmNo(action) {
-			var searchParam = {
-				SALES_NUM : $("#SALES_NUM").val().substr(0, 12)
-				, REVISION : $("#REVISION").val()
-			};
+			if(checkActionBtn == "F") {
+				var searchParam = {
+					SALES_NUM : $("#SALES_NUM").val().substr(0, 12)
+					, REVISION : $("#REVISION").val()
+				};
 
-			getAjaxJsonData("sa1000Confirm", searchParam, "confirmGridDataCallBack");
+				getAjaxJsonData("sa1000Confirm", searchParam, "confirmGridDataCallBack");
+			}
 		}
 
 		/*신규 데이터 저장*/
 		function saveNewData() {
-			var params = {
-				OFFICE_TYPE : $("#OFFICE_TYPE").val()
-				, SALES_NUM : $("#SALES_NUM").val().substr(0, 12)
-				, REVISION : $("#REVISION").val()
-				, PROJECT_NM : $("#PROJECT_NM").val()
-				, OBTAIN_ACCOUNT : $("#OBTAIN_ACCOUNT").val()
-				, OBTAIN_SALES_PIC : $("#OBTAIN_SALES_PIC").val()
-				, OBTAIN_CONTRACT_DT : $("#OBTAIN_CONTRACT_DT").val()
-				, OBTAIN_ITEM : $("#OBTAIN_ITEM").val()
-				, OBTAIN_PM : $("#OBTAIN_PM").val()
-				, OBTAIN_PROJECT_START : $("#OBTAIN_PROJECT_START").val()
-				, OBTAIN_PROJECT_END : $("#OBTAIN_PROJECT_END").val()
-				, OBTAIN_ITEM_CNT : parseInt($("#OBTAIN_ITEM_CNT").val())
-				, OBTAIN_REASON : $("#OBTAIN_REASON").val()
-				, COLLECT_UNIT_PRICE : parseInt($("#COLLECT_UNIT_PRICE").val().replaceAll(",", ""))
-				, COLLECT_SALES_AMOUNT : parseInt($("#COLLECT_SALES_AMOUNT").val().replaceAll(",", ""))
-				, COLLECT_MARGIN_PER : parseFloat($("#COLLECT_MARGIN_PER").val())
-				, COLLECT_MARGIN : parseInt($("#COLLECT_MARGIN").val().replaceAll(",", ""))
-				, COLLECT_FINAL_MARGIN_PER : parseFloat($("#COLLECT_FINAL_MARGIN_PER").val())
-				, COLLECT_FINAL_MARGIN : parseInt($("#COLLECT_FINAL_MARGIN").val().replaceAll(",", ""))
-			}
+			if($("#SALES_NUM").val() != "" || $("#SALES_NUM").val() != null) {
+				var params = {
+					OFFICE_TYPE : $("#OFFICE_TYPE").val()
+					, SALES_NUM : $("#SALES_NUM").val().substr(0, 12)
+					, REVISION : $("#REVISION").val()
+					, PROJECT_NM : $("#PROJECT_NM").val()
+					, OBTAIN_ACCOUNT : $("#OBTAIN_ACCOUNT").val()
+					, OBTAIN_SALES_PIC : $("#OBTAIN_SALES_PIC").val()
+					, OBTAIN_CONTRACT_DT : $("#OBTAIN_CONTRACT_DT").val()
+					, OBTAIN_ITEM : $("#OBTAIN_ITEM").val()
+					, OBTAIN_PM : $("#OBTAIN_PM").val()
+					, OBTAIN_PROJECT_START : $("#OBTAIN_PROJECT_START").val()
+					, OBTAIN_PROJECT_END : $("#OBTAIN_PROJECT_END").val()
+					, OBTAIN_ITEM_CNT : parseInt($("#OBTAIN_ITEM_CNT").val())
+					, OBTAIN_REASON : $("#OBTAIN_REASON").val()
+					, COLLECT_UNIT_PRICE : parseInt($("#COLLECT_UNIT_PRICE").val().replaceAll(",", ""))
+					, COLLECT_SALES_AMOUNT : parseInt($("#COLLECT_SALES_AMOUNT").val().replaceAll(",", ""))
+					, COLLECT_MARGIN_PER : parseFloat($("#COLLECT_MARGIN_PER").val())
+					, COLLECT_MARGIN : parseInt($("#COLLECT_MARGIN").val().replaceAll(",", ""))
+					, COLLECT_FINAL_MARGIN_PER : parseFloat($("#COLLECT_FINAL_MARGIN_PER").val())
+					, COLLECT_FINAL_MARGIN : parseInt($("#COLLECT_FINAL_MARGIN").val().replaceAll(",", ""))
+				}
 
-			getAjaxJsonData("sa1000Save", params, "saveNewDataCallback");
+				getAjaxJsonData("sa1000Save", params, "saveNewDataCallback");
+			}
 		}
 
 		function saveNewDataCallback(res) {
@@ -1175,7 +1179,8 @@
 			function currencyFmatterPER(cellvalue, options, rowObject) {
 				if(cellvalue != undefined) {
 					if(cellvalue != "") {
-						return cellvalue + "%";
+						var ret = cellvalue.replaceAll("%", "");
+						return ret + "%";
 					} else {
 						return "";
 					}
@@ -1978,6 +1983,7 @@
 				if(new Date($("#date01_REG_DT").text().trim()) >= new Date($("#OBTAIN_CONTRACT_DT").val())) {
 					getAjaxJsonData("sa1000SelExchange", params, "selectExchangeCallback");
 				} else {
+					$("#OBTAIN_CONTRACT_DT").val("");
 					toast("경고", "오늘자 이후 환율은 조회할 수 없습니다.", "error");
 					return false;
 				}
@@ -2034,6 +2040,7 @@
 			var end = $("#OBTAIN_PROJECT_END").val();
 
 			if(start > end) {
+				$("#OBTAIN_PROJECT_END").val("");
 				toast("경고", "종료날짜보다 시작날짜가 클 수 없습니다.", "error");
 				return false;
 			}
@@ -2044,6 +2051,7 @@
 			var end = $('#table7 input#' + rowid + '_SM_INSPECT_DT').val();
 
 			if(start > end) {
+				$('#table7 input#' + rowid + '_SM_INSPECT_DT').val("");
 				toast("경고", "검수예정일보다 납품예정일이 클 수 없습니다.", "error");
 				return false;
 			}

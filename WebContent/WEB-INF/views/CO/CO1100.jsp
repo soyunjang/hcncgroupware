@@ -235,12 +235,19 @@
 				return resolve();
 			}).then(function() {
 				setTimeout(function() {
-					chkEditForm = false;
 					setGrid();
 					init(); //그리드 리사이징
 				}, 500);
 			});
 		});
+
+		function setButton(action) {
+			if(action == "init") {
+				$("#btn01_SAVE").addClass('disable');
+			} else if(action == "update") {
+				$("#btn01_SAVE").removeClass('disable');
+			}
+		}
 
 		function selectBox() {
 			getAjaxData("selectLists?LIST_TYPE=ACCOUNT", '', 'ACCOUNT_SUBSelectCallBack');
@@ -303,6 +310,7 @@
 				e.preventDefault();
 				console.log('btn01_UPDATE ', chkEditForm);
 				chkEditForm = true;
+				setButton('update');
 				buttonFormat();
 
 				var grid = $("#table1");
@@ -319,25 +327,27 @@
 		$("#btn01_SAVE").on({
 			click: function(e){
 				e.preventDefault();
-				console.log('btn01_SAVE ', chkEditForm);
-				chkEditForm = false;
-				buttonFormat();
 
-				var grid = $("#table1");
-				var ids = grid.jqGrid('getDataIDs');
+				if (!$(this).hasClass('disable')) {
+					chkEditForm = false;
+					buttonFormat();
 
-				for (var i = 0; i < ids.length; i++) {
-					grid.jqGrid('saveRow', ids[i]);
-				}
+					var grid = $("#table1");
+					var ids = grid.jqGrid('getDataIDs');
 
-				var formArray = [ 'SA1000DataForm' ];
-				var chk = checkRequiredValidation(formArray);
+					for (var i = 0; i < ids.length; i++) {
+						grid.jqGrid('saveRow', ids[i]);
+					}
 
-				if (chk) {
-					confirms("수정중인 데이터를 저장하시겠습니까?", "U");
-				} else {
-					alert('수정중인 데이터가 없습니다.');
-					return;
+					var formArray = ['SA1000DataForm'];
+					var chk = checkRequiredValidation(formArray);
+
+					if (chk) {
+						confirms("수정중인 데이터를 저장하시겠습니까?", "U");
+					} else {
+						alert('수정중인 데이터가 없습니다.');
+						return;
+					}
 				}
 			}
 		});
@@ -508,6 +518,9 @@
 			} else {
 				$('#table1_cnt').text(0);
 			}
+
+			chkEditForm = false;
+			setButton('init');
 		};
 
 		/* 사용내역 수정 팝업의 프로젝트 Table 조회  */

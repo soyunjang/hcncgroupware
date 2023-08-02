@@ -326,7 +326,7 @@
 			if($("#table1_cnt").text() != '0') {
 				$("#txt01_EXPENSE_PRICE").val(res[0].toLocaleString('ko-KR'));
 				$("#txt01_USE_PRICE").val(res[1].toLocaleString('ko-KR'));
-				$("#txt01_BALANCE").val((res[0] - res[1]).toLocaleString('ko-KR'));
+				$("#txt01_BALANCE").val((res[0] - Math.abs(res[1])).toLocaleString('ko-KR'));
 			} else {
 				$("#txt01_EXPENSE_PRICE").val(0);
 				$("#txt01_USE_PRICE").val(0);

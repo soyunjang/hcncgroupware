@@ -54,7 +54,7 @@ table a.btn {padding:5px 10px; white-space: nowrap;}
  .table-wrap .ui-jqgrid-bdiv::-webkit-scrollbar-thumb{background-color:#b3b6bf;}
  .table-wrap .ui-jqgrid-bdiv::-webkit-scrollbar-track{background-color:#f3f3f3;}
  
- .table-wrap .btnPopup{background-color:#70747f; color:#fff; text-align: center; line-height:18px; padding: 4px 8px; border-radius: 3px;}
+ .table-wrap .btnPopup{background: url(../img/common/ico-srch2.png) #70747f no-repeat center center; width: 35px; height: 26px; color:#fff; text-align: center; line-height:18px; padding: 4px 8px; border-radius: 3px;}
  
 /* Table - List style*/
 .table-list {width:100%; border-top:2px solid #4a4d56; background-color:#fff;}
