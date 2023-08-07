@@ -154,7 +154,7 @@
 					, {name: 'MARCH'			, align: 'center'	, width: '5%'	, hidden: false}
 					, {name: 'APRIL'			, align: 'center'	, width: '5%'	, hidden: false}
 					, {name: 'MAY'				, align: 'center'	, width: '5%'	, hidden: false}
-					, {name: 'JUNE'				, align: 'center'	, width: '5%'	, hidden: false}
+					, {name: 'JUNE'				, align: 'center'	, width: '5%'	, hidden: false , formatter : "integer"}
 					, {name: 'JULY'				, align: 'center'	, width: '5%'	, hidden: false}
 					, {name: 'AUGUST'			, align: 'center'	, width: '5%'	, hidden: false}
 					, {name: 'SEPTEMBER'		, align: 'center'	, width: '5%'	, hidden: false}

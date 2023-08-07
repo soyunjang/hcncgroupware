@@ -410,19 +410,21 @@
 			$("#table2").jqGrid({
 				mtype : 'POST'
 				, datatype : 'local'
+				, width: 700
 				, jsonReader: {
 					repeatitems: false 
 				}
 				, colNames: langPop1
 				, colModel: [
 					{name: 'DEPT_PID'		, align: 'center'	, width: '0%'	, hidden: true}
-					, {name: 'DEPT_PNM'		, align: 'center'	, width: '15%'	, hidden: false}
+					, {name: 'DEPT_PNM'		, align: 'center'	, width: '4%'	, hidden: false}
 					, {name: 'DEPT_ID'		, align: 'center'	, width: '0%'	, hidden: true}
-					, {name: 'DEPT_NM'		, align: 'center'	, width: '15%'	, hidden: false}
-					, {name: 'MEMO'			, align: 'left'		, width: '20%'	, hidden: false}
+					, {name: 'DEPT_NM'		, align: 'center'	, width: '4%'	, hidden: false}
+					, {name: 'MEMO'			, align: 'left'		, width: '6%'	, hidden: false}
 				]
 				, autowidth: true
 				, shrinkToFit: false
+				, rowNum : 5000
 				, ondblClickRow : function(rowid){
 					var rowdata = $("#table2").getRowData(rowid);
 					
@@ -449,6 +451,7 @@
 				]
 				, autowidth: true
 				, shrinkToFit: false
+				, rowNum : 5000
 				, ondblClickRow : function(rowid){
 					var rowdata = $("#table3").getRowData(rowid);
 					
@@ -691,7 +694,7 @@
 			$("#viewForm2").dialog({
 				autoOpen: true
 				, title: titlePop
-				, width: 675
+				, width: 750
 				, modal: true
 				, open: function (event, ui) {
 					commonCodeSelectAdd("pop02_sel01_DEPT_CD", getCommonCode('DEPT'), 'Y');

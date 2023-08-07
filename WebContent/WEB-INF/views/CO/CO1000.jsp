@@ -126,13 +126,11 @@
 		$("#btn01_FILE").on({
 			click: function(){
 				deleteGridData();
-
 				$("#file01_FILE").val("");
 				$("#txt01_FILE_NM").val("");
 
 				$("#table1").clearGridData();
 				$("#table1_cnt").text(0);
-
 				$("#file01_FILE").trigger("click");
 			}
 		});
@@ -142,7 +140,8 @@
 			e.preventDefault();
 
 			var file = document.getElementById("file01_FILE").files[0];
-            arrayFile.push(file);
+			arrayFile = new Array();
+			arrayFile.push(file);
             
             $("#txt01_FILE_NM").val(file.name);
 
@@ -206,22 +205,45 @@
 			click: function(){
 				showLoadingPanel();
 
-				var saveParam = {
-					FILE_NM : $("#txt01_FILE_NM").val()
+				var co1000dataForm = new FormData($('form#CO1000dataForm')[0]);
+				co1000dataForm.append('file' + 0, arrayFile[0], arrayFile[0].name);
+
+				for(let key of co1000dataForm.keys()) {
+					console.log('co1000dataForm key : ', key);
 				}
 
-				getAjaxJsonData("co1000Save", saveParam, "co1000SaveCallBack");
+				for(let value of co1000dataForm.values()) {
+					console.log('co1000dataForm value : ', value);
+				}
+
+				uploadFile(co1000dataForm, 'co1000MergeDataSave', 'co1000SaveCallBack');
+
+				// var saveParam = {
+				// 	FILE_NM : $("#txt01_FILE_NM").val()
+				// }
+				//
+				// getAjaxJsonData("co1000Save", saveParam, "co1000SaveCallBack");
 			}
 		});
 
 		function co1000SaveCallBack(res) {
-			if(res[0] == undefined || res[0] == null) {
-				toast("성공", "정상적으로 " + tableCnt + "건이 저장되었습니다.", "success");
+			if(res != undefined || res != null) {
+				if(Math.abs(res.insertCnt) > 0) {
+					toast("성공", "정상적으로 " + res.insertCnt + "건이 저장되었습니다.", "success");
 
-				searchGridData();
+			// if(res[0] == undefined || res[0] == null) {
+			// 	toast("성공", "정상적으로 " + tableCnt + "건이 저장되었습니다.", "success");
+					deleteGridData();
+					$("#file01_FILE").val("");
+					$("#txt01_FILE_NM").val("");
+					$("#table1").clearGridData();
+					$("#table1_cnt").text(0);
 
-				$("#file01_FILE").val("");
-				$("#txt01_FILE_NM").val("");
+					searchGridData();
+
+					$("#file01_FILE").val("");
+					$("#txt01_FILE_NM").val("");
+				}
 			} else {
 				toast("오류", "저장에 실패하였습니다.", "error");
 				return false;

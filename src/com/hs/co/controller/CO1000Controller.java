@@ -70,6 +70,22 @@ public class CO1000Controller {
 		return "jsonView";
 	}
 
+	@RequestMapping(value = "/co1000MergeDataSave")
+	public String co1000MergeDataSave(final MultipartHttpServletRequest multiRequest, @RequestParam Map<String, Object> param, ModelMap model) throws IOException {
+		logger.debug("PopupController > co1000MergeDataSave :: {}", param);
+
+		MultipartFile file = null;
+		Iterator<String> iterator = multiRequest.getFileNames();
+
+		if(iterator.hasNext()) {
+			file = multiRequest.getFile(iterator.next());
+		}
+
+		int insertCnt = co1000Service.co1000MergeDataSave(file, param);
+		model.addAttribute("insertCnt", insertCnt);
+		return "jsonView";
+	}
+
 	/**
 	 * 메소드 설명 : 카드별 사용내역 저장
 	 * -------------------------------------------------------------------

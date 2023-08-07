@@ -10,10 +10,11 @@
 	</select>
 
 	<select id="co1100SelProject" parameterType="map" resultType="map">
-		SELECT SALES_NUM
+		SELECT CONCAT(SALES_NUM, '-', REVISION) AS SALES_NUM
 			 , PROJECT_NM
 		FROM SALES_INQUIRY_INFO
-		WHERE PROJECT_NM LIKE '%' + #{PROJECT_NM} + '%'
+		WHERE SALES_CONFIRM = 'Y'
+		  AND PROJECT_NM LIKE '%' + #{PROJECT_NM} + '%'
 	</select>
 
 	<select id="co1100SelList" parameterType="map" resultType="map">

@@ -10,7 +10,7 @@
 	</select>
 
 	<select id="co1200SelExpense" parameterType="map" resultType="int">
-		SELECT EXPENSE_PRICE FROM SALES_INQUIRY_EXPENSE WHERE SALES_NUM = #{SALES}
+		SELECT EXPENSE_PRICE FROM SALES_INQUIRY_EXPENSE WHERE SALES_NUM = LEFT(#{SALES}, 12) AND REVISION = RIGHT(#{SALES}, 2)
 	</select>
 
 	<select id="co1200SelApproval" parameterType="map" resultType="int">

@@ -178,7 +178,7 @@
 												<th>10.프로젝트 기간</th>
 								                <td colspan="3">
 								                	<div class="fl-ct">
-									                	<input type="date" id="OBTAIN_PROJECT_START">
+									                	<input type="date" id="OBTAIN_PROJECT_START" onchange="checkProjectDate();">
 									                	<label style="margin: 4px 5px 0px 5px;">~</label>
 									                	<input type="date" id="OBTAIN_PROJECT_END" onchange="checkProjectDate();">
 								                	</div>
@@ -2131,27 +2131,6 @@
 		}
 
 		function table3Claculate(buyCoin) {
-			// rowid = parseInt(rowid);
-			// var cnt, coin, unit;
-			// var cntRow = parseInt($('#table3 input#' + rowid + '_BUY_CNT').val());
-			// var coinRow = coinRow;
-			// var unitRow = parseFloat($('#table3 input#' + rowid + '_BUY_UNIT_PRICE').val());
-			// var cntSel = parseInt($('#table3 tr').eq(rowid).children('td:eq("3")').text());
-			// var coinSel = $('#table3 tr').eq(rowid).children('td:eq("5")').text();
-			// debugger;
-			// var unitSel = buyCoin;
-			// // var unitSel = parseFloat($('#table3 tr').eq(parseInt(rowid)).children('td:eq("6")').text().replaceAll(",", ""));
-			// console.log('table3Claculate unit : ', unitRow, unitSel);
-			// if(isNaN(cntRow)) {
-			// 	cnt = cntSel;
-			// 	coin = coinSel;
-			// 	unit = unitSel;
-			// } else {
-			// 	cnt = cntRow;
-			// 	coin = coinRow;
-			// 	unit = unitRow;
-			// }
-
 			if(buyCoin == undefined) {
 				var buyCoin = new Array();
 				var idsH = $("#table3").jqGrid('getDataIDs');
@@ -2164,7 +2143,7 @@
 			var cnt, coin, unit, totCost;
 			if(buyCoin != undefined) {
 				for(var i = 0; i < buyCoin.length; i++) {
-					cnt = parseInt(buyCoin[i].BUY_CNT);
+					cnt = parseFloat(buyCoin[i].BUY_CNT);
 					coin = buyCoin[i].BUY_COIN;
 					unit = parseFloat(buyCoin[i].BUY_UNIT_PRICE);
 
