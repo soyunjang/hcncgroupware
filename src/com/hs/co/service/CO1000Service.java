@@ -143,11 +143,11 @@ public class CO1000Service {
 
 				cell = row.getCell(5);	// 행의 6번째 열(승인금액)
 				if (null != cell)
-					paramMap.put("APPROVAL", cell.getNumericCellValue() == 0 ? '0' : cell.getNumericCellValue());
+					paramMap.put("APPROVAL", cell.getNumericCellValue());
 
 				cell = row.getCell(6);	// 행의 7번째 열(취소금액)
 				if (null != cell)
-					paramMap.put("REFUND", cell.getNumericCellValue() == 0 ? '0' : cell.getNumericCellValue());
+					paramMap.put("REFUND", cell.getNumericCellValue());
 
 				paramMap.put("FILE_NM", excelFile.getOriginalFilename());
 									
@@ -208,11 +208,11 @@ public class CO1000Service {
 									
 				cell = row.getCell(5);	// 행의 6번째 열(승인금액)
 				if (null != cell)
-					paramMap.put("APPROVAL", cell.getNumericCellValue() == 0 ? '0' : cell.getNumericCellValue());
+					paramMap.put("APPROVAL", cell.getNumericCellValue());
 
 				cell = row.getCell(6);	// 행의 7번째 열(취소금액)
 				if (null != cell)
-					paramMap.put("REFUND", cell.getNumericCellValue() == 0 ? '0' : cell.getNumericCellValue());
+					paramMap.put("REFUND", cell.getNumericCellValue());
 
 				paramMap.put("FILE_NM", excelFile.getOriginalFilename());
 									
@@ -273,11 +273,11 @@ public class CO1000Service {
 
 				cell = row.getCell(5);	// 행의 6번째 열(승인금액)
 				if (null != cell)
-					paramMap.put("APPROVAL", cell.getNumericCellValue() == 0 ? '0' : cell.getNumericCellValue());
+					paramMap.put("APPROVAL", cell.getNumericCellValue());
 
 				cell = row.getCell(6);	// 행의 7번째 열(취소금액)
 				if (null != cell)
-					paramMap.put("REFUND", cell.getNumericCellValue() == 0 ? '0' : cell.getNumericCellValue());
+					paramMap.put("REFUND", cell.getNumericCellValue());
 
 				paramMap.put("FILE_NM", excelFile.getOriginalFilename());
 
@@ -337,12 +337,12 @@ public class CO1000Service {
 					paramMap.put("ACCOUNT", cell.getStringCellValue());
 
 				cell = row.getCell(5);	// 행의 6번째 열(승인금액)
-				if (null != cell) {
-					paramMap.put("APPROVAL", cell.getNumericCellValue() == 0 ? '0' : cell.getNumericCellValue());
-				}
+				if (null != cell)
+					paramMap.put("APPROVAL", cell.getNumericCellValue());
+
 				cell = row.getCell(6);	// 행의 7번째 열(취소금액)
 				if (null != cell)
-					paramMap.put("REFUND", cell.getNumericCellValue() == 0 ? '0' : cell.getNumericCellValue());
+					paramMap.put("REFUND", cell.getNumericCellValue());
 
 				paramMap.put("FILE_NM", excelFile.getOriginalFilename());
 
