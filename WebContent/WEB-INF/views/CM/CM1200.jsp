@@ -520,29 +520,10 @@
 				toast("경고", "이미 존재하는 사용자입니다.", "error");
 				return false;
 			}else{
-				if(checkAuthChange == "insert"){
-					insertAuthChage("권한부여", "중");
-				}else if(checkAuthChange == "change"){
-					insertAuthChage("권한변경", "중");
-				} 
-				
 				popReset("viewForm1");
 				toast("성공", "정상적으로 저장되었습니다.", "success");
 				searchGridData();
 			}
-		}
-
-		/* 권한그룹 변경 로그 저장 */
-		function insertAuthChage(name, svry){
-			var evntNm = name;
-			var evntSvry = svry;
-			
-			var searchParam = {
-					EVNT_NM : evntNm
-					, EVNT_SVRY : evntSvry
-			};
-			
-			getAjaxJsonData("insertAuthChange", searchParam, "");
 		}
 
 		/* 사용자 추가/수정 팝업의 부서 Table 조회  */
