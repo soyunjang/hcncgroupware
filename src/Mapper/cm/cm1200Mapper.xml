@@ -28,4 +28,10 @@
 	<update id="cm1200Save" parameterType="map">
 		EXEC CM1200_SAVE #{USER_ID}, #{USER_NM}, #{PDEPT_CD}, #{DEPT_CD}, #{GRADE_CD}, #{ENTER_DT}, #{AUTH_TYPE_CD}, #{USE_YN}, #{EMAIL}, #{PHONE_NUM}, #{BIRTHDAY}, #{MEMO}, #{REG_USERID}
 	</update>
+
+	<!-- 사용자 추가 시 TABLE HOLIDAY_INFO에 추가 -->
+	<insert id="cm1200SaveHolidayInfo" parameterType="String">
+		INSERT INTO HOLIDAY_INFO(USER_ID, HOLIDAY_TOTAL, HOLIDAY_USE, HOLIDAY_REMAIN, HOLIDAY_DEDUCT, REG_ID, REG_DT)
+		VALUES(#{USER_ID}, 0.0, 0.0, 0.0, 0.0, @IN_REG_USERID, GETDATE());
+	</insert>
 </mapper>
