@@ -104,6 +104,7 @@
 										</td>
 										<th>직급</th>
 										<td>
+											<input type="text" id="pop01_txt01_DEPT_CD" placeholder="부서코드" class="readonly wp100" readonly="readonly" style="display: none;">
 											<input type="text" id="pop01_txt01_GRADE_CD" placeholder="직급코드" class="readonly wp100" readonly="readonly" style="display: none;">
 											<input type="text" id="pop01_txt01_GRADE_NM" placeholder="직급" class="readonly wp100" readonly="readonly">
 										</td>
@@ -358,7 +359,21 @@
 		/* confirm 확인버튼 클릭시 */
 		function confirmYes(action){
 			if(action == "C"){
+				var userID = "", deptCD = "", postCD = "";
+				if(userId == "eunjin") {
+					userID = $("#pop01_txt01_USER_ID").val();
+					deptCD = $("#pop01_txt01_DEPT_CD").val();
+					postCD = $("#pop01_txt01_GRADE_CD").val();
+				} else {
+					userID = '${User.USER_ID}';
+					deptCD = '${User.DEPT_CD}';
+					postCD = '${User.GRADE_CD}';
+				}
+
 				const param = {
+					USER_ID : userID,
+					DEPT_CD : deptCD,
+					POST_CD : postCD,
 					HOLIDAY_TYPE : $('#pop01_sel01_TYPE').val(),
 					HOLIDAY_CNT : $('#pop01_txt01_COUNT').val(),
 					HOLIDAY_START : $('#pop01_date01_START').val(),

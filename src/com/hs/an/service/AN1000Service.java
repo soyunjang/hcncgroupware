@@ -70,11 +70,11 @@ public class AN1000Service {
 	 * 휴가 등록
 	 */
 	public void an1000Save(Map<String, Object> param, UserInfo user) {
-		param.put("USER_ID", user.getUSER_ID());
+//		param.put("USER_ID", user.getUSER_ID());
 		param.put("REG_ID", user.getUSER_ID());
-		param.put("DEPT_CD", user.getDEPT_CD());
-		param.put("POST_CD", user.getGRADE_CD());
-		logger.info(user.getUSER_ID() + ": " + param);
+//		param.put("DEPT_CD", user.getDEPT_CD());
+//		param.put("POST_CD", user.getGRADE_CD());
+//		logger.info(user.getUSER_ID() + ": " + param);
 
 		try {
 			sqlSession.insert("an1000Mapper.an1000Save", param);
