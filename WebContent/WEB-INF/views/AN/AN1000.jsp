@@ -250,7 +250,7 @@
 			langHead = getLangCode("AN1000", 6, "${LANG}");
 			langPop1 = getLangCodeDetail("AN1000_Pop3", 11, "${LANG}");
 
-			if(userId == "jangsoyun0052") {//eunjin
+			if(userId == "eunjin") {
 				$('#trUserInfo').removeClass('dis-n');
 				$('#btn01_UPDATE').removeClass('dis-n');
 			} else {
