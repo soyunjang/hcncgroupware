@@ -63,7 +63,7 @@
 	                            <ul>
 									<li><a href="javascript:void(0);" id="btn01_PRINT">출력</a></li>
 	                            	<li><a href="javascript:void(0);" id="btn01_INSERT">추가</a></li>
-									<li><a href="javascript:void(0);" id="btn01_UPDATE">신청취소</a></li>
+									<li><a href="javascript:void(0);" id="btn01_UPDATE" class="dis-n">신청취소</a></li>
 	                            </ul>
 	                        </div>
 	                    </div> 
@@ -93,18 +93,33 @@
 			                        <col class="wp30">
 			                    </colgroup>
 								<tbody>
+									<tr id="trUserInfo" class="dis-n">
+										<th class="req">사용자명</th>
+										<td>
+											<div class="input-srch">
+												<input type="text" id="pop01_txt01_USER_ID" placeholder="사용자ID" class="readonly" readonly="readonly" style="display: none;">
+												<input type="text" id="pop01_txt01_USER_NM" placeholder="사용자명" class="readonly" readonly="readonly">
+												<a href="javascript:void(0);" id="pop01_btn01_USER" class="btn-srch"></a>
+											</div>
+										</td>
+										<th>직급</th>
+										<td>
+											<input type="text" id="pop01_txt01_GRADE_CD" placeholder="직급코드" class="readonly wp100" readonly="readonly" style="display: none;">
+											<input type="text" id="pop01_txt01_GRADE_NM" placeholder="직급" class="readonly wp100" readonly="readonly">
+										</td>
+									</tr>
 									<tr>
-										<th class="req">1.휴가종류</th>
+										<th class="req">휴가종류</th>
 										<td>
 											<select id="pop01_sel01_TYPE" class="wp100"></select>
 										</td>
-										<th class="req">2.휴가일수</th>
+										<th class="req">휴가일수</th>
 										<td>
 			                            	<input type="number" id="pop01_txt01_COUNT" Placeholder="휴가일수" class="wp100" disabled>
 										</td>
 									</tr>
 									<tr>
-										<th class="req">3.휴가기간</th>
+										<th class="req">휴가기간</th>
 										<td colspan="3">
 											<div class="fl-sb">
 												<label for="pop01_date01_START" class="hide">날짜 시작</label>
@@ -116,27 +131,27 @@
 										</td>
 									</tr>
 									<tr>
-										<th class="req">4.신청일자</th>
+										<th class="req">신청일자</th>
 										<td>
 											<input type="date" id="pop01_date01_REG" name="pop01_date01_START" disabled>
 										</td>
-										<th>5.비상연락망</th>
+										<th>비상연락망</th>
 										<td>
 			                            	<input type="text" id="pop01_txt01_EMERGENCY" Placeholder="비상연락망" class="wp100">
 										</td>
 									</tr>
 									<tr>
-										<th>6.담당업무</th>
+										<th>담당업무</th>
 										<td>
 											<input type="text" id="pop01_txt01_TASK" Placeholder="담당업무" class="wp100">
 										</td>
-										<th>7.업무인수자</th>
+										<th>업무인수자</th>
 										<td>
 											<input type="text" id="pop01_txt01_ACQUIRER" Placeholder="업무인수자" class="wp100">
 										</td>
 									</tr>
 									<tr>
-										<th class="req">8.사유</th>
+										<th class="req">사유</th>
 										<td colspan="3">
 											<input type="text" id="pop01_txt01_REASON" Placeholder="사유" class="wp100">
 										</td>
@@ -155,6 +170,38 @@
 				<div class="row row-1">
 					<div class="col col-1 wp100">
 						<section id="viewForm2Content"></section>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 사용자 조회 팝업 -->
+		<div id="viewForm3" style="display: none;">
+			<div class="modal-cont">
+				<div class="search-zone">
+					<div class="search-wrap">
+						<div class="sch-box">
+							<dl class="dl-4n">
+								<dt>사용자명</dt>
+								<dd>
+									<input type="text" id="pop01_USER_NM">
+								</dd>
+							</dl>
+						</div>
+						<div class="srch-btn wp40">
+							<ul>
+								<li><a href="javascript:searchGridDataUser();" class="btn-search">검색</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="row row-1">
+					<div class="col col-1 wp100">
+						<section>
+							<div class="table-wrap h240">
+								<table id="table3"></table>
+							</div>
+						</section>
 					</div>
 				</div>
 			</div>
@@ -183,7 +230,9 @@
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 공통코드
 		/* 공통코드_다국어 */
 		let langHead;
-
+		let langPop1;
+		let userId = '${User.USER_ID}';
+		console.log("userId : ", userId);
 		/* 공통코드_콤보박스 */ 
 		commonCodeSelectAdd("pop01_sel01_TYPE", getCommonCode('HOLIDAY'), 'N');
 		
@@ -199,7 +248,16 @@
 			
 			// 화면ID, 화면ID사이즈(6:CM1000/13:CM1000_Detail), 다국어
 			langHead = getLangCode("AN1000", 6, "${LANG}");
-			
+			langPop1 = getLangCodeDetail("AN1000_Pop3", 11, "${LANG}");
+
+			if(userId == "jangsoyun0052") {//eunjin
+				$('#trUserInfo').removeClass('dis-n');
+				$('#btn01_UPDATE').removeClass('dis-n');
+			} else {
+				$('#trUserInfo').addClass('dis-n');
+				$('#btn01_UPDATE').addClass('dis-n');
+			}
+
 			setGrid();
 			init(); //그리드 리사이징
 
@@ -272,14 +330,27 @@
 				let holidayEnd = new Date(new Date(rowData.HOLIDAY_END).getFullYear(), new Date(rowData.HOLIDAY_END).getMonth(), new Date(rowData.HOLIDAY_END).getDate());
 				let today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
 
-				if(rowData != null && rowData.length == undefined && (today <= holidayEnd)){
+				if(rowData != null && rowData.length == undefined){
 					confirms("신청을 취소하시겠습니까?", "D");
-				} else if (today > holidayEnd) {
-					toast("경고", "휴가 종료일이 지난 목록은 삭제할 수 없습니다.", "error");
 				} else {
 					toast("정보", "신청 취소할 목록을 선택해 주시기 바랍니다.", "info");
 					return false;
 				}
+				// if(rowData != null && rowData.length == undefined && (today <= holidayEnd)){
+				// 	confirms("신청을 취소하시겠습니까?", "D");
+				// } else if (today > holidayEnd) {
+				// 	toast("경고", "휴가 종료일이 지난 목록은 삭제할 수 없습니다.", "error");
+				// } else {
+				// 	toast("정보", "신청 취소할 목록을 선택해 주시기 바랍니다.", "info");
+				// 	return false;
+				// }
+			}
+		});
+
+		$("#pop01_btn01_USER").on({
+			click: function(e){
+				e.preventDefault();
+				openModalPopup_User();
 			}
 		});
 
@@ -334,6 +405,39 @@
 			});
 			
 			searchGridData();
+
+			$("#table3").jqGrid({
+				mtype : 'POST'
+				, datatype : 'local'
+				, jsonReader: {
+					repeatitems: false
+				}
+				, colNames: langPop1
+				, colModel: [
+					{name: 'USER_ID'		, align: 'center'	, width: '0%'	, hidden: true}
+					, {name: 'USER_NM'		, align: 'center'	, width: '6%'	, hidden: false}
+					, {name: 'PDEPT_CD'		, align: 'center'	, width: '0%'	, hidden: true}
+					, {name: 'PDEPT_NM'		, align: 'center'	, width: '4%'	, hidden: false}
+					, {name: 'DEPT_CD'		, align: 'center'	, width: '0%'	, hidden: true}
+					, {name: 'DEPT_NM'		, align: 'center'	, width: '4%'	, hidden: false}
+					, {name: 'GRADE_CD'		, align: 'center'	, width: '0%'	, hidden: true}
+					, {name: 'GRADE_NM'		, align: 'center'	, width: '2%'	, hidden: false}
+					, {name: 'ENTER_DT'		, align: 'center'	, width: '4%'	, hidden: false}
+				]
+				, autowidth: true
+				, shrinkToFit: false
+				, rowNum : 5000
+				, ondblClickRow : function(rowid){
+					var rowdata = $("#table3").getRowData(rowid);
+
+					$("#pop01_txt01_USER_ID").val(rowdata.USER_ID);
+					$("#pop01_txt01_USER_NM").val(rowdata.USER_NM);
+					$("#pop01_txt01_GRADE_CD").val(rowdata.GRADE_CD);
+					$("#pop01_txt01_GRADE_NM").val(rowdata.GRADE_NM);
+
+					$("#viewForm3").dialog("close");
+				}
+			});
 		};
 		
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: CRUD
@@ -375,6 +479,22 @@
 			}
 		}
 
+		function searchGridDataUser(){
+			var searchParam = {
+				USER_NM : $("#pop01_USER_NM").val()
+			};
+
+			getAjaxJsonData("an1000SelUser", searchParam, "searchGridDataUserCallBack");
+		};
+
+		function searchGridDataUserCallBack(data){
+			$("#table3").clearGridData();
+			$("#table3").jqGrid('setGridParam', {
+				datatype: 'local'
+				, data: data
+			}).trigger("reloadGrid");
+		};
+
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 유효성
 		
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: Popup
@@ -395,6 +515,10 @@
 					if(action == "C"){
 						popReset("viewForm1");
 						document.getElementById('pop01_date01_REG').valueAsDate = new Date();
+						$("#pop01_txt01_USER_ID").val('${User.USER_ID}');
+						$("#pop01_txt01_USER_NM").val('${User.USER_NM}');
+						$("#pop01_txt01_GRADE_CD").val('${User.GRADE_CD}');
+						$("#pop01_txt01_GRADE_NM").val('${User.GRADE_NM}');
 					}
 					else if(action == "U"){
 						
@@ -485,6 +609,55 @@
 					}
 					, {
 						text : pop02_btn01_CLOSE,
+						click : function () {
+							$(this).dialog("close");
+						}
+					}
+				]
+				, focus: function (event, ui) {}
+			}).css("z-index", 1000).prev(".ui-dialog-titlebar").css("background","#266f80").css("color","#fff");
+		};
+
+		function openModalPopup_User(){
+			// 화면ID, 화면ID사이즈(ex. 6:CM1000 / 13:CM1000_Detail), 팝업ID, 다국어
+			var returnPopup = getLangCodePopup("AN1000_Pop3", 11, "viewForm3", "${LANG}");
+			var titlePop = returnPopup[0];
+			var pop03_btn01_FINISH = returnPopup[1];
+			var pop03_btn01_CLOSE = returnPopup[2];
+
+			$("#viewForm3").dialog({
+				autoOpen: true
+				, title: titlePop
+				, width: 750
+				, modal: true
+				, open: function (event, ui) {
+					searchGridDataUser();
+				}
+				, close: function () {
+					$(this).dialog("close");
+				}
+				, buttons: [
+					{
+						text : pop03_btn01_FINISH,
+						click : function(){
+							var rowid = $("#table3").getGridParam("selrow");
+							if(rowid < 1){
+								toast("정보", "선택된 사용자가 없습니다.", "info");
+								return false;
+							} else {
+								var rowdata = $("#table3").getRowData(rowid);
+
+								$("#pop01_txt01_USER_ID").val(rowdata.USER_ID);
+								$("#pop01_txt01_USER_NM").val(rowdata.USER_NM);
+								$("#pop01_txt01_GRADE_CD").val(rowdata.GRADE_CD);
+								$("#pop01_txt01_GRADE_NM").val(rowdata.GRADE_NM);
+							}
+
+							$(this).dialog("close");
+						}
+					}
+					, {
+						text : pop03_btn01_CLOSE,
 						click : function () {
 							$(this).dialog("close");
 						}

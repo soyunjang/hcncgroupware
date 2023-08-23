@@ -127,4 +127,18 @@
 		</foreach>
 	</insert>
 
+	<select id="an1000SelUser" parameterType="map" resultType="map">
+		SELECT A.USER_ID
+			 , A.USER_NM
+			 , A.PDEPT_CD
+			 , (SELECT dbo.FN_COMMON_NM('DEPT', A.PDEPT_CD)) AS PDEPT_NM
+			 , A.DEPT_CD
+			 , (SELECT dbo.FN_COMMON_NM('DEPT', A.DEPT_CD)) AS DEPT_NM
+			 , A.GRADE_CD
+			 , (SELECT dbo.FN_COMMON_NM('ROLE', A.GRADE_CD)) AS GRADE_NM
+			 , A.ENTER_DT
+		  FROM USER_INFO A
+		 WHERE A.USER_NM LIKE '%' + #{USER_NM} + '%'
+		 ORDER BY A.USER_NM;
+	</select>
 </mapper>

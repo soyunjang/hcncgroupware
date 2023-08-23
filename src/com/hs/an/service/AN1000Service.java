@@ -222,7 +222,20 @@ public class AN1000Service {
 		} catch (Exception e) {
 			new RuntimeException("공휴일 저장 에러 발생", e);
 		}
+	}
 
+	/**
+	 * 메소드 설명 : 사용자정보 조회
+	 * -------------------------------------------------------------------
+	 *
+	 * @param Map 		param 검색조건 (사용자ID/사용자명)
+	 * @return List 	list 사용자정보 목록
+	 */
+	public List<Map<String, Object>> an1000SelUser(Map<String, Object> param) {
+
+		List<Map<String, Object>> rList = sqlSession.selectList("an1000Mapper.an1000SelUser", param);
+
+		return rList;
 	}
 
 }

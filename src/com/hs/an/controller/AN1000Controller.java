@@ -125,4 +125,17 @@ public class AN1000Controller {
 		return an1000Service.an1000PublicHolidaySel(startDate, endDate);
 	}
 
+	/**
+	 * 메소드 설명 : 사용자정보 조회
+	 * -------------------------------------------------------------------
+	 * @param	Map		param	검색조건 (사용자ID/사용자명)
+	 * @return	List	list	사용자정보 목록
+	 */
+	@RequestMapping(value = "/an1000SelUser")
+	public @ResponseBody List<Map<String, Object>> AN1000_SEL_USER(@RequestBody Map<String, Object> param) {
+
+		List<Map<String, Object>> list = an1000Service.an1000SelUser(param);
+		return list;
+	}
+
 }
