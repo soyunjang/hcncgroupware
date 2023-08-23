@@ -232,7 +232,7 @@
 		let langHead;
 		let langPop1;
 		let userId = '${User.USER_ID}';
-		console.log("userId : ", userId);
+
 		/* 공통코드_콤보박스 */ 
 		commonCodeSelectAdd("pop01_sel01_TYPE", getCommonCode('HOLIDAY'), 'N');
 		
