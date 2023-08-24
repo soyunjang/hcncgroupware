@@ -556,7 +556,6 @@
 								toast("경고", "사유을 입력해주세요.", "error");
 								return false;
 							}
-							debugger;
 							var idsH = $("#table1").jqGrid('getDataIDs');
 							
 							for (var i = 0; i < idsH.length; i++) {
