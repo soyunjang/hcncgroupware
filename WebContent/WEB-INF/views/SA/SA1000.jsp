@@ -2245,7 +2245,7 @@
 		function setButton(status, btnId) {
 			if(status == "init") {
 				$('#btn01_COPY').addClass('disable');		// 복사
-				$('#btn01_PRINT').addClass('disable');		// 출력
+				// $('#btn01_PRINT').addClass('disable');		// 출력
 				$('#btn01_CREATE').removeClass('disable');	// 신규
 				$('#btn01_UPDATE').addClass('disable');		// 수정
 				$('#btn01_SAVE').addClass('disable');		// 저장
@@ -2261,7 +2261,7 @@
 
 			} else if(status == "selectRowConfirmN") {		// 미확정
 				$('#btn01_COPY').removeClass('disable');
-				$('#btn01_PRINT').addClass('disable');
+				// $('#btn01_PRINT').addClass('disable');
 				$('#btn01_CREATE').removeClass('disable');
 				$('#btn01_UPDATE').removeClass('disable');
 				$('#btn01_SAVE').addClass('disable');
@@ -2277,7 +2277,7 @@
 
 			} else if(status == "selectRowConfirmY") {		// 확정
 				$('#btn01_COPY').removeClass('disable');
-				$('#btn01_PRINT').removeClass('disable');
+				// $('#btn01_PRINT').removeClass('disable');
 				$('#btn01_CREATE').removeClass('disable');
 				$('#btn01_UPDATE').removeClass('disable');
 				$('#btn01_SAVE').addClass('disable');
@@ -2293,7 +2293,7 @@
 
 			} else if(status == "modify") {					// 수정
 				$('#btn01_COPY').addClass('disable');
-				$('#btn01_PRINT').addClass('disable');
+				// $('#btn01_PRINT').addClass('disable');
 				$('#btn01_CREATE').removeClass('disable');
 				$('#btn01_UPDATE').addClass('disable');
 				$('#btn01_SAVE').removeClass('disable');
