@@ -272,7 +272,16 @@
 	            <td>프로젝트명</td>
 	            <td><span id="project-name">${sa1000List.PROJECT_NM}</span></td>
 	            <td>영업담당자</td>
-	            <td><span id="business-manager">${sa1000List.OBTAIN_SALES_PIC}</span></td>
+	            <td>
+					<div style="display: flex">
+						<div style="flex: 4">
+							<span id="business-manager">${sa1000List.OBTAIN_SALES_PIC}</span>
+						</div>
+						<div style="flex: 1;margin-left: -60px;">
+							<span>( 인 )</span>
+						</div>
+					</div>
+				</td>
 	        </tr>
 	    </table>
 	</section>
