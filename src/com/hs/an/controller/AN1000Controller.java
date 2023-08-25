@@ -7,10 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -25,13 +22,16 @@ public class AN1000Controller {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	@ModelAttribute("User")
+	public UserInfo userInfo(HttpSession session) {
+		return (UserInfo) session.getAttribute("User");
+	}
+
 	/**
    	 * 메소드 설명 : 연차등록 페이지로 이동
    	 */
 	@RequestMapping(value = "/an1000", method = RequestMethod.GET)
-	public String an1000(Model model, HttpSession session) {
-
-		UserInfo user = (UserInfo) session.getAttribute("User");
+	public String an1000(Model model, @ModelAttribute("User") UserInfo user) {
 
 		model.addAttribute("Holiday", an1000Service.an1000InfoSel(user));
 		model.addAttribute("HolidayOffice", an1000Service.an1000HolidayOfficeSel());
@@ -42,13 +42,10 @@ public class AN1000Controller {
 
 
 	/**
-	 *
-	 * @return
+	 * 휴가신청서 출력
 	 */
 	@RequestMapping(value = "/an1000/print", method = RequestMethod.POST)
-	public String an1000_print(An1000PrintDto dto, Model model, HttpSession session) {
-
-		UserInfo user = (UserInfo) session.getAttribute("User");
+	public String an1000_print(An1000PrintDto dto, Model model, @ModelAttribute("User") UserInfo user) {
 
 		model.addAttribute("HolidayPrintInfo", an1000Service.an1000PrintByUser(dto, user));
 
@@ -63,10 +60,7 @@ public class AN1000Controller {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/an1000Sel")
-	public List<Map<String, Object>> an1000_SEL(@RequestBody Map<String, Object> param, HttpSession session) {
-
-		UserInfo user = (UserInfo) session.getAttribute("User");
-
+	public List<Map<String, Object>> an1000_SEL(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
 		return an1000Service.an1000Sel(param, user);
 	}
 
@@ -77,9 +71,7 @@ public class AN1000Controller {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/an1000", method = RequestMethod.POST)
-	public List<Map<String, Object>> an1000_save(@RequestBody Map<String, Object> param, HttpSession session) {
-
-		UserInfo user = (UserInfo) session.getAttribute("User");
+	public List<Map<String, Object>> an1000_save(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
 
 		an1000Service.an1000Save(param, user);
 
@@ -93,9 +85,7 @@ public class AN1000Controller {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/an1000", method = RequestMethod.PATCH)
-	public List<Map<String, Object>> an1000_update(@RequestBody Map<String, Object> param, HttpSession session) {
-
-		UserInfo user = (UserInfo) session.getAttribute("User");
+	public List<Map<String, Object>> an1000_update(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
 
 		an1000Service.an1000Update(param, user);
 
@@ -108,8 +98,7 @@ public class AN1000Controller {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/an1000/holidayInfo", method = RequestMethod.GET)
-	public Map<String, Object> an1000_holidayInfoSel(HttpSession session) {
-		UserInfo user = (UserInfo) session.getAttribute("User");
+	public Map<String, Object> an1000_holidayInfoSel(@ModelAttribute("User") UserInfo user) {
 		return an1000Service.an1000InfoSel(user);
 	}
 
@@ -133,9 +122,7 @@ public class AN1000Controller {
 	 */
 	@RequestMapping(value = "/an1000SelUser")
 	public @ResponseBody List<Map<String, Object>> AN1000_SEL_USER(@RequestBody Map<String, Object> param) {
-
-		List<Map<String, Object>> list = an1000Service.an1000SelUser(param);
-		return list;
+		return an1000Service.an1000SelUser(param);
 	}
 
 }
