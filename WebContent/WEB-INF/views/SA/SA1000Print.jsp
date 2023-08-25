@@ -206,11 +206,6 @@
 <script type="text/javascript" src="<c:url value='/resources/js/html2canvas.min.js'/>"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/jspdf.min.js'/>"></script>
 
-<script type="text/javascript">
-	var buyListLen = 0;
-	var mmListLen = 0;
-</script>
-
 <div class="container">
 	<div class="container-top">
 	    <img src="/resources/img/common/hcnc_logo_web.png" alt="HCNC LOGO">
@@ -314,7 +309,7 @@
 	        </thead>
 	        <tbody id="table-obtain">
 	            <tr>
-	                <td><span id="obtain-num">1</span></td>
+	                <td><span>1</span></td>
 	                <td>수주내역</td>
 	                <td style="width: 180px;"><span id="obtain-title">${sa1000List.OBTAIN_ITEM}</span></td>
 	                <td><span id="sell-count">${sa1000List.OBTAIN_ITEM_CNT}</span></td>
@@ -336,23 +331,20 @@
 		        	<tbody id="table-top">
 		        		<c:forEach var="item" items="${sa1002List}" varStatus="status">
 							<tr>
-								<script type="text/javascript">
-									buyListLen = ${fn:length(sa1002List)};
-								</script>
-								<td><span id="obtain-num">${status.index + 2}</span></td>
-								<c:if test="${status.index == 0 }"> 
+								<td><span>${status.index + 2}</span></td>
+								<c:if test="${status.index == 0 }">
 									<td class="purchase-merge" id="buy">매입내역</td>
 								</c:if>
 								<td><span id="purchase-title">${item.BUY_ITEM}</span></td>
 								<td><span id="item-count">${item.BUY_CNT}</span></td>
 								<td><span id="unit-price" class="ta-r"><fmt:formatNumber value="${item.BUY_UNIT_PRICE}" pattern="#,###" /></span></td>
 								<td><span id="price" class="ta-r"><fmt:formatNumber value="${item.BUY_PRICE}" pattern="#,###" /></span></td>
-								<td><span id=""></span></td>
-								<td><span id=""></span></td>
-								<td><span id=""></span></td>
-								<td><span id=""></span></td>
-								<td><span id=""></span></td>
-								<td><span id=""></span></td>
+								<td><span></span></td>
+								<td><span></span></td>
+								<td><span></span></td>
+								<td><span></span></td>
+								<td><span></span></td>
+								<td><span></span></td>
 								<td><span id="purchase">${item.BUY_PURCHASE}</span></td>
 								<td><span id="purchasePayment">${item.BUY_PAYMENT}</span></td>
 								<td><span id="obtainNote">${item.BUY_MEMO}</span></td>
@@ -363,117 +355,117 @@
 				<c:otherwise>
 					<tbody>
 						<tr>
-							<td><span id="obtain-num">2</span></td>
+							<td><span>2</span></td>
 							<td class="purchase-merge" rowspan="7">매입내역</td>
-							<td><span id="purchase-title">외주 개발자(특급)</span></td>
-							<td><span id="item-count"></span></td>
-							<td><span id="unit-price"></span></td>
-							<td><span id="price"></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id="purchase"></span></td>
-							<td><span id="purchasePayment"></span></td>
-							<td><span id="obtainNote"></span></td>
+							<td><span>외주 개발자(특급)</span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
 						</tr>
 						<tr>
-							<td><span id="obtain-num">3</span></td>
-							<td><span id="purchase-title">외주 개발자(고급)</span></td>
-							<td><span id="item-count"></span></td>
-							<td><span id="unit-price"></span></td>
-							<td><span id="price"></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id="purchase"></span></td>
-							<td><span id="purchasePayment"></span></td>
-							<td><span id="obtainNote"></span></td>
+							<td><span>3</span></td>
+							<td><span>외주 개발자(고급)</span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
 						</tr>
 						<tr>
-							<td><span id="obtain-num">4</span></td>
-							<td><span id="purchase-title">외주 개발자(중급)</span></td>
-							<td><span id="item-count"></span></td>
-							<td><span id="unit-price"></span></td>
-							<td><span id="price"></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id="purchase"></span></td>
-							<td><span id="purchasePayment"></span></td>
-							<td><span id="obtainNote"></span></td>
+							<td><span>4</span></td>
+							<td><span>외주 개발자(중급)</span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
 						</tr>
 						<tr>
-							<td><span id="obtain-num">5</span></td>
-							<td><span id="purchase-title">외주 개발자(초급)</span></td>
-							<td><span id="item-count"></span></td>
-							<td><span id="unit-price"></span></td>
-							<td><span id="price"></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id="purchase"></span></td>
-							<td><span id="purchasePayment"></span></td>
-							<td><span id="obtainNote"></span></td>
+							<td><span>5</span></td>
+							<td><span>외주 개발자(초급)</span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
 						</tr>
 						<tr>
-							<td><span id="obtain-num">6</span></td>
-							<td><span id="purchase-title">H/W</span></td>
-							<td><span id="item-count"></span></td>
-							<td><span id="unit-price"></span></td>
-							<td><span id="price"></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id="purchase"></span></td>
-							<td><span id="purchasePayment"></span></td>
-							<td><span id="obtainNote"></span></td>
+							<td><span>6</span></td>
+							<td><span>H/W</span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
 						</tr>
 						<tr>
-							<td><span id="obtain-num">7</span></td>
-							<td><span id="purchase-title">S/W</span></td>
-							<td><span id="item-count"></span></td>
-							<td><span id="unit-price"></span></td>
-							<td><span id="price"></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id="purchase"></span></td>
-							<td><span id="purchasePayment"></span></td>
-							<td><span id="obtainNote"></span></td>
+							<td><span>7</span></td>
+							<td><span>S/W</span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
 						</tr>
 						<tr>
-							<td><span id="obtain-num">8</span></td>
-							<td><span id="purchase-title">공사비</span></td>
-							<td><span id="item-count"></span></td>
-							<td><span id="unit-price"></span></td>
-							<td><span id="price"></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id=""></span></td>
-							<td><span id="purchase"></span></td>
-							<td><span id="purchasePayment"></span></td>
-							<td><span id="obtainNote"></span></td>
+							<td><span>8</span></td>
+							<td><span>공사비</span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
+							<td><span></span></td>
 						</tr>
 		        	</tbody>
         		</c:otherwise>
@@ -483,11 +475,15 @@
 		        	<tbody id="table-middle">
 		        		<c:forEach var="item" items="${sa1003List}" varStatus="status">
 			        		<tr>
-			        			<script type="text/javascript">
-									mmListLen = ${fn:length(sa1003List)};
-								</script>
-			        			<td><span id="obtain-num">${item.IDX + status.index + 1}</span></td>
-			        			<c:if test="${status.index == 0 }"> 
+								<c:choose>
+									<c:when test="${fn:length(sa1002List) > 0 }">
+										<td><span>${sa1002ListCnt + status.index + 2}</span></td>
+									</c:when>
+									<c:otherwise>
+										<td><span>${item.IDX + status.index + 9}</span></td>
+									</c:otherwise>
+								</c:choose>
+			        			<c:if test="${status.index == 0 }">
 			        				<td class="input-merge" id="manmonth">내부공수</td>
 			        			</c:if>
 			        			<td><span id="input-name">${item.MANHOUR_ITEM}</span></td>
@@ -509,12 +505,9 @@
 		        </c:when>
 		    	<c:otherwise>
 		    		<tr>
-	        			<td><span id="obtain-num">2</span></td>
+	        			<td><span>3</span></td>
 	        			<td class="input-merge" rowspan="4">내부공수</td>
-	        			<td><span id="input-name">특급</span></td>
-	        			<td><span id="input-count"></span></td>
-	        			<td><span id="input-unit"></span></td>
-	        			<td><span id="input-price"></span></td>
+	        			<td><span>특급</span></td>
 	        			<td><span></span></td>
 	        			<td><span></span></td>
 	        			<td><span></span></td>
@@ -523,14 +516,14 @@
 	        			<td><span></span></td>
 	        			<td><span></span></td>
 	        			<td><span></span></td>
-	        			<td><span id="input-note"></span></td>
+	        			<td><span></span></td>
+	        			<td><span></span></td>
+	        			<td><span></span></td>
+	        			<td><span></span></td>
 	        		</tr>
 	        		<tr>
-	        			<td><span id="obtain-num">3</span></td>
-	        			<td><span id="input-name">고급</span></td>
-	        			<td><span id="input-count"></span></td>
-	        			<td><span id="input-unit"></span></td>
-	        			<td><span id="input-price"></span></td>
+	        			<td><span>4</span></td>
+	        			<td><span>고급</span></td>
 	        			<td><span></span></td>
 	        			<td><span></span></td>
 	        			<td><span></span></td>
@@ -539,14 +532,17 @@
 	        			<td><span></span></td>
 	        			<td><span></span></td>
 	        			<td><span></span></td>
-	        			<td><span id="input-note"></span></td>
+	        			<td><span></span></td>
+	        			<td><span></span></td>
+	        			<td><span></span></td>
+						<td><span></span></td>
 	        		</tr>
 	        		<tr>
-	        			<td><span id="obtain-num">4</span></td>
-	        			<td><span id="input-name">중급</span></td>
-	        			<td><span id="input-count"></span></td>
-	        			<td><span id="input-unit"></span></td>
-	        			<td><span id="input-price"></span></td>
+	        			<td><span>5</span></td>
+	        			<td><span>중급</span></td>
+						<td><span></span></td>
+						<td><span></span></td>
+						<td><span></span></td>
 	        			<td><span></span></td>
 	        			<td><span></span></td>
 	        			<td><span></span></td>
@@ -555,14 +551,14 @@
 	        			<td><span></span></td>
 	        			<td><span></span></td>
 	        			<td><span></span></td>
-	        			<td><span id="input-note"></span></td>
-	        		</tr>	        		
+						<td><span></span></td>
+	        		</tr>
 	        		<tr>
-	        			<td><span id="obtain-num">5</span></td>
-	        			<td><span id="input-name">초급</span></td>
-	        			<td><span id="input-count"></span></td>
-	        			<td><span id="input-unit"></span></td>
-	        			<td><span id="input-price"></span></td>
+	        			<td><span>6</span></td>
+	        			<td><span>초급</span></td>
+						<td><span></span></td>
+						<td><span></span></td>
+						<td><span></span></td>
 	        			<td><span></span></td>
 	        			<td><span></span></td>
 	        			<td><span></span></td>
@@ -571,7 +567,7 @@
 	        			<td><span></span></td>
 	        			<td><span></span></td>
 	        			<td><span></span></td>
-	        			<td><span id="input-note"></span></td>
+						<td><span></span></td>
 	        		</tr>
 		    	</c:otherwise>
 		    </c:choose>
@@ -580,20 +576,30 @@
 		        	<tbody id="table-bottom">
 		        		<c:forEach var="item" items="${sa1004List}" varStatus="status">
 		        			<tr>
-		        				<td><span id="obtain-num">${item.IDX1 + item.IDX1 + status.index + 1}</span></td>
+								<c:choose>
+									<c:when test="${fn:length(sa1002List) > 0 }">
+										<td><span>${sa1002ListCnt + status.index + 6}</span></td>
+									</c:when>
+									<c:when test="${fn:length(sa1003List) > 0 }">
+										<td><span>${sa1003ListCnt + status.index + 9}</span></td>
+									</c:when>
+									<c:otherwise>
+										<td><span>${status.index + 13}</span></td>
+									</c:otherwise>
+								</c:choose>
 		        				<td class="expenses-merge" rowspan="1">경비</td>
 		        				<td><span id="expenses-kind">출장경비 / 회의비 / 기타경비 등</span></td>
-		        				<td><span id=""></span></td>
-		        				<td><span id=""></span></td>
+		        				<td><span></span></td>
+		        				<td><span></span></td>
 		        				<td><span id="expenses-price"><fmt:formatNumber value="${item.EXPENSE_PRICE}" pattern="#,###" /></span></td>
-		        				<td><span id=""></span></td>
-		        				<td><span id=""></span></td>
-		        				<td><span id=""></span></td>
-		        				<td><span id=""></span></td>
-		        				<td><span id=""></span></td>
-		        				<td><span id=""></span></td>
-		        				<td><span id=""></span></td>
-		        				<td><span id=""></span></td>
+								<td><span></span></td>
+								<td><span></span></td>
+								<td><span></span></td>
+								<td><span></span></td>
+								<td><span></span></td>
+								<td><span></span></td>
+								<td><span></span></td>
+								<td><span></span></td>
 		        				<td><span id="expenses-note">${item.EXPENSE_MEMO}</span></td>
 		        			</tr>
 		        		</c:forEach>
@@ -601,21 +607,21 @@
 		        </c:when>
 		        <c:otherwise>
 		        	<tr>
-	       				<td><span id="obtain-num">6</span></td>
+	       				<td><span>7</span></td>
 	       				<td class="expenses-merge" rowspan="1">경비</td>
-	       				<td><span id="expenses-kind">출장경비 / 회의비 / 기타경비 등</span></td>
-	       				<td><span id=""></span></td>
-	       				<td><span id=""></span></td>
-	       				<td><span id="expenses-price"></span></td>
-	       				<td><span id=""></span></td>
-	       				<td><span id=""></span></td>
-	       				<td><span id=""></span></td>
-	       				<td><span id=""></span></td>
-	       				<td><span id=""></span></td>
-	       				<td><span id=""></span></td>
-	       				<td><span id=""></span></td>
-	       				<td><span id=""></span></td>
-	       				<td><span id="expenses-note"></span></td>
+	       				<td><span>출장경비 / 회의비 / 기타경비 등</span></td>
+	       				<td><span></span></td>
+	       				<td><span></span></td>
+	       				<td><span></span></td>
+	       				<td><span></span></td>
+	       				<td><span></span></td>
+	       				<td><span></span></td>
+	       				<td><span></span></td>
+	       				<td><span></span></td>
+	       				<td><span></span></td>
+	       				<td><span></span></td>
+	       				<td><span></span></td>
+						<td><span></span></td>
 	       			</tr>
 		        </c:otherwise>
 		    </c:choose>
@@ -658,7 +664,7 @@
 		        	<tbody id="table-bottom">
 		        		<c:forEach var="item" items="${sa1005List}" varStatus="status">
 		        			<tr>
-		        				<td><span id="obtain-num">${status.index + 1}</span></td>
+		        				<td><span>${status.index + 1}</span></td>
 		        				<td><span id="company-name">${item.COST_VENDOR}</span></td>
 		        				<td><span id="company-count">${item.COST_CNT}</span></td>
 		        				<td><span id="company-price"><fmt:formatNumber value="${item.COST_ORDER_PRICE}" pattern="#,###" /></span></td>
@@ -674,16 +680,16 @@
 		        </c:when>
 		        <c:otherwise>
 		        	<tr>
-		        		<td><span id="obtain-num">1</span></td>
-		        		<td><span id="company-name"></span></td>
-		        		<td><span id="company-count"></span></td>
-		        		<td><span id="company-price"></span></td>
-		        		<td><span id="install-price"></span></td>
-		        		<td><span id="install-total"></span></td>
-		        		<td><span id="service-price"></span></td>
-		        		<td><span id="service-total"></span></td>
-		        		<td><span id="total"></span></td>
-		        		<td><span id="install-service-note"></span></td>
+		        		<td><span>1</span></td>
+		        		<td><span></span></td>
+		        		<td><span></span></td>
+		        		<td><span></span></td>
+		        		<td><span></span></td>
+						<td><span></span></td>
+						<td><span></span></td>
+						<td><span></span></td>
+						<td><span></span></td>
+						<td><span></span></td>
 		        	</tr>
 		        </c:otherwise>
 	        </c:choose>
@@ -725,8 +731,8 @@
 		        	<tbody id="table-bottom">
 		        		<c:forEach var="item" items="${sa1006List}" varStatus="status">
 	        				<tr>
-					        	<td><span id="obtain-num">${status.index + 1}</span></td>
-					        	<td><span id="maintenance-item">${item.SM_ITEM}</span></td>
+					        	<td><span>${status.index + 1}</span></td>
+					        	<td><span>${item.SM_ITEM}</span></td>
 					        	<td><span id="maintenance-group">${item.SM_CLASS}</span></td>
 					        	<td><span id="delivery-date">${item.SM_DELIVERY_DT}</span></td>
 					        	<td><span id="inspection-date">${item.SM_INSPECT_DT}</span></td>
@@ -742,17 +748,17 @@
 		        </c:when>
 		        <c:otherwise>
 			        <tr>
-			        	<td><span id="obtain-num">1</span></td>
-			        	<td><span id="maintenance-item"></span></td>
-			        	<td><span id="maintenance-group"></span></td>
-			        	<td><span id="delivery-date"></span></td>
-			        	<td><span id="inspection-date"></span></td>
-			        	<td><span id="warranty"></span></td>
-			        	<td><span id="maintenance-date"></span></td>
-			        	<td><span id="maintenance-price"></span></td>
-			        	<td><span id="back-line"></span></td>
-			        	<td><span id="back-line-price"></span></td>
-			        	<td><span id="back-line-goal"></span></td>
+			        	<td><span>1</span></td>
+			        	<td><span></span></td>
+			        	<td><span></span></td>
+			        	<td><span></span></td>
+			        	<td><span></span></td>
+			        	<td><span></span></td>
+			        	<td><span></span></td>
+			        	<td><span></span></td>
+			        	<td><span></span></td>
+			        	<td><span></span></td>
+			        	<td><span></span></td>
 			        </tr>
 		        </c:otherwise>
 		    </c:choose>
@@ -791,11 +797,11 @@
 		        <c:otherwise>
 			        <tr>
 			            <td colspan="3">거래내역</td>
-			            <td><span id="textarea-1"></span></td>
+			            <td><span></span></td>
 			        </tr>
 			        <tr>
 			            <td colspan="3">특이사항</td>
-			            <td><span id="textarea-2"></span></td>
+			            <td><span></span></td>
 			        </tr>
 		        </c:otherwise>
 		    </c:choose>
@@ -806,13 +812,18 @@
 
 <script>
 	$(document).ready(function() {
+		var buyListLen = 0;
+		var mmListLen = 0;
+		buyListLen = ${fn:length(sa1002List)};
+		mmListLen = ${fn:length(sa1003List)};
+
 		if(buyListLen != 0) {
 			$("#buy").attr("rowspan", buyListLen);
 		}
 		if(mmListLen != 0) {
 			$("#manmonth").attr("rowspan", mmListLen);
 		}		
-		
+
 		$('#btnPrint').click(function() {
 			window.print();
 			location.reload();

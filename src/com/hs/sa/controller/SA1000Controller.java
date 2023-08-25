@@ -306,9 +306,11 @@ public class SA1000Controller {
 		
 		List<Map<String, Object>> sa1002List = sa1000Service.selectSA1002List(param);
 		model.addAttribute("sa1002List", sa1002List);
+		model.addAttribute("sa1002ListCnt", sa1002List.size());
 
 		List<Map<String, Object>> sa1003List = sa1000Service.selectSA1003List(param);
  		model.addAttribute("sa1003List", sa1003List);
+		model.addAttribute("sa1003ListCnt", sa1003List.size());
 		
 		List<Map<String, Object>> sa1004List = sa1000Service.selectSA1004List(param);
 		model.addAttribute("sa1004List", sa1004List);
