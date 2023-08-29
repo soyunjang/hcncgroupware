@@ -129,7 +129,7 @@
 .login-box-wrap .right-box .login-input input[type="text"] {width:100%; background-color:#fff; color: #a8a8a8; border:1px solid #DCDCDC !important; font-size:17px; padding: 10px 10px; height: 50px; border-radius:4px !important; margin-bottom:20px;}
 .login-box-wrap .right-box .login-input input[type="password"] {width:100%; background-color:#fff; color: #a8a8a8; border:1px solid #DCDCDC !important; font-size:17px; padding:10px 10px; height: 50px; border-radius:4px !important; font-family: 'Pretendard';}
 .login-box-wrap .login-check {margin: 20px 0px 20px 0px; text-align: left;}
-.login-box-wrap .right-box .login-check input[type="checkbox"]::before {width:13px; height:13px; border-radius:2px; background-color:#fff !important; border:1px solid #dcdcdc; line-height: 13px;}
+.login-box-wrap .right-box .login-check input[type="checkbox"]::before {width:13px; height:13px; border-radius:2px; border:1px solid #dcdcdc; line-height: 13px;}
 .login-box-wrap .right-box .login-check input[type="checkbox"] {margin-top:0; display: inline-block;}
 .login-box-wrap .right-box .login-check label {margin-right: 20px;}
 .login-box-wrap .right-box .login-check label:last-child {margin-right: 0;}
