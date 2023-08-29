@@ -499,7 +499,7 @@
 		function searchGridData(){
 			var cardNum = $("#sel01_COMPANY option:checked").text();
 			var searchParam = {
-				COMPANY: $("#sel01_COMPANY").val()
+				COMPANY: cardNum == "전체" ? $("#sel01_COMPANY").val() : $("#sel01_COMPANY option:checked").text().split(/\s+/g)[0].trim()
 				, CARD_NUM : cardNum == "전체" ? cardNum : $("#sel01_COMPANY option:checked").text().split(/\s+/g)[1]
 				, DATE: $("#date01_DATE").val()
 			};
