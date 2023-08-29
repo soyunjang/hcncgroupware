@@ -294,7 +294,7 @@
 			$("#date01_START").val(monthAgo.toISOString().split('T')[0]);
 			$("#date01_END").val(today.toISOString().split('T')[0]);
 
-			if(userId == "jangsoyun0052") {//eunjin
+			if(userId == "eunjin") {
 				$('#trUserInfo').removeClass('dis-n');
 				$('#btn01_UPDATE').removeClass('dis-n');
 				$('#searchZone').removeClass('dis-n');
@@ -413,7 +413,7 @@
 		function confirmYes(action){
 			if(action == "C"){
 				var userID = "", deptCD = "", postCD = "";
-				if(userId == "jangsoyun0052") {
+				if(userId == "eunjin") {
 					userID = $("#pop01_txt01_USER_ID").val();
 					deptCD = $("#pop01_txt01_DEPT_CD").val();
 					postCD = $("#pop01_txt01_GRADE_CD").val();
