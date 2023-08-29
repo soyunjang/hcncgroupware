@@ -15,6 +15,18 @@
 		WHERE USER_ID LIKE #{USER_ID}
 	</select>
 
+	<select id="an1000InfoSelUsers" parameterType="map" resultType="map">
+		SELECT A.USER_ID,
+			   A.HOLIDAY_TOTAL,
+			   A.HOLIDAY_USE,
+			   A.HOLIDAY_REMAIN,
+			   A.HOLIDAY_DEDUCT,
+			   A.REG_DT
+		  FROM HOLIDAY_INFO A
+			   LEFT OUTER JOIN USER_INFO B ON A.USER_ID = B.USER_ID
+		 WHERE B.USER_NM LIKE '%' + #{USER_NM} + '%'
+	</select>
+
 	<select id="an1000Sel" parameterType="map" resultType="map">
 		SELECT H.USER_ID,
 			   U.USER_NM,
@@ -140,5 +152,27 @@
 		  FROM USER_INFO A
 		 WHERE A.USER_NM LIKE '%' + #{USER_NM} + '%'
 		 ORDER BY A.USER_NM;
+	</select>
+
+	<select id="an1000SelUsers" parameterType="map" resultType="map">
+		SELECT H.USER_ID,
+			   U.USER_NM,
+			   U.GRADE_CD,
+			   (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD LIKE 'ROLE' AND SYS_ITEM_CD LIKE U.GRADE_CD) AS GRADE_NM,
+			   (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD LIKE 'HOLIDAY' AND SYS_ITEM_CD LIKE H.HOLIDAY_TYPE) AS HOLIDAY_TYPE,
+			   H.HOLIDAY_CNT,
+			   H.HOLIDAY_START,
+			   H.HOLIDAY_END,
+			   H.HOLIDAY_REASON,
+			   H.TASK,
+			   H.ACQUIRER,
+			   H.EMERGENCY
+		  FROM HOLIDAY_PERSON H
+			   LEFT OUTER JOIN USER_INFO U ON H.USER_ID = U.USER_ID
+		 WHERE H.USE_YN = 'Y'
+		   AND U.USER_NM LIKE '%' + #{USER_NM} + '%'
+		   AND CONVERT(DATE, H.HOLIDAY_START) BETWEEN #{START} AND #{END}
+		   AND H.HOLIDAY_TYPE LIKE '%' + #{TYPE} + '%'
+		 ORDER BY H.HOLIDAY_START DESC;
 	</select>
 </mapper>

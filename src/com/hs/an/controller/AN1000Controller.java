@@ -65,31 +65,38 @@ public class AN1000Controller {
 	}
 
 	/**
+	 * 메소드 설명 : 연차신청내역 조회
+	 * @param param :	검색조건(성명, 조회기간, 휴가종류)
+	 * @return 휴가 신청 내역
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/an1000SelUsers")
+	public List<Map<String, Object>> an1000_SEL_USERS(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
+		return an1000Service.an1000SelUsers(param, user);
+	}
+
+	/**
 	 * 휴가 등록
 	 * @param param : 휴가 등록 정보
 	 * @return : 휴가 신청 내역
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/an1000", method = RequestMethod.POST)
-	public List<Map<String, Object>> an1000_save(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
+	public void an1000_save(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
 
 		an1000Service.an1000Save(param, user);
-
-		return an1000Service.an1000Sel(param, user);
 	}
 
 	/**
 	 * 휴가 취소
-	 * @param param : 휴가 취소 정소
+	 * @param param : 휴가 취소 정보
 	 * @return : 휴가 신청 내역
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/an1000", method = RequestMethod.PATCH)
-	public List<Map<String, Object>> an1000_update(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
+	public void an1000_update(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
 
 		an1000Service.an1000Update(param, user);
-
-		return an1000Service.an1000Sel(param, user);
 	}
 
 	/**
@@ -100,6 +107,16 @@ public class AN1000Controller {
 	@RequestMapping(value = "/an1000/holidayInfo", method = RequestMethod.GET)
 	public Map<String, Object> an1000_holidayInfoSel(@ModelAttribute("User") UserInfo user) {
 		return an1000Service.an1000InfoSel(user);
+	}
+
+	/**
+	 * 휴가일수, 사용일수, 잔여일수, 공제일수 요청
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/an1000/holidayInfoUsers")
+	public Map<String, Object> an1000_holidayInfoSelUsers(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
+		return an1000Service.an1000InfoSelUsers(param, user);
 	}
 
 	/**

@@ -18,9 +18,44 @@
 			<!-- .page-title-wrap 타이블영역 END -->
 	           
 	        <!-- .search-wrap 검색영역 START -->
-			<div class="search-zone">
+			<div id="searchZone" class="search-zone dis-n">
 				<div class="search-wrap">
 					<div class="sch-box">
+						<dl>
+							<dt>성명</dt>
+							<dd>
+								<input type="text" id="txt01_USER_NM">
+							</dd>
+						</dl>
+						<dl class="dl-2n">
+							<dt>조회기간</dt>
+							<dd>
+								<div class="period">
+									<label for="date01_START" class="hide">날짜 시작</label>
+									<input type="date" id="date01_START" name="date01_START" max="9999-12-31">
+									<span>~</span>
+									<label for="date01_END" class="hide">날짜 종료</label>
+									<input type="date" id="date01_END" name="date01_END" max="9999-12-31">
+								</div>
+							</dd>
+						</dl>
+						<dl>
+							<dt>연차종류</dt>
+							<dd>
+								<select id="sel01_HOLIDAY_TYPE"></select>
+							</dd>
+						</dl>
+					</div>
+					<div class="srch-btn">
+						<ul>
+							<li><a href="javascript:void(0);" id="btn01_SEARCH" class="btn-search">검색</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="search-zone-info">
+				<div class="search-wrap-info">
+					<div class="sch-box-info">
 						<dl>
 							<dt>휴가일수</dt>
 							<dd>
@@ -51,7 +86,7 @@
 			<!-- .search-wrap 검색영역 END -->
 			
 			<!-- .title-wrap TABLE영역 START -->
-			<div class="row row-1 row-wrap-src">
+			<div id="rowWrap" class="row row-1 row-wrap-src">
 				<div class="col col-1 wp100">
 					<section>
 						<div class="title-wrap">
@@ -236,7 +271,8 @@
 
 		/* 공통코드_콤보박스 */ 
 		commonCodeSelectAdd("pop01_sel01_TYPE", getCommonCode('HOLIDAY'), 'N');
-		
+		commonCodeSelectAdd("sel01_HOLIDAY_TYPE", getCommonCode('HOLIDAY'), 'Y');
+
 		/* Document가 로드되었을 때 실행되는 코드 */
 		$(document).ready(function() {
 			function init() {
@@ -251,12 +287,24 @@
 			langHead = getLangCode("AN1000", 6, "${LANG}");
 			langPop1 = getLangCodeDetail("AN1000_Pop3", 11, "${LANG}");
 
-			if(userId == "eunjin") {
+			var today = new Date();
+			var monthAgo = new Date(today);
+			monthAgo.setMonth(today.getMonth() - 1);
+
+			$("#date01_START").val(monthAgo.toISOString().split('T')[0]);
+			$("#date01_END").val(today.toISOString().split('T')[0]);
+
+			if(userId == "jangsoyun0052") {//eunjin
 				$('#trUserInfo').removeClass('dis-n');
 				$('#btn01_UPDATE').removeClass('dis-n');
+				$('#searchZone').removeClass('dis-n');
+				$('#rowWrap').removeClass('row-wrap-src');
+				$('#rowWrap').addClass('row-wrap-204');
 			} else {
 				$('#trUserInfo').addClass('dis-n');
 				$('#btn01_UPDATE').addClass('dis-n');
+				$('#rowWrap').removeClass('row-wrap-204');
+				$('#rowWrap').addClass('row-wrap-src');
 			}
 
 			setGrid();
@@ -311,7 +359,12 @@
 		/* 검색 버튼 */
 		$("#btn01_SEARCH").on({
 			click: function(){
-				searchGridData();
+				if($("#txt01_USER_NM").val().length > 0) {
+					searchGridDataUsers();
+				} else {
+					toast("정보", "성명을 입력해 주시기 바랍니다.", "info");
+					return false;
+				}
 			}
 		});
 		
@@ -323,7 +376,7 @@
 			}
 		});
 
-		/* 수정 버튼 */
+		/* 휴가취소 버튼 */
 		$("#btn01_UPDATE").on({
 			click: function(){
 				let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
@@ -360,7 +413,7 @@
 		function confirmYes(action){
 			if(action == "C"){
 				var userID = "", deptCD = "", postCD = "";
-				if(userId == "eunjin") {
+				if(userId == "jangsoyun0052") {
 					userID = $("#pop01_txt01_USER_ID").val();
 					deptCD = $("#pop01_txt01_DEPT_CD").val();
 					postCD = $("#pop01_txt01_GRADE_CD").val();
@@ -371,24 +424,43 @@
 				}
 
 				const param = {
-					USER_ID : userID,
-					DEPT_CD : deptCD,
-					POST_CD : postCD,
-					HOLIDAY_TYPE : $('#pop01_sel01_TYPE').val(),
-					HOLIDAY_CNT : $('#pop01_txt01_COUNT').val(),
-					HOLIDAY_START : $('#pop01_date01_START').val(),
-					HOLIDAY_END : $('#pop01_date01_END').val(),
-					EMERGENCY : $('#pop01_txt01_EMERGENCY').val(),
-					TASK : $('#pop01_txt01_TASK').val(),
-					ACQUIRER : $('#pop01_txt01_ACQUIRER').val(),
-					HOLIDAY_REASON : $('#pop01_txt01_REASON').val()
+					USER_ID: userID,
+					DEPT_CD: deptCD,
+					POST_CD: postCD,
+					HOLIDAY_TYPE: $('#pop01_sel01_TYPE').val(),
+					HOLIDAY_CNT: $('#pop01_txt01_COUNT').val(),
+					HOLIDAY_START: $('#pop01_date01_START').val(),
+					HOLIDAY_END: $('#pop01_date01_END').val(),
+					EMERGENCY: $('#pop01_txt01_EMERGENCY').val(),
+					TASK: $('#pop01_txt01_TASK').val(),
+					ACQUIRER: $('#pop01_txt01_ACQUIRER').val(),
+					HOLIDAY_REASON: $('#pop01_txt01_REASON').val()
 				}
 
-				getAjaxJsonData('/an1000', param, 'searchGridDataCallBack', 'POST')
+				getAjaxJsonData('/an1000', param, '', 'POST');
+
+				if($("#txt01_USER_NM").val().length > 0) {
+					searchGridDataUsers();
+				} else {
+					searchGridData();
+				}
+
 				$("#viewForm1").dialog("close");
 			}else if (action == "D") {
 				const param = $("#table1").getRowData($("#table1").getGridParam("selrow"));
-				getAjaxJsonData('/an1000', param, 'searchGridDataCallBack', 'PATCH')
+
+				new Promise(function(resolve, reject) {
+					getAjaxJsonData('/an1000', param, '', 'PATCH');
+					return resolve();
+				}).then(function() {
+					setTimeout(function() {
+						if($("#txt01_USER_NM").val().length > 0) {
+							searchGridDataUsers();
+						} else {
+							searchGridData();
+						}
+					}, 300);
+				});
 			}
 		}
 		
@@ -404,7 +476,8 @@
 				}
 				, colNames: langHead
 				, colModel: [
-					{name: 'USER_NM'			, align: 'center'	, width: '7%'	, hidden: false}
+					{name: 'USER_ID'			, align: 'center'	, width: '0%'	, hidden: true}
+					, {name: 'USER_NM'			, align: 'center'	, width: '7%'	, hidden: false}
 					, {name: 'GRADE_CD'			, align: 'center' 	, width: '0%'	, hidden: true}
 					, {name: 'GRADE_NM'			, align: 'center' 	, width: '8%'	, hidden: false}
 					, {name: 'HOLIDAY_START'	, align: 'center'	, width: '10%'	, hidden: false}
@@ -462,7 +535,7 @@
 			
 			getAjaxJsonData("an1000Sel", searchParam, "searchGridDataCallBack");
 		};
-		
+
 		function searchGridDataCallBack(data){
 			$("#table1").clearGridData();
 			$("#table1").jqGrid('setGridParam', {
@@ -470,13 +543,45 @@
 				, data: data
 			}).trigger("reloadGrid");
 
-			$("#table1_cnt").text(data.length)
+			if(data != null) {
+				$("#table1_cnt").text(comma(data.length));
+			} else {
+				$('#table1_cnt').text(0);
+			}
 
 			getAjaxJsonData("an1000/holidayInfo", "", "holidayInfoSel", "GET")
 		};
 
+		function searchGridDataUsers(){
+			let searchParam = {
+				USER_NM : $("#txt01_USER_NM").val()
+				, START : $("#date01_START").val()
+				, END : $("#date01_END").val()
+				, TYPE : $("#sel01_HOLIDAY_TYPE").val()
+			};
+
+			getAjaxJsonData("an1000SelUsers", searchParam, "searchGridDataUsersCallBack");
+		};
+
+		function searchGridDataUsersCallBack(data){
+			$("#table1").clearGridData();
+			$("#table1").jqGrid('setGridParam', {
+				datatype: 'local'
+				, data: data
+			}).trigger("reloadGrid");
+
+			$("#table1_cnt").text(comma(data.length));
+
+			let searchParam = {
+				USER_NM : $("#txt01_USER_NM").val()
+			};
+
+			getAjaxJsonData("an1000/holidayInfoUsers", searchParam, "holidayInfoSel")
+		};
+
 		/**	휴가 보유 현황  */
 		function holidayInfoSel(data) {
+			$("#txt01_HOLIDAY_TOTAL").val((data.HOLIDAY_TOTAL).toFixed(1))
 			$("#txt01_HOLIDAY_USE").val((data.HOLIDAY_USE).toFixed(1))
 			$("#txt01_HOLIDAY_REMAIN").val((data.HOLIDAY_REMAIN).toFixed(1))
 			$("#txt01_HOLIDAY_DEDUCT").val((data.HOLIDAY_DEDUCT).toFixed(1))
