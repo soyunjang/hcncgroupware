@@ -32,6 +32,6 @@
 	<!-- 사용자 추가 시 TABLE HOLIDAY_INFO에 추가 -->
 	<insert id="cm1200SaveHolidayInfo" parameterType="String">
 		INSERT INTO HOLIDAY_INFO(USER_ID, HOLIDAY_TOTAL, HOLIDAY_USE, HOLIDAY_REMAIN, HOLIDAY_DEDUCT, REG_ID, REG_DT)
-		VALUES(#{USER_ID}, 0.0, 0.0, 0.0, 0.0, @IN_REG_USERID, GETDATE());
+		VALUES(#{USER_ID}, 0.0, 0.0, 0.0, 0.0, #{USER_ID}, GETDATE());
 	</insert>
 </mapper>
