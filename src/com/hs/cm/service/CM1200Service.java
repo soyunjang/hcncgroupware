@@ -116,7 +116,7 @@ public class CM1200Service {
 			sqlSession.update("cm1200Mapper.cm1200Save", param);
 
 			if (param.get("ACTION").equals("C")) {
-				sqlSession.insert("cm1200SaveHolidayInfo", param.get("USER_ID").toString());
+				sqlSession.insert("cm1200SaveHolidayInfo", param);
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
