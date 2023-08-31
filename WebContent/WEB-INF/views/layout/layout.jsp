@@ -34,8 +34,8 @@
 		<title>HCNC 그룹웨어</title>
 	</head>
 	<%@ include file="/WEB-INF/include/include.jsp" %>
-<!-- 		오른쪽 마우스 클릭 금지 -->	
-<!-- 	<body oncontextmenu="return false"> -->
+	<!-- 오른쪽 마우스 클릭 금지 -->
+ 	<body oncontextmenu="return false">
 		<div class="sub-main-wrap">
 			<div class="sub-header">
 				<tiles:insertAttribute name="header" />

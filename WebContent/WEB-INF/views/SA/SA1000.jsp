@@ -1997,7 +1997,7 @@
 
 			$("#currency_VAL").text("");
 			if($("#OBTAIN_CONTRACT_DT").val().length > 0) {
-				if(new Date($("#date01_REG_DT").text().trim()) >= new Date($("#OBTAIN_CONTRACT_DT").val())) {
+				if(new Date() >= new Date($("#OBTAIN_CONTRACT_DT").val())) {
 					getAjaxJsonData("sa1000SelExchange", params, "selectExchangeCallback");
 				} else {
 					$("#OBTAIN_CONTRACT_DT").val("");
@@ -2160,7 +2160,7 @@
 					}
 
 					console.log('changeContractDt : ', usd, eur, cnh, jpy);
-					$('#table3').jqGrid('setCell', i+1, 'BUY_PRICE', totCost.toFixed(1));
+					$('#table3').jqGrid('setCell', i+1, 'BUY_PRICE', Math.ceil(totCost));	// 이정현차장님 요청 : 소수점이하 올림 230831
 				}
 			}
 			buyPriceSum = $("#table3").jqGrid('getCol', 'BUY_PRICE', false, 'sum');
