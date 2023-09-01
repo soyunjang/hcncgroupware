@@ -134,7 +134,7 @@
 								            <tr>
 								            	<th class="req">1.사업장</th>
 								                <td>
-								                	<select id="OFFICE_TYPE" class="wp100"></select>
+								                	<select id="OFFICE_TYPE" class="wp100" onchange="setSalesNum();"></select>
 								                </td>
 								                <th class="req">2.판매품의서 NO</th>
 								                <td colspan="5">
@@ -2310,25 +2310,44 @@
 		}
 
 		function setSalesNum(){
-			var now = new Date();
 			var office = $("#OFFICE_TYPE").val();
 			var salseNum1 = "";
-			var salseNum2 = now.getFullYear();
-			var salseNum3 = now.getMonth() + 1;
 
-			if(office == "OFFICE1SEOUL") {
-				salseNum1 = "S-";
-			} else if(office == "OFFICE2ULSAN") {
-				salseNum1 = "U-";
-			} else if(office == "OFFICE3DAEGU") {
-				salseNum1 = "D-";
+			if($("#SALES_NUM").val().length > 0) {
+				var salesNumSplit = $("#SALES_NUM").val().split("-");
+
+				if(office == "OFFICE1SEOUL") {
+					salseNum1 = "HCS-";
+				} else if(office == "OFFICE2ULSAN") {
+					salseNum1 = "HCU-";
+				}  else if(office == "OFFICE2ULSAN2") {
+					salseNum1 = "HCUS-";
+				} else if(office == "OFFICE3DAEGU") {
+					salseNum1 = "HCUF-";
+				}
+
+				$("#SALES_NUM").val(salseNum1 + salesNumSplit[1] + "-" + salesNumSplit[2] + "-");
+			} else {
+				var now = new Date();
+				var salseNum2 = now.getFullYear();
+				var salseNum3 = now.getMonth() + 1;
+
+				if(office == "OFFICE1SEOUL") {
+					salseNum1 = "S-";
+				} else if(office == "OFFICE2ULSAN") {
+					salseNum1 = "U-";
+				}  else if(office == "OFFICE2ULSAN2") {
+					salseNum1 = "US-";
+				} else if(office == "OFFICE3DAEGU") {
+					salseNum1 = "UF-";
+				}
+
+				salseNum2 = salseNum2.toString().substr(2, 2);
+				salseNum3 = salseNum3 < 10 ? "0" + salseNum3 + "-" : salseNum3 + "-";
+
+				$("#SALES_NUM").val("HC" + salseNum1 + salseNum2 + salseNum3);
+				$("#REVISION").val("00");
 			}
-
-			salseNum2 = salseNum2.toString().substr(2, 2);
-			salseNum3 = salseNum3 < 10 ? "0" + salseNum3 + "-" : salseNum3 + "-";
-
-			$("#SALES_NUM").val("HC" + salseNum1 + salseNum2 + salseNum3);
-			$("#REVISION").val("00");
 		}
 
 		function clearGridData(action) {
