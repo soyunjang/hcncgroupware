@@ -267,7 +267,7 @@
 		/* 공통코드_다국어 */
 		let langHead;
 		let langPop1;
-		let userId = '${User.USER_ID}';
+		let userDept = '${User.DEPT_CD}'
 
 		/* 공통코드_콤보박스 */ 
 		commonCodeSelectAdd("pop01_sel01_TYPE", getCommonCode('HOLIDAY'), 'N');
@@ -294,7 +294,7 @@
 			$("#date01_START").val(monthAgo.toISOString().split('T')[0]);
 			$("#date01_END").val(today.toISOString().split('T')[0]);
 
-			if(userId == "eunjin") {
+			if(userDept.indexOf("M1") > -1) {
 				$('#trUserInfo').removeClass('dis-n');
 				$('#btn01_UPDATE').removeClass('dis-n');
 				$('#searchZone').removeClass('dis-n');
@@ -412,8 +412,8 @@
 		/* confirm 확인버튼 클릭시 */
 		function confirmYes(action){
 			if(action == "C"){
-				var userID = "", deptCD = "", postCD = "";
-				if(userId == "eunjin") {
+				let userID = "", deptCD = "", postCD = "";
+				if(userDept.indexOf("M1") > -1) {
 					userID = $("#pop01_txt01_USER_ID").val();
 					deptCD = $("#pop01_txt01_DEPT_CD").val();
 					postCD = $("#pop01_txt01_GRADE_CD").val();
