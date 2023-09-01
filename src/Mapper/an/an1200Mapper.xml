@@ -20,13 +20,12 @@
 		<choose>
 			<when test='USE.equals("Y")'>
 				FROM USER_INFO U INNER JOIN HOLIDAY_PERSON H
-				ON U.USER_ID = H.USER_ID
 			</when>
 			<otherwise>
 				FROM USER_INFO U LEFT OUTER JOIN HOLIDAY_PERSON H
-				ON U.USER_ID = H.USER_ID
 			</otherwise>
 		</choose>
+		ON U.USER_ID = H.USER_ID
 		AND #{DATE} BETWEEN H.HOLIDAY_START AND H.HOLIDAY_END
 		WHERE U.DEPT_CD LIKE '%' + #{DEPT} + '%' AND U.USER_NM LIKE '%' + #{USER_NM} + '%' AND U.USE_YN = 'Y'
 		<if test='USE.equals("N")'> AND H.USER_ID IS NULL</if>
