@@ -280,6 +280,7 @@ public class CO1000Service {
 					paramMap.put("REFUND", cell.getNumericCellValue());
 
 				paramMap.put("FILE_NM", excelFile.getOriginalFilename());
+				paramMap.put("REG_ID", param.get("USER_ID"));
 
 				sqlSession.insert("co1000Mapper.co1000Ins", paramMap);
 				insertCnt++;
@@ -345,6 +346,7 @@ public class CO1000Service {
 					paramMap.put("REFUND", cell.getNumericCellValue());
 
 				paramMap.put("FILE_NM", excelFile.getOriginalFilename());
+				paramMap.put("REG_ID", param.get("USER_ID"));
 
 				sqlSession.insert("co1000Mapper.co1000Ins", paramMap);
 				insertCnt++;

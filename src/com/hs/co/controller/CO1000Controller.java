@@ -6,6 +6,7 @@ import java.util.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import com.hs.home.controller.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -71,8 +72,11 @@ public class CO1000Controller {
 	}
 
 	@RequestMapping(value = "/co1000MergeDataSave")
-	public String co1000MergeDataSave(final MultipartHttpServletRequest multiRequest, @RequestParam Map<String, Object> param, ModelMap model) throws IOException {
+	public String co1000MergeDataSave(final MultipartHttpServletRequest multiRequest, @RequestParam Map<String, Object> param, ModelMap model, HttpSession session) {
 		logger.debug("PopupController > co1000MergeDataSave :: {}", param);
+
+		UserInfo user = (UserInfo) session.getAttribute("User");
+		param.put("USER_ID", user.getUSER_ID());
 
 		MultipartFile file = null;
 		Iterator<String> iterator = multiRequest.getFileNames();

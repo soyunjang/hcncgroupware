@@ -14,7 +14,7 @@
 	</insert>
 
 	<insert id="co1000Ins" parameterType="map">
-		EXEC CO1000_INS #{COMPANY}, #{CARD_NUM}, #{USE_DATE}, #{APPROVAL_NUM}, #{ACCOUNT}, #{APPROVAL}, #{REFUND}, #{FILE_NM}
+		EXEC CO1000_INS #{COMPANY}, #{CARD_NUM}, #{USE_DATE}, #{APPROVAL_NUM}, #{ACCOUNT}, #{APPROVAL}, #{REFUND}, #{FILE_NM}, #{REG_ID}
 	</insert>
 
 	<insert id="co1000Save" parameterType="map">
