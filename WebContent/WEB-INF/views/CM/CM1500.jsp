@@ -286,7 +286,19 @@
 				openModalPopup_User();
 			}
 		});
-		
+
+		$("#sel01_OFFICE_TYPE").change(() => searchGridDataHead());
+
+		$("#sel01_COMPANY").change(() => searchGridDataHead());
+
+		$("#txt01_CARD_NUM").keypress((e) => {
+			if(e.key === "Enter") searchGridDataHead();
+		});
+
+		$("#txt01_USER_NM").keypress((e) => {
+			if(e.key === "Enter") searchGridDataHead();
+		});
+
 		var cardNum = document.getElementById('pop01_txt01_CARD_NUM');
 		cardNum.onkeyup = function(event) {
 			event = event || window.event;

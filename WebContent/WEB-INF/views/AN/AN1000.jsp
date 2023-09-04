@@ -287,8 +287,8 @@
 			langHead = getLangCode("AN1000", 6, "${LANG}");
 			langPop1 = getLangCodeDetail("AN1000_Pop3", 11, "${LANG}");
 
-			var today = new Date();
-			var monthAgo = new Date(today);
+			let today = new Date();
+			let monthAgo = new Date(today);
 			monthAgo.setMonth(today.getMonth() - 1);
 
 			$("#date01_START").val(monthAgo.toISOString().split('T')[0]);
@@ -408,6 +408,16 @@
 			}
 		});
 
+		$("#txt01_USER_NM").keypress((e) => {
+			if(e.key === "Enter") searchGridDataUsers();
+		});
+
+		$("#sel01_HOLIDAY_TYPE").change(() => searchGridDataUsers());
+
+		$("#date01_START").change(() => searchPeriodCheck());
+
+		$("#date01_END").change(() =>  searchPeriodCheck());
+
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: confirm
 		/* confirm 확인버튼 클릭시 */
 		function confirmYes(action){
@@ -423,10 +433,15 @@
 					postCD = '${User.GRADE_CD}';
 				}
 
+				let check = userDept.indexOf("M1") > -1;
+
 				const param = {
-					USER_ID: userID,
-					DEPT_CD: deptCD,
-					POST_CD: postCD,
+					USER_ID: check ? $("#pop01_txt01_USER_ID").val() : '${User.USER_ID}',
+					DEPT_CD: check ? $("#pop01_txt01_DEPT_CD").val() : '${User.DEPT_CD}',
+					POST_CD: check ? $("#pop01_txt01_GRADE_CD").val() : '${User.GRADE_CD}',
+					// USER_ID: userID,
+					// DEPT_CD: deptCD,
+					// POST_CD: postCD,
 					HOLIDAY_TYPE: $('#pop01_sel01_TYPE').val(),
 					HOLIDAY_CNT: $('#pop01_txt01_COUNT').val(),
 					HOLIDAY_START: $('#pop01_date01_START').val(),
@@ -600,7 +615,7 @@
 		}
 
 		function searchGridDataUser(){
-			var searchParam = {
+			let searchParam = {
 				USER_NM : $("#pop01_USER_NM").val()
 			};
 
@@ -661,10 +676,10 @@
 								toast("경고", "사유을 입력해주세요.", "error");
 								return false;
 							}
-							var idsH = $("#table1").jqGrid('getDataIDs');
+							let idsH = $("#table1").jqGrid('getDataIDs');
 							
-							for (var i = 0; i < idsH.length; i++) {
-								var retH = $("#table1").jqGrid('getRowData', idsH[i]);
+							for (let i = 0; i < idsH.length; i++) {
+								let retH = $("#table1").jqGrid('getRowData', idsH[i]);
 								
 								if(retH.HOLIDAY_START == $("#pop01_date01_START").val()) {
 									toast("오류", "이미 존재하는 휴가입니다.", "error");
@@ -739,10 +754,10 @@
 
 		function openModalPopup_User(){
 			// 화면ID, 화면ID사이즈(ex. 6:CM1000 / 13:CM1000_Detail), 팝업ID, 다국어
-			var returnPopup = getLangCodePopup("AN1000_Pop3", 11, "viewForm3", "${LANG}");
-			var titlePop = returnPopup[0];
-			var pop03_btn01_FINISH = returnPopup[1];
-			var pop03_btn01_CLOSE = returnPopup[2];
+			let returnPopup = getLangCodePopup("AN1000_Pop3", 11, "viewForm3", "${LANG}");
+			let titlePop = returnPopup[0];
+			let pop03_btn01_FINISH = returnPopup[1];
+			let pop03_btn01_CLOSE = returnPopup[2];
 
 			$("#viewForm3").dialog({
 				autoOpen: true
@@ -759,7 +774,7 @@
 					{
 						text : pop03_btn01_FINISH,
 						click : function(){
-							var rowid = $("#table3").getGridParam("selrow");
+							let rowid = $("#table3").getGridParam("selrow");
 							if(rowid < 1){
 								toast("정보", "선택된 사용자가 없습니다.", "info");
 								return false;
@@ -917,6 +932,16 @@
 				$('#pop01_date01_END').val($('#pop01_date01_START').val());
 			} else if ($('#pop01_date01_END').val() != "" && new Date($('#pop01_date01_END').val()) < new Date($('#pop01_date01_START').val())) {
 				$('#pop01_date01_END').val($('#pop01_date01_START').val());
+			}
+		}
+
+		/**
+		 * 검색 조건 기간 체크
+		 */
+		function searchPeriodCheck() {
+			// 조회 시작일 >  조회 종료일일 경우
+			if (new Date($("#date01_START").val()) > new Date($("#date01_END").val())) {
+				$("#date01_END").val($("#date01_START").val())
 			}
 		}
 	</script>

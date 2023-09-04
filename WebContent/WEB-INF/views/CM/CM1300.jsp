@@ -351,7 +351,11 @@
 				}
 			}
 		});
-		
+
+		$("#sel01_AUTH_TYPE_CD").change(() => searchGridDataHead());
+
+		$("#sel01_USE_YN").change(() => searchGridDataHead());
+
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: confirm
 		/* confirm 확인버튼 클릭시 */
 		function confirmYes(action) {

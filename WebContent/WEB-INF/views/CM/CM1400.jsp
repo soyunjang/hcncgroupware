@@ -295,7 +295,21 @@
 				changeGridData();
 			}
 		});
-		
+
+		$("#txt01_MENU_ID").keypress((e) => {
+			if (e.key === "Enter") searchGridDataHead();
+		});
+
+		$("#txt01_MENU_NM").keypress((e) => {
+			if (e.key === "Enter") searchGridDataHead();
+		});
+
+		$("#txt01_PROGRAM_ID").keypress((e) => {
+			if (e.key === "Enter") searchGridDataHead();
+		});
+
+		$("#sel01_MENU_GROUP").change(() => searchGridDataHead());
+
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: confirm:
 		/* confirm 확인버튼 클릭시 */
 		function confirmYes(action){

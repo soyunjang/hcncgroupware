@@ -336,6 +336,14 @@
 			}
 		});
 
+		$("#txt01_USER_ID").keypress((e) => {
+			if (e.key === "Enter") searchGridData();
+		});
+
+		$("#txt01_USER_NM").keypress((e) => {
+			if (e.key === "Enter") searchGridData();
+		});
+
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: confirm
 		/* confirm 확인버튼 클릭시 */
 		function confirmYes(action){

@@ -126,6 +126,12 @@
 				searchGridData();
 			}
 		});
+
+		$("#sel01_DEPT").change(() => searchGridData());
+
+		$("#txt01_USER_NM").keypress((e) => {
+			if(e.key === "Enter") searchGridData();
+		});
 		
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: confirm
 		

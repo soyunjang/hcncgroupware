@@ -221,6 +221,10 @@
 				}
 			}
 		});
+
+		$("#txt01_DEPT_NM").keypress((e) => {
+			if(e.key === "Enter") searchGridData();
+		});
 		
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: confirm:
 		/* confirm 확인버튼 클릭시 */

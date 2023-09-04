@@ -285,6 +285,16 @@
 			}
 		});
 
+		$("#txt01_SYS_CD").keypress((e) => {
+			if (e.key === "Enter") searchGridDataHead();
+		});
+
+		$("#txt01_SYS_NM").keypress((e) => {
+			if (e.key === "Enter") searchGridDataHead();
+		});
+
+		$("#sel01_USE_YN").change(() => searchGridDataHead());
+
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: confirm
 		/* confirm 확인버튼 클릭시 */
 		function confirmYes(action){
