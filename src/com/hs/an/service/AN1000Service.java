@@ -107,7 +107,6 @@ public class AN1000Service {
 	 * 휴가 신청 취소
 	 */
 	public void an1000Update(Map<String, Object> param, UserInfo user) {
-		logger.info(param.toString());
 		try {
 			// SYS_ITEM_NAME -> SYS_ITEM_CD 로 변경(예 : 연차 -> ANNUAL)
 			getHolidayCode().forEach(code -> {
@@ -115,6 +114,9 @@ public class AN1000Service {
 					param.put("HOLIDAY_TYPE", code.get("SYS_ITEM_CD"));
 				}
 			});
+
+			param.put("UPT_ID", user.getUSER_ID());
+
 			sqlSession.update("an1000Mapper.an1000Update", param);
 			holidayInfoUpdate(param, user, Type.MINUS);
 		} catch (Exception e) {

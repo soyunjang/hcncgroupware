@@ -59,7 +59,7 @@
 	</insert>
 
 	<update id="an1000Update" parameterType="map">
-		UPDATE HOLIDAY_PERSON SET UPT_DT = GETDATE(), UPT_ID = #{USER_ID}, USE_YN = 'N'
+		UPDATE HOLIDAY_PERSON SET UPT_DT = GETDATE(), UPT_ID = #{UPT_ID}, USE_YN = 'N'
 		                      WHERE	USER_ID = #{USER_ID} AND
 		                          	HOLIDAY_START = #{HOLIDAY_START} AND
 		                          	HOLIDAY_END = #{HOLIDAY_END} AND
