@@ -19,6 +19,13 @@ public class UserInfo {
 	private String USER_LNAG;		// 다국어 KOR:한국어, ENG:영어, CHN:중국어
 	private String CONNECT_DT;		// 접속시간
 
+	public UserInfo() {
+	}
+
+	public UserInfo(String USER_ID) {
+		this.USER_ID = USER_ID;
+	}
+
 	public String getUSER_ID() {
 		return USER_ID;
 	}
