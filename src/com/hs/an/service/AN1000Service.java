@@ -65,16 +65,6 @@ public class AN1000Service {
 	}
 
 	/**
-	 * 메소드 설명 : 연차신청내역 조회
-	 * @param param : 검색조건 (사용자명, 조회기간, 휴가종류)
-	 * @return List    list 사용자정보 목록
-	 */
-//	public List<Map<String, Object>> an1000SelUsers(Map<String, Object> param, UserInfo user) {
-//		logger.info(String.valueOf(param.size()));
-//		return sqlSession.selectList("an1000Mapper.an1000SelUsers", param);
-//	}
-
-	/**
 	 * 해당 월에 회사 휴무일관련 등록 확인 로직
 	 * 결과값 : 0 (미등록), 1('OFFICE01', 'OFFICE02' 둘 중 하나 등록)
 	 */
@@ -86,15 +76,17 @@ public class AN1000Service {
 	 * 휴가 등록
 	 */
 	public void an1000Save(Map<String, Object> param, UserInfo user) {
-//		param.put("USER_ID", user.getUSER_ID());
-		param.put("REG_ID", user.getUSER_ID());
-//		param.put("DEPT_CD", user.getDEPT_CD());
-//		param.put("POST_CD", user.getGRADE_CD());
-//		logger.info(user.getUSER_ID() + ": " + param);
-
 		try {
+			param.put("REG_ID", user.getUSER_ID());
+
 			sqlSession.insert("an1000Mapper.an1000Save", param);
-			holidayInfoUpdate(param, user, Type.PLUS);
+
+			// 휴가 등록하는 사람 확인 HOLIDAY_INFO 테이블 수정
+			if (param.get("USER_ID").equals(user.getUSER_ID())) {
+				holidayInfoUpdate(param, user, Type.PLUS);
+			} else {
+				holidayInfoUpdate(param, new UserInfo(String.valueOf(param.get("USER_ID"))), Type.PLUS);
+			}
 		} catch (Exception e) {
 			throw new RuntimeException("휴가 등록 에러 발생", e);
 		}
@@ -111,11 +103,16 @@ public class AN1000Service {
 					param.put("HOLIDAY_TYPE", code.get("SYS_ITEM_CD"));
 				}
 			});
-
 			param.put("UPT_ID", user.getUSER_ID());
 
 			sqlSession.update("an1000Mapper.an1000Update", param);
-			holidayInfoUpdate(param, user, Type.MINUS);
+
+			// 휴가 등록하는 사람 확인 HOLIDAY_INFO 테이블 수정
+			if (param.get("USER_ID").equals(user.getUSER_ID())) {
+				holidayInfoUpdate(param, user, Type.MINUS);
+			} else {
+				holidayInfoUpdate(param, new UserInfo(String.valueOf(param.get("USER_ID"))), Type.MINUS);
+			}
 		} catch (Exception e) {
 			throw new RuntimeException("휴가 신청 취소 에러 발생", e);
 		}
