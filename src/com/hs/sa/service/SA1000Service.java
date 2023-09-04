@@ -463,4 +463,8 @@ public class SA1000Service {
 		logger.debug("sa1000Service > selectSA1007List :: {}", param);
 		return sqlSession.selectList("sa1000Mapper.sa1007Sel", param);
 	}
+
+	public void sa1000DeleteByConfirmN(Map<String, Object> param) {
+		sqlSession.delete("sa1000Mapper.sa100DeleteByConfirmN", param);
+	}
 }

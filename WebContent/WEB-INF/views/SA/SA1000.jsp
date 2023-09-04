@@ -76,6 +76,7 @@
 									<li><a href="javascript:void(0);" id="btn01_PRINT">출력</a></li>
 	                            	<li><a href="javascript:void(0);" id="btn01_CREATE">신규</a></li>
 	                            	<li><a href="javascript:void(0);" id="btn01_UPDATE">수정</a></li>
+	                            	<li><a href="javascript:void(0);" id="btn00_DELETE">삭제</a></li>
 									<li><a href="javascript:void(0);" id="btn01_SAVE">저장</a></li>
 									<li><a href="javascript:void(0);" id="btn01_COMFIRM">확정</a></li>
 	                            </ul>
@@ -793,6 +794,38 @@
 					searchGrid6Data(rowdata.SALES_NUM, rowdata.REVISION);
 					searchGrid7Data(rowdata.SALES_NUM, rowdata.REVISION);
 				}
+			}
+		});
+
+		/* 삭제버튼 */
+		$("#btn00_DELETE").on({
+			click: function (e) {
+				e.preventDefault();
+
+				checkActionBtn = "D";
+				checkAction = "D";
+
+				let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
+
+				if (rowData.SALES_CONFIRM === '미확정') {
+					let param = {
+						PRE_VERSION : rowData.PRE_VERSION,
+						REVISION : rowData.REVISION,
+						SALES_CONFIRM : 'N',
+						SALES_NUM : rowData.SALES_NUM.substring(0, rowData.SALES_NUM.length - 1)
+					}
+					getAjaxJsonData("sa1000", param, "searchGridData", "DELETE")
+					toast("얀내", "선택한 판매품의서가 삭제되었습니다.", "success");
+				} else {
+					toast("경고", "확정된 판매품의서는 삭제할 수 없습니다.", "error");
+				}
+			},
+		})
+
+		$("#txt01_SALE_SEARCH").keypress((e) => {
+			if (e.key === "Enter") {
+				checkActionBtn = "S"
+				searchGridData();
 			}
 		});
 
@@ -2274,6 +2307,7 @@
 				$('#btn03_DELETE').addClass('disable');
 				$('#btn04_INSERT').addClass('disable');
 				$('#btn04_DELETE').addClass('disable');
+				$('#btn00_DELETE').removeClass('disable');
 
 			} else if(status == "selectRowConfirmY") {		// 확정
 				$('#btn01_COPY').removeClass('disable');
@@ -2290,6 +2324,7 @@
 				$('#btn03_DELETE').addClass('disable');
 				$('#btn04_INSERT').addClass('disable');
 				$('#btn04_DELETE').addClass('disable');
+				$('#btn00_DELETE').addClass('disable');
 
 			} else if(status == "modify") {					// 수정
 				$('#btn01_COPY').addClass('disable');

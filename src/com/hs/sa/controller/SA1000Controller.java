@@ -326,4 +326,11 @@ public class SA1000Controller {
 		
 		return "SA/SA1000Print";
 	}
+
+	@RequestMapping(value = "/sa1000", method = RequestMethod.DELETE)
+	public @ResponseBody Map<String, Object> sa1000Delete(@RequestBody Map<String, Object> param) {
+		sa1000Service.sa1000DeleteByConfirmN(param);
+		return null;
+	}
+
 }
