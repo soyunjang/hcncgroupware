@@ -344,6 +344,10 @@
 			if (e.key === "Enter") searchGridData();
 		});
 
+		$("#pop02_txt01_DEPT").keypress((e) => {
+			if(e.key === "Enter") searchGridDataDept();
+		});
+
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: confirm
 		/* confirm 확인버튼 클릭시 */
 		function confirmYes(action){
