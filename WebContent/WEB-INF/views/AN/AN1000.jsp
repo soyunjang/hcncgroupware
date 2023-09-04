@@ -359,12 +359,13 @@
 		/* 검색 버튼 */
 		$("#btn01_SEARCH").on({
 			click: function(){
-				if($("#txt01_USER_NM").val().length > 0) {
-					searchGridDataUsers();
-				} else {
-					toast("정보", "성명을 입력해 주시기 바랍니다.", "info");
-					return false;
-				}
+				holidayInfoSel(null);
+				searchGridDataUsers();
+				// if($("#txt01_USER_NM").val().length > 0) {
+				// } else {
+				// 	toast("정보", "성명을 입력해 주시기 바랍니다.", "info");
+				// 	return false;
+				// }
 			}
 		});
 		
@@ -418,30 +419,20 @@
 
 		$("#date01_END").change(() =>  searchPeriodCheck());
 
+		$("#pop01_USER_NM").keypress((e) => {
+			if(e.key === "Enter") searchGridDataUser();
+		});
+
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: confirm
 		/* confirm 확인버튼 클릭시 */
 		function confirmYes(action){
 			if(action == "C"){
-				let userID = "", deptCD = "", postCD = "";
-				if(userDept.indexOf("M1") > -1) {
-					userID = $("#pop01_txt01_USER_ID").val();
-					deptCD = $("#pop01_txt01_DEPT_CD").val();
-					postCD = $("#pop01_txt01_GRADE_CD").val();
-				} else {
-					userID = '${User.USER_ID}';
-					deptCD = '${User.DEPT_CD}';
-					postCD = '${User.GRADE_CD}';
-				}
-
 				let check = userDept.indexOf("M1") > -1;
 
 				const param = {
 					USER_ID: check ? $("#pop01_txt01_USER_ID").val() : '${User.USER_ID}',
 					DEPT_CD: check ? $("#pop01_txt01_DEPT_CD").val() : '${User.DEPT_CD}',
 					POST_CD: check ? $("#pop01_txt01_GRADE_CD").val() : '${User.GRADE_CD}',
-					// USER_ID: userID,
-					// DEPT_CD: deptCD,
-					// POST_CD: postCD,
 					HOLIDAY_TYPE: $('#pop01_sel01_TYPE').val(),
 					HOLIDAY_CNT: $('#pop01_txt01_COUNT').val(),
 					HOLIDAY_START: $('#pop01_date01_START').val(),
@@ -491,20 +482,26 @@
 				}
 				, colNames: langHead
 				, colModel: [
-					{name: 'USER_ID'			, align: 'center'	, width: '0%'	, hidden: true}
-					, {name: 'USER_NM'			, align: 'center'	, width: '7%'	, hidden: false}
-					, {name: 'GRADE_CD'			, align: 'center' 	, width: '0%'	, hidden: true}
-					, {name: 'GRADE_NM'			, align: 'center' 	, width: '8%'	, hidden: false}
-					, {name: 'HOLIDAY_START'	, align: 'center'	, width: '10%'	, hidden: false}
-					, {name: 'HOLIDAY_END'		, align: 'center'	, width: '10%'	, hidden: false}
-					, {name: 'HOLIDAY_CNT'		, align: 'center' 	, width: '5%'	, hidden: false}
-					, {name: 'HOLIDAY_TYPE'		, align: 'center'	, width: '5%'	, hidden: false}
-					, {name: 'HOLIDAY_REASON'	, align: 'left'		, width: '15%'	, hidden: false}
+					{name: 'USER_ID'			, align: 'center'	, width: '0%'	, hidden: true},
+					{name: 'USER_NM'			, align: 'center'	, width: '7%'	, hidden: false},
+					{name: 'GRADE_CD'			, align: 'center' 	, width: '0%'	, hidden: true},
+					{name: 'GRADE_NM'			, align: 'center' 	, width: '8%'	, hidden: false},
+					{name: 'HOLIDAY_START'	, align: 'center'	, width: '10%'	, hidden: false},
+					{name: 'HOLIDAY_END'		, align: 'center'	, width: '10%'	, hidden: false},
+					{name: 'HOLIDAY_CNT'		, align: 'center' 	, width: '5%'	, hidden: false},
+					{name: 'HOLIDAY_TYPE'		, align: 'center'	, width: '5%'	, hidden: false},
+					{name: 'HOLIDAY_REASON'	, align: 'left'		, width: '15%'	, hidden: false}
 				]
 				, autowidth: false
 				, shrinkToFit: false
 				, rowNum : 500
 				, multiselect: false
+				, onSelectRow: function (index, status) {
+					if (index) {
+						let row = $("#table1").jqGrid('getRowData', index);
+						getAjaxJsonData("an1000/holidayInfo?targetId=" + row.USER_ID.toString(), '', "holidayInfoSel", "GET")
+					}
+				},
 			});
 			
 			searchGridData();
@@ -531,7 +528,7 @@
 				, shrinkToFit: false
 				, rowNum : 5000
 				, ondblClickRow : function(rowid){
-					var rowdata = $("#table3").getRowData(rowid);
+					let rowdata = $("#table3").getRowData(rowid);
 
 					$("#pop01_txt01_USER_ID").val(rowdata.USER_ID);
 					$("#pop01_txt01_USER_NM").val(rowdata.USER_NM);
@@ -575,7 +572,7 @@
 				, TYPE : $("#sel01_HOLIDAY_TYPE").val()
 			};
 
-			getAjaxJsonData("an1000SelUsers", searchParam, "searchGridDataUsersCallBack");
+			getAjaxJsonData("an1000Sel", searchParam, "searchGridDataUsersCallBack");
 		};
 
 		function searchGridDataUsersCallBack(data){
@@ -585,21 +582,27 @@
 				, data: data
 			}).trigger("reloadGrid");
 
-			$("#table1_cnt").text(comma(data.length));
+			let count;
+			if (data.length == 0) count = data.length;
+			else count = comma(data.length);
 
-			let searchParam = {
-				USER_NM : $("#txt01_USER_NM").val()
-			};
-
-			getAjaxJsonData("an1000/holidayInfoUsers", searchParam, "holidayInfoSel")
+			$("#table1_cnt").text(count);
+			toast("성공", count + "건수가 조회되었습니다.", "success");
 		};
 
 		/**	휴가 보유 현황  */
 		function holidayInfoSel(data) {
-			$("#txt01_HOLIDAY_TOTAL").val((data.HOLIDAY_TOTAL).toFixed(1))
-			$("#txt01_HOLIDAY_USE").val((data.HOLIDAY_USE).toFixed(1))
-			$("#txt01_HOLIDAY_REMAIN").val((data.HOLIDAY_REMAIN).toFixed(1))
-			$("#txt01_HOLIDAY_DEDUCT").val((data.HOLIDAY_DEDUCT).toFixed(1))
+			if (data === null) {
+				$("#txt01_HOLIDAY_TOTAL").val((0.0));
+				$("#txt01_HOLIDAY_USE").val((0.0));
+				$("#txt01_HOLIDAY_REMAIN").val((0.0));
+				$("#txt01_HOLIDAY_DEDUCT").val((0.0));
+			} else {
+				$("#txt01_HOLIDAY_TOTAL").val((data.HOLIDAY_TOTAL).toFixed(1));
+				$("#txt01_HOLIDAY_USE").val((data.HOLIDAY_USE).toFixed(1));
+				$("#txt01_HOLIDAY_REMAIN").val((data.HOLIDAY_REMAIN).toFixed(1));
+				$("#txt01_HOLIDAY_DEDUCT").val((data.HOLIDAY_DEDUCT).toFixed(1));
+			}
 		}
 
 		/* 추가/수정 후 Table 재조회 */
@@ -620,6 +623,7 @@
 			};
 
 			getAjaxJsonData("an1000SelUser", searchParam, "searchGridDataUserCallBack");
+			// 	toast("정보", "성명을 입력해 주시기 바랍니다.", "info");
 		};
 
 		function searchGridDataUserCallBack(data){

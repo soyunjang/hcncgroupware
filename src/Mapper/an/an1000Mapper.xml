@@ -42,7 +42,19 @@
 			   H.EMERGENCY
 		FROM HOLIDAY_PERSON H
 				 LEFT OUTER JOIN USER_INFO U ON H.USER_ID = U.USER_ID
-		WHERE H.USER_ID = #{USER_ID} AND H.USE_YN = 'Y'
+		WHERE H.USE_YN = 'Y'
+		    <choose>
+				<when test='USER_ID != Null and !USER_ID.equals("")'>
+					AND H.USER_ID = #{USER_ID}
+				</when>
+		    	<otherwise>
+					AND U.USER_NM LIKE '%' + #{USER_NM} + '%'
+					AND CONVERT(DATE, H.HOLIDAY_START) BETWEEN #{START} AND #{END}
+		  			<if test='TYPE != Null and !TYPE.equals("")'>
+						AND H.HOLIDAY_TYPE LIKE #{TYPE}
+					</if>
+				</otherwise>
+			</choose>
 		ORDER BY H.HOLIDAY_START DESC
 	</select>
 
@@ -154,25 +166,4 @@
 		 ORDER BY A.USER_NM;
 	</select>
 
-	<select id="an1000SelUsers" parameterType="map" resultType="map">
-		SELECT H.USER_ID,
-			   U.USER_NM,
-			   U.GRADE_CD,
-			   (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD LIKE 'ROLE' AND SYS_ITEM_CD LIKE U.GRADE_CD) AS GRADE_NM,
-			   (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD LIKE 'HOLIDAY' AND SYS_ITEM_CD LIKE H.HOLIDAY_TYPE) AS HOLIDAY_TYPE,
-			   H.HOLIDAY_CNT,
-			   H.HOLIDAY_START,
-			   H.HOLIDAY_END,
-			   H.HOLIDAY_REASON,
-			   H.TASK,
-			   H.ACQUIRER,
-			   H.EMERGENCY
-		  FROM HOLIDAY_PERSON H
-			   LEFT OUTER JOIN USER_INFO U ON H.USER_ID = U.USER_ID
-		 WHERE H.USE_YN = 'Y'
-		   AND U.USER_NM LIKE '%' + #{USER_NM} + '%'
-		   AND CONVERT(DATE, H.HOLIDAY_START) BETWEEN #{START} AND #{END}
-		   AND H.HOLIDAY_TYPE LIKE '%' + #{TYPE} + '%'
-		 ORDER BY H.HOLIDAY_START DESC;
-	</select>
 </mapper>

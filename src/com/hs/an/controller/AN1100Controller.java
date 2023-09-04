@@ -1,12 +1,7 @@
 package com.hs.an.controller;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
-
+import com.hs.an.service.AN1000Service;
+import com.hs.an.service.AN1100Service;
 import com.hs.home.controller.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.hs.an.service.AN1000Service;
-import com.hs.an.service.AN1100Service;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class AN1100Controller {
@@ -45,7 +42,7 @@ public class AN1100Controller {
 		UserInfo user = (UserInfo) session.getAttribute("User");
 
 		// 사용자 연차정보 조회
-		Map<String,Object> holidayInfo = an1000Service.an1000InfoSel(user);
+		Map<String,Object> holidayInfo = an1000Service.an1000InfoSel(null, user);
 		
 		model.addAttribute("Holiday", holidayInfo);
 		

@@ -38,21 +38,16 @@ public class AN1000Service {
 	 * 사용자 연차정보 조회
 	 * @return 사용자 휴가 신청 내역
 	 */
-	public Map<String, Object> an1000InfoSel(UserInfo user) {
-
+	public Map<String, Object> an1000InfoSel(String targetId, UserInfo user) {
 		Map<String, Object> param = new HashMap();
-		param.put("USER_ID", user.getUSER_ID());
+
+		if (targetId != null) {
+			param.put("USER_ID", targetId);
+		} else {
+			param.put("USER_ID", user.getUSER_ID());
+		}
 
 		return sqlSession.selectOne("an1000Mapper.an1000InfoSel", param);
-	}
-
-	/**
-	 * 사용자 연차정보 조회
-	 * @return 사용자 휴가 신청 내역
-	 */
-	public Map<String, Object> an1000InfoSelUsers(Map<String, Object> param, UserInfo user) {
-
-		return sqlSession.selectOne("an1000Mapper.an1000InfoSelUsers", param);
 	}
 
 	/**
@@ -62,7 +57,9 @@ public class AN1000Service {
 	 */
 	public List<Map<String, Object>> an1000Sel(Map<String, Object> param, UserInfo user) {
 
-		param.put("USER_ID", user.getUSER_ID());
+		if (param.isEmpty()) {
+			param.put("USER_ID", user.getUSER_ID());
+		}
 
 		return sqlSession.selectList("an1000Mapper.an1000Sel", param);
 	}
@@ -72,10 +69,10 @@ public class AN1000Service {
 	 * @param param : 검색조건 (사용자명, 조회기간, 휴가종류)
 	 * @return List    list 사용자정보 목록
 	 */
-	public List<Map<String, Object>> an1000SelUsers(Map<String, Object> param, UserInfo user) {
-
-		return sqlSession.selectList("an1000Mapper.an1000SelUsers", param);
-	}
+//	public List<Map<String, Object>> an1000SelUsers(Map<String, Object> param, UserInfo user) {
+//		logger.info(String.valueOf(param.size()));
+//		return sqlSession.selectList("an1000Mapper.an1000SelUsers", param);
+//	}
 
 	/**
 	 * 해당 월에 회사 휴무일관련 등록 확인 로직
