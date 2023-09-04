@@ -132,15 +132,15 @@
 										<th class="req">사용자명</th>
 										<td>
 											<div class="input-srch">
-												<input type="text" id="pop01_txt01_USER_ID" placeholder="사용자ID" class="readonly" readonly="readonly" style="display: none;">
+												<input type="hidden" id="pop01_txt01_USER_ID" placeholder="사용자ID" class="readonly">
 												<input type="text" id="pop01_txt01_USER_NM" placeholder="사용자명" class="readonly" readonly="readonly">
 												<a href="javascript:void(0);" id="pop01_btn01_USER" class="btn-srch"></a>
 											</div>
 										</td>
 										<th>직급</th>
 										<td>
-											<input type="text" id="pop01_txt01_DEPT_CD" placeholder="부서코드" class="readonly wp100" readonly="readonly" style="display: none;">
-											<input type="text" id="pop01_txt01_GRADE_CD" placeholder="직급코드" class="readonly wp100" readonly="readonly" style="display: none;">
+											<input type="hidden" id="pop01_txt01_DEPT_CD" placeholder="부서코드" class="readonly wp100">
+											<input type="hidden" id="pop01_txt01_GRADE_CD" placeholder="직급코드" class="readonly wp100">
 											<input type="text" id="pop01_txt01_GRADE_NM" placeholder="직급" class="readonly wp100" readonly="readonly">
 										</td>
 									</tr>
@@ -445,11 +445,15 @@
 
 				getAjaxJsonData('/an1000', param, '', 'POST');
 
-				if($("#txt01_USER_NM").val().length > 0) {
-					searchGridDataUsers();
-				} else {
-					searchGridData();
-				}
+				setTimeout(() => {
+					if($("#txt01_USER_NM").val().length > 0) {
+						searchGridDataUsers();
+					} else {
+						searchGridData();
+					}
+				}, 300);
+
+				holidayInfoSel(null);
 
 				$("#viewForm1").dialog("close");
 			}else if (action == "D") {
@@ -467,6 +471,8 @@
 						}
 					}, 300);
 				});
+
+				holidayInfoSel(null);
 			}
 		}
 		
