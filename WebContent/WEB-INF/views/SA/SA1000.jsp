@@ -807,18 +807,11 @@
 
 				let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
 
-				if (rowData.SALES_CONFIRM === '미확정') {
-					let param = {
-						PRE_VERSION : rowData.PRE_VERSION,
-						REVISION : rowData.REVISION,
-						SALES_CONFIRM : 'N',
-						SALES_NUM : rowData.SALES_NUM.substring(0, rowData.SALES_NUM.length - 1)
-					}
-					getAjaxJsonData("sa1000", param, "searchGridData", "DELETE")
-					toast("얀내", "선택한 판매품의서가 삭제되었습니다.", "success");
-				} else {
-					toast("경고", "확정된 판매품의서는 삭제할 수 없습니다.", "error");
-				}
+                if(rowData.SALES_CONFIRM === '미확정' && checkAction == "D") {
+                    confirms("선택한 판매품의서를 삭제하시겠습니까?", "D");
+                } else {
+                    toast("경고", "확정된 판매품의서는 삭제할 수 없습니다.", "error");
+                }
 			},
 		})
 
@@ -1051,7 +1044,19 @@
 				};
 
 				getAjaxJsonData("sa1000Confirm", searchParam, "confirmGridDataCallBack");
-			}
+			} else if (action == "D") {
+                let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
+                if (rowData.SALES_CONFIRM === '미확정') {
+                    let param = {
+                        PRE_VERSION : rowData.PRE_VERSION,
+                        REVISION : rowData.REVISION,
+                        SALES_CONFIRM : 'N',
+                        SALES_NUM : rowData.SALES_NUM.substring(0, rowData.SALES_NUM.length - 1)
+                    }
+					getAjaxJsonData("sa1000", param, "searchGridData", "DELETE");
+                    toast("얀내", "선택한 판매품의서가 삭제되었습니다.", "success");
+                }
+            }
 		}
 
 		function confirmNo(action) {
