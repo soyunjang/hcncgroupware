@@ -294,7 +294,7 @@
 			$("#date01_START").val(monthAgo.toISOString().split('T')[0]);
 			$("#date01_END").val(today.toISOString().split('T')[0]);
 
-			if(userDept.indexOf("M1") > -1) {
+			if(userDept.indexOf("M") > -1) {
 				$('#trUserInfo').removeClass('dis-n');
 				$('#btn01_UPDATE').removeClass('dis-n');
 				$('#searchZone').removeClass('dis-n');
@@ -427,7 +427,7 @@
 		/* confirm 확인버튼 클릭시 */
 		function confirmYes(action){
 			if(action == "C"){
-				let check = userDept.indexOf("M1") > -1;
+				let check = userDept.indexOf("M") > -1;
 
 				const param = {
 					USER_ID: check ? $("#pop01_txt01_USER_ID").val() : '${User.USER_ID}',
