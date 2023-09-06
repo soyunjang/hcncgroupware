@@ -1,14 +1,17 @@
 package com.hs.co.service;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.session.SqlSession;
+import org.apache.log.output.net.SocketOutputTarget;
 import org.springframework.stereotype.Service;
 
 import com.hs.home.controller.UserInfo;
@@ -27,31 +30,25 @@ public class CO1100Service {
 	 * @param Map 		param 검색조건 (조회기간, 판품번호, 성명, 부서)
 	 * @return List 	list 법인카드 사용현황 목록
 	 */
-	public List<Map<String, Object>> co1100Sel(Map<String, Object> param, HttpSession session) {
+	public List<Map<String, Object>> co1100Sel(Map<String, Object> param, UserInfo user) {
 		
-		UserInfo vo = (UserInfo) session.getAttribute("User");
-		param.put("USER_ID", vo.getUSER_ID());
-		
-		List<Map<String, Object>> rList = sqlSession.selectList("co1100Mapper.co1100Sel", param);
-		
-		return rList;
+		param.put("USER_ID", user.getUSER_ID());
+
+		return sqlSession.selectList("co1100Mapper.co1100Sel", param);
 	}
 
 	public List<Map<String, Object>> co1100SelProject(Map<String, Object> param) {
 
-		List<Map<String, Object>> rList = sqlSession.selectList("co1100Mapper.co1100SelProject", param);
-
-		return rList;
+		return sqlSession.selectList("co1100Mapper.co1100SelProject", param);
 	}
 
 	@Transactional
-	public Map<String, Object> co1100Save(Map<String, Object> param, HttpSession session) {
+	public Map<String, Object> co1100Save(Map<String, Object> param, UserInfo user) {
 
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
-		UserInfo vo = (UserInfo) session.getAttribute("User");
+		Map<String, Object> rtnMap = new HashMap<>();
 
 		try {
-			param.put("UPT_ID", vo.getUSER_ID());
+			param.put("UPT_ID", user.getUSER_ID());
 
 			sqlSession.update("co1100Mapper.co1100Save", param);
 		}catch(Exception e) {
@@ -63,26 +60,29 @@ public class CO1100Service {
 		return rtnMap;
 	}
 
-	public int co1100MergeData(Map<String, Object> param, HttpSession session) {
-
+	public int co1100MergeData(Map<String, Object> param, UserInfo user) {
 		int resultCnt = 0;
-		UserInfo vo = (UserInfo) session.getAttribute("User");
+		List<Map<String, Object>> target = new ArrayList<>();
 
 		for (String key : param.keySet()) {
-			List<Map<String, Object>> dataList = (List<Map<String, Object>>) param.get(key);
-			for (int j = 0; j < dataList.size(); j++) {
-				dataList.get(j).put("UPT_ID", vo.getUSER_ID());
-				Map<String, Object> dataMap = dataList.get(j);
+			if (key == "table1") {
+				List<Map<String, Object>> data = (List<Map<String, Object>>) param.get(key);
+				for (int i = 0; i < data.size(); i++) {
+					data.get(i).put("UPT_ID", user.getUSER_ID());
+					Map<String, Object> dataMap = data.get(i);
 
-				if (dataMap.get("action").equals("U")) {
-					if(key == "table1") {
-						sqlSession.insert("co1100Mapper.co1100Save", dataMap);
+					if (dataMap.get("action").equals("U")) {
+						target.add(dataMap);
 						resultCnt++;
+					}
+					if (target.size() == 100) {
+						sqlSession.update("co1100Mapper.co1100Update", target);
+						target.clear();
 					}
 				}
 			}
 		}
-
+		sqlSession.update("co1100Mapper.co1100Update", target);
 		return resultCnt;
 	}
 

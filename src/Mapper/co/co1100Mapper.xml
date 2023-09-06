@@ -26,6 +26,34 @@
 	</select>
 
 	<update id="co1100Save" parameterType="map">
-		EXEC CO1100_SAVE #{SALES_NUM}, #{ACCOUNT_SUB}, #{APPROVAL_NUM}, #{BREAKDOWN}, #{MEMO}, #{UPT_ID}, #{USE_DATE}, #{ACCOUNT}, #{COMPANY}, #{CARD_NUM}
+		UPDATE CORPORATECARD_INFO SET SALES_NUM = #{SALES_NUM},
+		                              ACCOUNT_SUB = #{ACCOUNT_SUB},
+		                              BREAKDOWN = #{BREAKDOWN},
+		                              MEMO = #{MEMO},
+		                              UPT_ID = #{UPT_ID},
+		                              UPT_DT = GETDATE(),
+		                              USER_ID = #{UPT_ID}
+		                          WHERE USE_DATE = #{USE_DATE}
+		                            AND ACCOUNT = #{ACCOUNT}
+		                            AND COMPANY = #{COMPANY}
+		                            AND CARD_NUM = #{CARD_NUM}
+		                            AND APPROVAL_NUM = #{APPROVAL_NUM}
+	</update>
+
+	<update id="co1100Update" parameterType="java.util.List">
+		<foreach collection="list" item="item" separator="; ">
+			UPDATE CORPORATECARD_INFO SET SALES_NUM = #{item.SALES_NUM},
+			                              ACCOUNT_SUB = #{item.ACCOUNT_SUB},
+			                              BREAKDOWN = #{item.BREAKDOWN},
+			                              MEMO = #{item.MEMO},
+			                              UPT_ID = #{item.UPT_ID},
+			                              UPT_DT = GETDATE(),
+			                              USER_ID = #{item.UPT_ID}
+			                          WHERE USE_DATE = #{item.USE_DATE}
+			                            AND ACCOUNT = #{item.ACCOUNT}
+			                            AND COMPANY = #{item.COMPANY}
+			                            AND CARD_NUM = #{item.CARD_NUM}
+			                            AND APPROVAL_NUM = #{item.APPROVAL_NUM}
+		</foreach>
 	</update>
 </mapper>

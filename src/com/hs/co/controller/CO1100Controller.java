@@ -1,13 +1,7 @@
 package com.hs.co.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
-
+import com.hs.co.service.CO1100Service;
+import com.hs.home.controller.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -18,7 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.hs.co.service.CO1100Service;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 @Controller
 public class CO1100Controller {
@@ -37,7 +36,7 @@ public class CO1100Controller {
    	 * @return	String 	result	판매품의서관리 페이지ID
    	 */
 	@RequestMapping(value = "/co1100")
-	public String co1100(Locale locale, Model model) {
+	public String co1100() {
 		return "CO/CO1100";
 	}
 
@@ -56,9 +55,10 @@ public class CO1100Controller {
    	 */
 	@RequestMapping(value = "/co1100Sel")
 	public @ResponseBody List<Map<String, Object>> CO1100_SEL(@RequestBody Map<String, Object> param, HttpSession session) {
-		
-		List<Map<String, Object>> list = co1100Service.co1100Sel(param, session);
-		return list;
+
+		UserInfo user = (UserInfo) session.getAttribute("User");
+
+		return co1100Service.co1100Sel(param, user);
 	}
 
 	@RequestMapping(value = "/co1100SelProject")
@@ -71,10 +71,12 @@ public class CO1100Controller {
 	@RequestMapping(value = "/co1100Save")
 	public @ResponseBody Map<String, Object> CO1100_SAVE(@RequestBody Map<String, Object> param, HttpSession session) {
 
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		UserInfo user = (UserInfo) session.getAttribute("User");
+
+		Map<String, Object> rtnMap = new HashMap<>();
 
 		try {
-			rtnMap = co1100Service.co1100Save(param, session);
+			rtnMap = co1100Service.co1100Save(param, user);
 		}catch(Exception e) {
 			e.printStackTrace();
 			rtnMap.put("Errmsg", "오류가 발생하였습니다.");
@@ -87,14 +89,14 @@ public class CO1100Controller {
 	@RequestMapping(value = "/co1100MergeData")
 	public String CO1100_MERGEDATA(@RequestBody Map<String, Object> param, HttpSession session, ModelMap model) {
 		logger.debug("CO1100Controller > co1100MergeData :: {}", param);
-
-		int resultCnt  = co1100Service.co1100MergeData(param, session);
+		UserInfo user = (UserInfo) session.getAttribute("User");
+		int resultCnt  = co1100Service.co1100MergeData(param, user);
 		model.addAttribute("result", resultCnt);
 		return "jsonView";
 	}
 
 	@RequestMapping(value = "/co1100Print")
-	public String CO1100_PRINT(@RequestParam Map<String, Object> param, HttpSession session, ModelMap model) throws Exception {
+	public String CO1100_PRINT(@RequestParam Map<String, Object> param, ModelMap model) {
 		model.addAttribute("param", param);
 
 		Map<String, Object> co1000List = co1100Service.selectCO1000List(param);
