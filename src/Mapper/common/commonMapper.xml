@@ -6,7 +6,14 @@
 <mapper namespace="commonMapper">
     <!-- 다국어 조회 -->
     <select id="getLangCode" parameterType="map" resultType="map">
-		EXEC GET_LANGCODE #{SCREEN}, #{TYPE}, #{LANG}
+        SELECT TYPE,
+               SUBSTRING(UNIQUE_ID, CHARINDEX('_', UNIQUE_ID) + 1, LEN(UNIQUE_ID)) AS UNIQUE_ID,
+               KOR_NM,
+               ISNULL((CASE WHEN #{LANG} = 'KOR' THEN KOR_NM WHEN #{LANG} = 'ENG' THEN ENG_NM WHEN #{LANG} = 'CHN' THEN CHN_NM ELSE KOR_NM END), KOR_NM) AS LANG
+        FROM MESSAGE_INFO
+        WHERE LEFT(UNIQUE_ID, #{TYPE}) LIKE '%' + #{SCREEN} + '%'
+          AND USE_YN = 'Y'
+        ORDER BY TYPE, SORT_NO;
     </select>
     
 	<!-- 공통코드 조회 -->
@@ -21,7 +28,14 @@
 
     <!-- 카드정보 조회 -->
     <select id="getCommonCodeCard" parameterType="map" resultType="map">
-        EXEC GET_COMMONCODE_CARD #{sysClassCd}, #{USER_ID}
+        SELECT COMPANY,
+               (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL S WHERE SYS_CLASS_CD LIKE #{sysClassCd} AND SYS_ITEM_CD LIKE COMPANY) AS COMPANY_NM,
+               CARD_NUM
+        FROM CARD_INFO
+        <if test='DEPT_CD != "M"'>
+            WHERE USER_ID = #{USER_ID}
+        </if>
+        ORDER BY COMPANY;
     </select>
 
     <!-- 권한분류 조회 -->
