@@ -370,6 +370,7 @@
 			location.reload();
 		});
 	});
+
 	window.onload = () => {
 		const timeCheck = ['09 : 00', '14 : 00', '18 : 00'];
 		const date_time = document.querySelectorAll(".date-time");
@@ -378,17 +379,8 @@
 			date.innerText = dateFormatter(date.innerText);
 		});
 
-		let index = ['반차-오전', '반차-오후'].indexOf(document.querySelector("#holiday-type").innerText);
-		if (index == 0) {
-			date_time.forEach((time, i) => time.innerText = timeCheck[i]);
-		} else if (index == 1) {
-			date_time.forEach((time, i) => time.innerText = timeCheck[i + 1]);
-		} else {
-			date_time.forEach((time, i) => {
-				if (i != 0) i = i + 1
-				time.innerText = timeCheck[i];
-			});
-		}
+		let index = ['반차-오전', '반차-오후', '민방위-오전', '민방위-오후'].indexOf(document.querySelector("#holiday-type").innerText);
+		holidayTypeAndTimeCheck(index, date_time, timeCheck);
 
 		const count = document.querySelector('#holiday-cnt');
 		count.innerText = "( " + parseFloat(count.innerText) + " 일간)";
@@ -399,5 +391,18 @@
 		let month = parseInt(date.toString().substring(5, 7));
 		let day = parseInt(date.toString().substring(8, 10));
 		return  year + "년  " + month + "월  " + day + "일";
+	}
+
+	function holidayTypeAndTimeCheck(index, date_time, timeCheck) {
+		if (index % 2 == 0) {
+			date_time.forEach((time, i) => time.innerText = timeCheck[i]);
+		} else if (index % 2 == 1) {
+			date_time.forEach((time, i) => time.innerText = timeCheck[i + 1]);
+		} else {
+			date_time.forEach((time, i) => {
+				if (i != 0) i = i + 1
+				time.innerText = timeCheck[i];
+			});
+		}
 	}
 </script>

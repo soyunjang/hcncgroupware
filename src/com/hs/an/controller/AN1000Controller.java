@@ -44,9 +44,9 @@ public class AN1000Controller {
 	 * 휴가신청서 출력
 	 */
 	@RequestMapping(value = "/an1000/print", method = RequestMethod.POST)
-	public String an1000_print(An1000PrintDto dto, Model model, @ModelAttribute("User") UserInfo user) {
+	public String an1000_print(An1000PrintDto dto, Model model) {
 
-		model.addAttribute("HolidayPrintInfo", an1000Service.an1000PrintByUser(dto, user));
+		model.addAttribute("HolidayPrintInfo", an1000Service.an1000PrintByUser(dto));
 
 		return "AN/AN1000Print";
 	}

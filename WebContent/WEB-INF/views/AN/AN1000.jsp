@@ -321,8 +321,20 @@
 		$("#btn01_PRINT").on({
 			click: function(){
 				let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
-				let valueArr = [rowData.GRADE_CD, rowData.GRADE_NM, rowData.HOLIDAY_CNT, rowData.HOLIDAY_START, rowData.HOLIDAY_END, rowData.HOLIDAY_REASON, rowData.HOLIDAY_TYPE, rowData.USER_NM];
-				let nameArr = ["gradeCd", "gradeNm", "holidayCnt", "holidayStart", "holidayEnd", "holidayReason", "holidayType","userNm"];
+				let valueArr = [
+					rowData.GRADE_CD, rowData.GRADE_NM,
+					rowData.HOLIDAY_CNT, rowData.HOLIDAY_START,
+					rowData.HOLIDAY_END, rowData.HOLIDAY_REASON,
+					rowData.HOLIDAY_TYPE, rowData.USER_NM,
+					rowData.USER_ID
+				];
+				let nameArr = [
+					"gradeCd", "gradeNm",
+					"holidayCnt", "holidayStart",
+					"holidayEnd", "holidayReason",
+					"holidayType","userNm",
+					"userId"
+				];
 				if (rowData.length > 1 || (rowData instanceof Array == true && rowData instanceof Object == true) ) {
 					toast("정보", "출력할 휴가를 선택해주시기 바랍니다.", "info");
 					return false;

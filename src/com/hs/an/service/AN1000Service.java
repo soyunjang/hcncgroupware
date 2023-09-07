@@ -121,14 +121,9 @@ public class AN1000Service {
 	/**
 	 * 휴가 출력 조회
 	 */
-	public Map<String, Object> an1000PrintByUser(An1000PrintDto dto, UserInfo user) {
+	public Map<String, Object> an1000PrintByUser(An1000PrintDto dto) {
 		try {
-			if (user.getUSER_NM().equals(dto.getUserNm())) {
-				dto.setUserId(user.getUSER_ID());
-				return sqlSession.selectOne("an1000Mapper.an1000PrintByUser", dto);
-			} else {
-				throw new RuntimeException("an1000PrintByUser.else");
-			}
+			return sqlSession.selectOne("an1000Mapper.an1000PrintByUser", dto);
 		} catch (Exception e) {
 			throw new RuntimeException("휴가신청서 출력 조회 중 에러 발생", e);
 		}
