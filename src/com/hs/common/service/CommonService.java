@@ -35,11 +35,11 @@ public class CommonService {
 	}
 
 	/* 사용자별 카드정보 조회(SORT) */
-	public List<Map<String, Object>> getCommonCodeCard(Map<String, Object> param, HttpSession session){
+	public List<Map<String, Object>> getCommonCodeCard(Map<String, Object> param, UserInfo user){
 
-		UserInfo vo = (UserInfo) session.getAttribute("User");
+		param.put("USER_ID", user.getUSER_ID());
+		param.put("DEPT_CD", user.getDEPT_CD().substring(0,1));
 
-		param.put("USER_ID", vo.getUSER_ID());
 		return sqlSession.selectList("commonMapper.getCommonCodeCard", param);
 	}
 

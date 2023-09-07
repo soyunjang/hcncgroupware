@@ -64,9 +64,8 @@ public class CommonContoller {
 	/* 사용자별 카드정보 조회 */
 	@RequestMapping(value = "/getCommonCodeCard")
 	public @ResponseBody List<Map<String, Object>> getCommonCodeCard(@RequestBody Map<String, Object> param, HttpSession session){
-
-		List<Map<String, Object>> rtnList = commonService.getCommonCodeCard(param, session);
-		return rtnList;
+		UserInfo user = (UserInfo) session.getAttribute("User");
+		return commonService.getCommonCodeCard(param, user);
 	}
 
 	/* 권한분류 조회 */
