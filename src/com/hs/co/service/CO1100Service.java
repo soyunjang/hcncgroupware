@@ -1,21 +1,15 @@
 package com.hs.co.service;
 
-import java.net.InetAddress;
+import com.hs.home.controller.UserInfo;
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpSession;
-
-import org.apache.ibatis.session.SqlSession;
-import org.apache.log.output.net.SocketOutputTarget;
-import org.springframework.stereotype.Service;
-
-import com.hs.home.controller.UserInfo;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service("co1100Service")
 public class CO1100Service {
@@ -33,6 +27,7 @@ public class CO1100Service {
 	public List<Map<String, Object>> co1100Sel(Map<String, Object> param, UserInfo user) {
 		
 		param.put("USER_ID", user.getUSER_ID());
+		param.put("DEPT_CD", user.getDEPT_CD().substring(0, 1));
 
 		return sqlSession.selectList("co1100Mapper.co1100Sel", param);
 	}

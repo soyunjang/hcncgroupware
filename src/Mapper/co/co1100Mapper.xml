@@ -6,12 +6,34 @@
 <mapper namespace="co1100Mapper">
 	<!-- Table 조회 -->
 	<select id="co1100Sel" parameterType="map" resultType="map">
-		EXEC CO1100_SEL #{COMPANY}, #{CARD_NUM}, #{DATE}, #{USER_ID}
+		SELECT U.USER_ID,
+			   C.USE_DATE,
+			   C.APPROVAL_NUM,
+			   C.SALES_NUM,
+			   C.ACCOUNT_SUB,
+			   C.ACCOUNT,
+			   C.BREAKDOWN,
+			   CASE WHEN C.REFUND != 0 THEN 0 ELSE C.APPROVAL END AS APPROVAL,
+			   C.REFUND,
+			   C.MEMO,
+			   C.COMPANY,
+			   C.CARD_NUM
+		FROM CORPORATECARD_INFO C LEFT OUTER JOIN USER_INFO U ON C.USER_ID = U.USER_ID
+		WHERE C.COMPANY LIKE '%' + #{COMPANY} + '%'
+		  AND LEFT(C.USE_DATE, 4) = LEFT(#{DATE}, 4)
+		  AND SUBSTRING(C.USE_DATE, 6, 2) = SUBSTRING(#{DATE}, 6, 2)
+		<if test='CARD_NUM != "전체"'>
+			AND RIGHT(C.CARD_NUM, 4) = RIGHT(#{CARD_NUM}, 4)
+		</if>
+		<if test='DEPT_CD != "M"'>
+			AND RIGHT(C.CARD_NUM, 4) IN (SELECT RIGHT(CARD_NUM, 4) FROM CARD_INFO WHERE USER_ID LIkE #{USER_ID})
+		</if>
+		ORDER BY C.USE_DATE;
 	</select>
 
 	<select id="co1100SelProject" parameterType="map" resultType="map">
-		SELECT CONCAT(SALES_NUM, '-', REVISION) AS SALES_NUM
-			 , PROJECT_NM
+		SELECT CONCAT(SALES_NUM, '-', REVISION) AS SALES_NUM,
+		       PROJECT_NM
 		FROM SALES_INQUIRY_INFO
 		WHERE SALES_CONFIRM = 'Y'
 		  AND PROJECT_NM LIKE '%' + #{PROJECT_NM} + '%'
