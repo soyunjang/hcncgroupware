@@ -6,24 +6,34 @@
 <mapper namespace="co1200Mapper">
 	<!-- Table 조회 -->
 	<select id="co1200Sel" parameterType="map" resultType="map">
-		SELECT CONVERT(VARCHAR, CONVERT(DATETIME, C.USE_DATE), 23) AS USE_DATE
-			 , C.USER_ID
-			 , U.USER_NM
-			 , C.SALES_NUM
-			 , S.PROJECT_NM
-			 , (SELECT dbo.FN_COMMON_NM('ACCOUNT', C.ACCOUNT_SUB)) AS ACCOUNT_SUB
-			 , C.ACCOUNT
-			 , C.BREAKDOWN
-			 , CASE WHEN C.REFUND != 0 THEN 0 ELSE C.APPROVAL END AS APPROVAL
-			 , C.REFUND
-			 , C.MEMO
+		SELECT CONVERT(VARCHAR, CONVERT(DATETIME, C.USE_DATE), 23) AS USE_DATE,
+				C.USER_ID,
+				U.USER_NM,
+				C.SALES_NUM,
+				REPLACE(C.COMPANY,'카드','') AS COMPANY,
+				RIGHT(C.CARD_NUM,4) AS CARD_NUM,
+				(SELECT dbo.FN_COMMON_NM('ACCOUNT', C.ACCOUNT_SUB)) AS ACCOUNT_SUB,
+				C.ACCOUNT,
+				C.BREAKDOWN,
+				CASE WHEN C.REFUND != 0 THEN 0 ELSE C.APPROVAL END AS APPROVAL,
+				C.REFUND,
+				C.MEMO
 		FROM CORPORATECARD_INFO C
-				 LEFT OUTER JOIN USER_INFO U ON C.USER_ID = U.USER_ID
-				 LEFT OUTER JOIN SALES_INQUIRY_INFO S ON C.SALES_NUM = S.SALES_NUM
+		<if test='SALES != Null and !SALES.equals("")'>
+			INNER JOIN SALES_INQUIRY_INFO S ON C.SALES_NUM = CONCAT(S.SALES_NUM, '-', S.REVISION)
+		</if>
+		LEFT OUTER JOIN USER_INFO U ON C.USER_ID = U.USER_ID
 		WHERE CONVERT(CHAR(10), CONVERT(DATETIME, C.USE_DATE), 20) BETWEEN #{START} AND #{END}
-		  AND C.SALES_NUM LIKE '%' + #{SALES} + '%'
-		  AND U.USER_NM LIKE '%' + #{USER_NM} + '%'
-		  AND U.DEPT_CD LIKE '%' + #{DEPT} + '%'
+		AND U.USER_NM LIKE '%' + #{USER_NM} + '%'
+		AND U.DEPT_CD LIKE '%' + #{DEPT} + '%'
+		<choose>
+			<when test='SALES != Null and !SALES.equals("")'>
+				AND C.SALES_NUM LIKE '%' + #{SALES} + '%'
+			</when>
+			<otherwise>
+				AND (C.SALES_NUM = '' OR C.SALES_NUM IS NULL)
+			</otherwise>
+		</choose>
 		ORDER BY C.USE_DATE;
 	</select>
 
@@ -32,6 +42,17 @@
 	</select>
 
 	<select id="co1200SelApproval" parameterType="map" resultType="int">
-		EXEC CO1200_SEL_APPROVAL #{START}, #{END}, #{SALES}
+		SELECT SUM(C.APPROVAL) AS APPROVAL
+		FROM CORPORATECARD_INFO C
+		WHERE CONVERT(CHAR(10), CONVERT(DATETIME, C.USE_DATE), 20) BETWEEN #{START} AND #{END}
+		<choose>
+			<when test='SALES != Null and !SALES.equals("")'>
+				AND C.SALES_NUM LIKE '%' + #{SALES} + '%'
+				GROUP BY C.SALES_NUM
+			</when>
+			 <otherwise>
+				 AND C.SALES_NUM LIKE ''
+			 </otherwise>
+		</choose>
 	</select>
 </mapper>
