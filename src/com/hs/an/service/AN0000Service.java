@@ -5,6 +5,7 @@ import com.hs.an.dto.HolidayPublicDto;
 import com.hs.an.dto.UserAndHolidayInfoDto;
 import com.hs.home.controller.UserInfo;
 import com.hs.home.service.HomeService;
+import org.jacorb.trading.constraint.StringValue;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -98,43 +99,49 @@ public class AN0000Service {
     }
 
     private void byYears(UserAndHolidayInfoDto item) {
+
+        logger.info("ID={}", item.getUSER_ID());
+
         Period period = Period.between(LocalDate.parse(item.getENTER_DT()), LocalDate.now());
         int years = period.getYears();
         int months = period.getMonths();
-        logger.info("ID={}", item.getUSER_ID());
+        int defaultHoliday = 15;
+        int standardYears = 3;
+        float holidayTotal;
+
         if (years < 1) {
             // 근속 1년 미만 대상자
-            int holidayTotal = months;
-            holidayRefresh(item, holidayTotal, years);
-        } else if (years < 3) {
+            holidayTotal = months;
+        } else if (years < standardYears) {
             // 근속 1년이상 3년 미만 대상자
-            int holidayTotal = 15;
-            holidayRefresh(item, holidayTotal, years);
-        } else if (years >= 3 && years % 2 == 1) {
+            holidayTotal = defaultHoliday;
+        } else if (years >= standardYears && years % 2 == 1) {
             // 근속 3년 이상이면서 연차 증가 대상자
-            int holidayTotal = 15 + (years / 2);
-            holidayRefresh(item, holidayTotal, years);
-        } else if (years >= 3 && years % 2 == 0) {
+            holidayTotal = defaultHoliday + (years / 2);
+        } else if (years >= standardYears && years % 2 == 0) {
             // 근속 3년 이상이면서 연차 미 증가 대상자
-            float holidayTotal = item.getHOLIDAY_TOTAL();
-            holidayRefresh(item, holidayTotal, years);
+            holidayTotal = item.getHOLIDAY_TOTAL();
         } else {
-            logger.info("byYears.else");
+            throw new RuntimeException("byYears.else");
         }
+        holidayRefresh(item, holidayTotal, years);
     }
 
     private void holidayRefresh(UserAndHolidayInfoDto item, float holidayTotal, int years) {
+
+        boolean check = (item.getHOLIDAY_DEDUCT() == 0);
+
         if (years < 1) { // 근속연수 1년 미만
-            if (item.getHOLIDAY_DEDUCT().equals("0") || item.getHOLIDAY_DEDUCT().equals("0.0")) {
-                float holidayRemainder = item.getHOLIDAY_REMAIN() + 1;
+            if (check) {
+                float increaseDay = holidayTotal - (item.getHOLIDAY_USE() + item.getHOLIDAY_REMAIN());
+                float holidayRemainder = item.getHOLIDAY_REMAIN() + increaseDay;
                 homeService.holidayInfoUpdate(item.getUSER_ID(), holidayTotal, item.getHOLIDAY_USE(), holidayRemainder, (float) 0);
             } else {
-                float holidayUse = item.getHOLIDAY_USE();
-                float holidayDeduct = item.getHOLIDAY_DEDUCT();
-                homeService.holidayInfoUpdate(item.getUSER_ID(), holidayTotal, holidayUse + holidayDeduct, item.getHOLIDAY_REMAIN(), (float) 0);
+                float useDeduct = item.getHOLIDAY_USE() + item.getHOLIDAY_DEDUCT();
+                homeService.holidayInfoUpdate(item.getUSER_ID(), holidayTotal, holidayTotal, item.getHOLIDAY_REMAIN(), useDeduct - holidayTotal);
             }
         } else { // 근속연수 1년 이상
-            if (item.getHOLIDAY_DEDUCT().equals("0") || item.getHOLIDAY_DEDUCT().equals("0.0")) {
+            if (check) {
                 homeService.holidayInfoUpdate(item.getUSER_ID(), holidayTotal, (float) 0, holidayTotal, (float) 0);
             } else {
                 float holidayDeduct = item.getHOLIDAY_DEDUCT();
@@ -142,7 +149,6 @@ public class AN0000Service {
             }
         }
     }
-
 
     /**
      * 공휴일 조회(12개월) 및 저장
