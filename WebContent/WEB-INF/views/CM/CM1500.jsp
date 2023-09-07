@@ -299,6 +299,10 @@
 			if(e.key === "Enter") searchGridDataHead();
 		});
 
+		$("#pop02_txt01_USER_NM").keypress((e) => {
+			if(e.key === "Enter") searchGridDataUser();
+		});
+
 		var cardNum = document.getElementById('pop01_txt01_CARD_NUM');
 		cardNum.onkeyup = function(event) {
 			event = event || window.event;
