@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Transactional
 @Service("co1100Service")
 public class CO1100Service {
 
@@ -37,7 +38,6 @@ public class CO1100Service {
 		return sqlSession.selectList("co1100Mapper.co1100SelProject", param);
 	}
 
-	@Transactional
 	public Map<String, Object> co1100Save(Map<String, Object> param, UserInfo user) {
 
 		Map<String, Object> rtnMap = new HashMap<>();
@@ -55,6 +55,9 @@ public class CO1100Service {
 		return rtnMap;
 	}
 
+	/**
+	 * 법인카드관리 -> 개인별 사용내역 등록에서 저장
+	 */
 	public int co1100MergeData(Map<String, Object> param, UserInfo user) {
 		int resultCnt = 0;
 		List<Map<String, Object>> target = new ArrayList<>();
@@ -66,7 +69,7 @@ public class CO1100Service {
 					data.get(i).put("UPT_ID", user.getUSER_ID());
 					Map<String, Object> dataMap = data.get(i);
 
-					if (dataMap.get("action").equals("U")) {
+					if (dataMap.get("action").equals("U") && !(dataMap.get("BREAKDOWN").toString().trim()).equals("")) {
 						target.add(dataMap);
 						resultCnt++;
 					}
