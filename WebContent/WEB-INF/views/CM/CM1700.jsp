@@ -278,7 +278,7 @@
 		var langTap2;
 		var langTap3;
 		var langTap4;
-	
+
 		/* Document가 로드되었을 때 실행되는 코드 */
 		$(document).ready(function() {
 			function init() {
@@ -396,11 +396,11 @@
 				},
 				colNames: langTap1,
 				colModel: [
-					{name: 'SESSION_ID'			, align:'center'	, width: '40%'},
-					{name: 'DEPT_NAME'			, align:'center'	, width: '10%'},
-					{name: 'USER_NAME'			, align:'center'	, width: '10%'},
-					{name: 'CONNECT_IP'			, align:'center'	, width: '15%'},
-					{name: 'CONNECT_START_DT'	, align:'center'	, width: '15%'}
+					{ name: 'SESSION_ID'		, align:'center'	, width: '40%' },
+					{ name: 'DEPT_NAME'			, align:'center'	, width: '10%' },
+					{ name: 'USER_NAME'			, align:'center'	, width: '10%' },
+					{ name: 'CONNECT_IP'		, align:'center'	, width: '15%' },
+					{ name: 'CONNECT_START_DT'	, align:'center'	, width: '15%' }
 				],
 				autowidth: false,
 				shrinkToFit: false,
@@ -417,11 +417,11 @@
 				},
 				colNames: langTap2,
 				colModel: [
-					{name: 'MENU_NAME'		, align:'center'   	, width: '40%'},
-					{name: 'DEPT_NAME'	, align:'center'   	, width: '10%'},
-					{name: 'USER_NAME'	, align:'center'   	, width: '10%'},
-					{name: 'USER_IP'		, align:'center'   	, width: '15%'},
-					{name: 'PROCESS_DT'	, align:'center'   	, width: '15%'}
+					{ name: 'MENU_NAME'	  , align:'center'  , width: '40%' },
+					{ name: 'DEPT_NAME'	  , align:'center'  , width: '10%' },
+					{ name: 'USER_NAME'	  , align:'center'  , width: '10%' },
+					{ name: 'USER_IP'	  , align:'center'  , width: '15%' },
+					{ name: 'PROCESS_DT'  , align:'center'  , width: '15%' }
 				],
 			    autowidth: false,
 			    shrinkToFit: false,
@@ -438,11 +438,11 @@
 				},
 				colNames: langTap3,
 				colModel: [
-					{name: 'EVNT_NM'	, align:'center'	, width: '40%'},
-					{name: 'DEPT_NAME'	, align:'center' 	, width: '15%'},
-					{name: 'USER_NAME'	, align:'center' 	, width: '15%'},
-					{name: 'USER_IP'	, align:'center' 	, width: '15%'},
-					{name: 'PROCESS_DT'	, align:'center' 	, width: '15%'}
+					{ name: 'EVNT_NM'	  , align:'center'	, width: '40%' },
+					{ name: 'DEPT_NAME'	  , align:'center' 	, width: '15%' },
+					{ name: 'USER_NAME'	  , align:'center' 	, width: '15%' },
+					{ name: 'USER_IP'	  , align:'center' 	, width: '15%' },
+					{ name: 'PROCESS_DT'  , align:'center' 	, width: '15%' }
 				],
 				autowidth: false,
 				shrinkToFit: false,
@@ -459,21 +459,21 @@
 				},
 				colNames: langTap4,
 				colModel: [
-					{name:'SYS_ID'		, align: 'center'	, width: '7%'	, hidden: false},
-					{name:'PROCESS_DT'	, align: 'center'	, width: '13%'	, hidden: false},
-					{name:'REG_USER'	, align: 'center'	, width: '7%'	, hidden: false},
-					{name:'REG_IP'		, align: 'center'	, width: '13%'	, hidden: false},
-					{name:'EVNT_NM'		, align: 'center'	, width: '12%'	, hidden: false},
-					{name:'EVNT_SVRY'	, align: 'center'	, width: '0%'	, hidden: true},
-					{name:'HOST_NM'		, align: 'center'	, width: '13%'	, hidden: false},
-					{name:'EQ_ORG_NO'	, align: 'center'	, width: '0%'	, hidden: true},
-					{name:'USER_ID'		, align: 'center'	, width: '5%'	, hidden: false},
-					{name:'USER_NM'		, align: 'center'	, width: '5%'	, hidden: false},
-					{name:'DEPT_NM'		, align: 'center'	, width: '10%'	, hidden: false},
-					{name:'GRADE'		, align: 'center'	, width: '5%'	, hidden: false},
-					{name:'ENTER_DT'	, align: 'center'	, width: '10%'	, hidden: false}
+					{ name:'SYS_ID'		, align: 'center'	, width: '6%'	, hidden: false },
+					{ name:'PROCESS_DT'	, align: 'center'	, width: '12%'	, hidden: false },
+					{ name:'REG_USER'	, align: 'center'	, width: '8%'	, hidden: false },
+					{ name:'REG_IP'		, align: 'center'	, width: '12%'	, hidden: false },
+					{ name:'EVNT_NM'	, align: 'center'	, width: '12%'	, hidden: false },
+					{ name:'EVNT_SVRY'	, align: 'center'	, width: '0%'	, hidden: true  },
+					{ name:'HOST_NM'	, align: 'center'	, width: '12%'	, hidden: false },
+					{ name:'EQ_ORG_NO'	, align: 'center'	, width: '0%'	, hidden: true  },
+					{ name:'USER_ID'	, align: 'center'	, width: '8%'	, hidden: false },
+					{ name:'USER_NM'	, align: 'center'	, width: '8%'	, hidden: false },
+					{ name:'DEPT_NM'	, align: 'center'	, width: '10%'	, hidden: false },
+					{ name:'GRADE'		, align: 'center'	, width: '5%'	, hidden: false },
+					{ name:'ENTER_DT'	, align: 'center'	, width: '10%'	, hidden: false }
 				],
-				autowidth: false,
+				autowidth: true,
 				shrinkToFit: false,
 				rowNum : 500,
 				scroll : true
