@@ -27,14 +27,6 @@ public class CO1100Controller {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CO1100Controller.class);
 	
-
-	/**
-   	 * 메소드 설명 : 판매품의서관리 페이지로 이동
-   	 * -------------------------------------------------------------------
-   	 * @param	Locale	locale 	
-   	 * @param	Model 	model 	
-   	 * @return	String 	result	판매품의서관리 페이지ID
-   	 */
 	@RequestMapping(value = "/co1100")
 	public String co1100() {
 		return "CO/CO1100";
@@ -47,12 +39,6 @@ public class CO1100Controller {
 		return "CO/CO1100Project";
 	}
 
-	/**
-   	 * 메소드 설명 : 휴가사용현황 조회
-   	 * -------------------------------------------------------------------
-   	 * @param	Map		param	검색조건 
-   	 * @return	List	list	연차신청 목록
-   	 */
 	@RequestMapping(value = "/co1100Sel")
 	public @ResponseBody List<Map<String, Object>> CO1100_SEL(@RequestBody Map<String, Object> param, HttpSession session) {
 
