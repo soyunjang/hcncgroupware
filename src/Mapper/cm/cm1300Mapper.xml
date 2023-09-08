@@ -6,32 +6,67 @@
 <mapper namespace="cm1300Mapper">
 	<!-- Head Table 조회 -->
 	<select id="cm1300HeadSel" parameterType="map" resultType="map">
-		EXEC CM1300_HEAD_SEL #{AUTH_TYPE_CD}, #{USE_YN}
+		SELECT A.AUTH_TYPE_CD,
+			   A.AUTH_TYPE_NAME,
+			   (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD LIKE 'USE' AND SYS_ITEM_CD = A.USE_YN) AS USE_YN,
+			   A.MEMO
+		FROM AUTH_TYPE_HEAD A
+		WHERE A.AUTH_TYPE_CD LIKE '%' + #{AUTH_TYPE_CD} + '%'
+		  AND A.USE_YN LIKE '%' + #{USE_YN} + '%';
 	</select>
 	
 	<!-- Detail Table 조회 -->
 	<select id="cm1300DetailSel" parameterType="map" resultType="map">
-		EXEC CM1300_DETAIL_SEL #{AUTH_TYPE_CD}, #{USE_YN}
+		SELECT A.AUTH_TYPE_CD,
+			   A.MENU_ID,
+			   A.MENU_NAME,
+			   A.BUTTON_TYPE_CD,
+			   A.BUTTON_TYPE_NAME,
+			   (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD LIKE 'USE' AND SYS_ITEM_CD = A.USE_YN) AS USE_YN,
+			   A.MEMO
+		FROM AUTH_TYPE_DETAIL A
+		WHERE A.AUTH_TYPE_CD = #{AUTH_TYPE_CD}
+		  AND A.USE_YN LIKE '%' +#{USE_YN} + '%';
+
 	</select>
 	
 	<!-- Head Table Cnt 조회 -->
 	<select id="cm1300HeadCnt" parameterType="map" resultType="map">
-		EXEC CM1300_HEAD_CNT #{AUTH_TYPE_CD}
+		SELECT COUNT(*) AS CNT
+		FROM AUTH_TYPE_HEAD
+		WHERE AUTH_TYPE_CD LIKE #{AUTH_TYPE_CD};
 	</select>
 	
 	<!-- Detail Table Cnt 조회 -->
 	<select id="cm1300DetailCnt" parameterType="map" resultType="map">
-		EXEC CM1300_DETAIL_CNT #{AUTH_TYPE_CD}, #{MENU_ID}, #{BUTTON_TYPE_CD}
+		SELECT COUNT(*) AS CNT
+		FROM AUTH_TYPE_DETAIL
+		WHERE AUTH_TYPE_CD LIKE #{AUTH_TYPE_CD}
+		  AND MENU_ID LIKE #{MENU_ID}
+		  AND BUTTON_TYPE_CD LIKE #{BUTTON_TYPE_CD};
 	</select>
     
     <!-- 팝업 Menu Table 조회 -->
 	<select id="cm1300PopMenuSel" parameterType="map" resultType="map">
-		EXEC CM1300_POP_MENU_SEL #{MENU_NAME}, #{USE_YN}
+		SELECT MENU_ID,
+			   MENU_NAME
+		FROM MENU_INFO
+		WHERE MENU_NAME LIKE '%' + #{MENU_NAME} + '%'
+		  AND USE_YN = #{USE_YN};
 	</select>
     
     <!-- 팝업 Button Table 조회 -->
 	<select id="cm1300PopButtonSel" parameterType="map" resultType="map">
-		EXEC CM1300_POP_BUTTON_SEL #{AUTH_TYPE_CD}, #{MENU_ID}, #{USE_YN}
+		SELECT SYS_ITEM_CD AS BUTTON_TYPE_CD,
+			   SYS_ITEM_NAME AS BUTTON_TYPE_NAME
+		FROM SYSCODE_DETAIL
+		WHERE SYS_CLASS_CD = 'BUTTON'
+		  AND USE_YN = 'Y'
+		  AND SYS_ITEM_CD NOT IN (SELECT BUTTON_TYPE_CD
+								  FROM AUTH_TYPE_DETAIL
+								  WHERE AUTH_TYPE_CD = #{AUTH_TYPE_CD}
+									AND MENU_ID = #{MENU_ID}
+									AND USE_YN = #{USE_YN});
 	</select>
     
     <!-- Head Table 저장 -->

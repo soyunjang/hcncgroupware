@@ -30,17 +30,31 @@
 	
 	<!-- 사번 조회 팝업 Table 조회 -->
 	<select id="cm1200DeptSel" parameterType="map" resultType="map">
-		EXEC CM1200_DEPT_SEL #{DEPT_NM}
+		SELECT DISTINCT D.DEPT_PID,
+						(SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD LIKE 'DEPT' AND SYS_ITEM_CD = D.DEPT_PID) AS DEPT_PNM,
+					    D.DEPT_ID,
+						(SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD LIKE 'DEPT' AND SYS_ITEM_CD = D.DEPT_ID) AS DEPT_NM,
+		FROM DEPT_INFO D LEFT OUTER JOIN SYSCODE_DETAIL S ON S.SYS_CLASS_CD = 'DEPT'
+			AND S.SYS_ITEM_CD = D.DEPT_ID
+			AND S.USE_YN LIKE 'Y'
+		WHERE S.SYS_ITEM_NAME LIKE '%' + #{DEPT_NM} + '%'
+		  AND D.USE_YN LIKE 'Y';
 	</select>
 	
 	<!-- 권한 조회 팝업 Table 조회 -->
 	<select id="cm1200AuthSel" parameterType="map" resultType="map">
-		EXEC CM1200_AUTH_SEL #{AUTH_TYPE_CD}
+		SELECT AUTH_TYPE_CD,
+			   AUTH_TYPE_NAME
+		FROM AUTH_TYPE_HEAD
+		WHERE AUTH_TYPE_CD LIKE '%' + #{AUTH_TYPE_CD} + '%'
+		  AND USE_YN = 'Y';
 	</select>
 	
 	<!-- 사용자ID 중복 확인 -->
 	<select id="cm1200Verification" parameterType="map" resultType="map">
-		EXEC CM1200_DETAIL_CNT #{USER_ID}
+		SELECT COUNT(*) AS USER_ID
+		FROM USER_INFO
+		WHERE USER_ID LIKE #{USER_ID};
 	</select>
 	
 	<!-- Table 저장 -->

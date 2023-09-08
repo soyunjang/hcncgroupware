@@ -388,95 +388,95 @@
 		function setGrid(){
 			var gridHeight = getGridHeight();
 			$("#table1").jqGrid({
-				mtype: 'POST'
-				, datatype: 'local'
-				, height : gridHeight
-				, jsonReader: {
+				mtype: 'POST',
+				datatype: 'local',
+				height : gridHeight,
+				jsonReader: {
 					repeatitems: false
-				}
-				, colNames: langTap1
-				, colModel: [
-					{name: 'SESSION_ID'			, align:'left'		, width: '40%'}
-					, {name: 'DEPT_NAME'		, align:'left'		, width: '10%'}
-					, {name: 'USER_NAME'		, align:'left'		, width: '10%'}
-					, {name: 'CONNECT_IP'		, align:'left'		, width: '15%'}
-					, {name: 'CONNECT_START_DT'	, align:'center'	, width: '15%'}
-				]
-				, autowidth: false
-				, shrinkToFit: false
-				, rowNum : 500
-				, scroll : true
+				},
+				colNames: langTap1,
+				colModel: [
+					{name: 'SESSION_ID'			, align:'center'	, width: '40%'},
+					{name: 'DEPT_NAME'			, align:'center'	, width: '10%'},
+					{name: 'USER_NAME'			, align:'center'	, width: '10%'},
+					{name: 'CONNECT_IP'			, align:'center'	, width: '15%'},
+					{name: 'CONNECT_START_DT'	, align:'center'	, width: '15%'}
+				],
+				autowidth: false,
+				shrinkToFit: false,
+				rowNum : 500,
+				scroll : true
 			});
 			
 		   $("#table2").jqGrid({
-				mtype: 'POST'
-				, datatype: 'local'
-				, height : gridHeight
-				, jsonReader: {
+				mtype: 'POST',
+				datatype: 'local',
+				height : gridHeight,
+				jsonReader: {
 					repeatitems: false
-				}
-				, colNames: langTap2
-				, colModel: [
-					{name: 'MENU_NAME'		, align:'left' 		, width: '40%'}
-					, {name: 'DEPT_NAME'	, align:'left' 		, width: '10%'}
-					, {name: 'USER_NAME'	, align:'left' 		, width: '10%'}
-					, {name: 'USER_IP'		, align:'left' 		, width: '15%'}
-					, {name: 'PROCESS_DT'	, align:'center' 	, width: '15%'}
-				]
-				, autowidth: false
-				, shrinkToFit: false
-				, rowNum : 500
-				, scroll : true
+				},
+				colNames: langTap2,
+				colModel: [
+					{name: 'MENU_NAME'		, align:'center'   	, width: '40%'},
+					{name: 'DEPT_NAME'	, align:'center'   	, width: '10%'},
+					{name: 'USER_NAME'	, align:'center'   	, width: '10%'},
+					{name: 'USER_IP'		, align:'center'   	, width: '15%'},
+					{name: 'PROCESS_DT'	, align:'center'   	, width: '15%'}
+				],
+			    autowidth: false,
+			    shrinkToFit: false,
+			    rowNum : 500,
+			    scroll : true
 			});
 		
 			 $("#table3").jqGrid({
-				mtype: 'POST'
-				, datatype: 'local'
-				, height : gridHeight
-				, jsonReader: {
+				mtype: 'POST',
+				datatype: 'local',
+				height : gridHeight,
+				jsonReader: {
 					repeatitems: false
-				}
-				, colNames: langTap3
-				, colModel: [
-					{name: 'EVNT_NM'		, align:'left'		, width: '40%'}
-					, {name: 'DEPT_NAME'	, align:'left' 		, width: '10%'}
-					, {name: 'USER_NAME'	, align:'left' 		, width: '10%'}
-					, {name: 'USER_IP'		, align:'left' 		, width: '15%'}
-					, {name: 'PROCESS_DT'	, align:'center' 	, width: '15%'}
-				]
-				, autowidth: false
-				, shrinkToFit: false
-				, rowNum : 500
-				, scroll : true
+				},
+				colNames: langTap3,
+				colModel: [
+					{name: 'EVNT_NM'	, align:'center'	, width: '40%'},
+					{name: 'DEPT_NAME'	, align:'center' 	, width: '15%'},
+					{name: 'USER_NAME'	, align:'center' 	, width: '15%'},
+					{name: 'USER_IP'	, align:'center' 	, width: '15%'},
+					{name: 'PROCESS_DT'	, align:'center' 	, width: '15%'}
+				],
+				autowidth: false,
+				shrinkToFit: false,
+				rowNum : 500,
+				scroll : true
 			});  
 
 			 $("#table4").jqGrid({
-				mtype: 'POST'
-				, datatype: 'local'
-				, height : gridHeight
-				, jsonReader: {
+				mtype: 'POST',
+				datatype: 'local',
+				height : gridHeight,
+				jsonReader: {
 					repeatitems: false
-				}
-				, colNames: langTap4
-				, colModel: [
-					{name: 'SYS_ID'			, align: 'center'	, width: '5%'	, hidden: false}
-					, {name:'PROCESS_DT'	, align: 'center'	, width: '15%'	, hidden: false}
-					, {name:'REG_USER'		, align: 'left'		, width: '8%'	, hidden: false}
-					, {name:'REG_IP'		, align: 'left'		, width: '10%'	, hidden: false}
-					, {name:'EVNT_NM'		, align: 'left'		, width: '10%'	, hidden: false}
-					, {name:'EVNT_SVRY'		, align: 'center'	, width: '7%'	, hidden: false}
-					, {name:'HOST_NM'		, align: 'left'		, width: '7%'	, hidden: false}
-					, {name:'EQ_ORG_NO'		, align: 'left'		, width: '8%'	, hidden: true}
-					, {name:'USER_ID'		, align: 'left'		, width: '8%'	, hidden: false}
-					, {name:'USER_NM'		, align: 'center'	, width: '10%'	, hidden: false}
-					, {name:'DEPT_NM'		, align: 'left'		, width: '10%'	, hidden: false}
-					, {name:'GRADE'			, align: 'left'		, width: '8%'	, hidden: false}
-					, {name:'ENTER_DT'		, align: 'center'	, width: '10%'	, hidden: false}
-				]
-				, autowidth: true				
-				, shrinkToFit: true
-				, rowNum : 500
-				, scroll : true
+				},
+				colNames: langTap4,
+				colModel: [
+					{name:'SYS_ID'		, align: 'center'	, width: '7%'	, hidden: false},
+					{name:'PROCESS_DT'	, align: 'center'	, width: '13%'	, hidden: false},
+					{name:'REG_USER'	, align: 'center'	, width: '7%'	, hidden: false},
+					{name:'REG_IP'		, align: 'center'	, width: '13%'	, hidden: false},
+					{name:'EVNT_NM'		, align: 'center'	, width: '12%'	, hidden: false},
+					{name:'EVNT_SVRY'	, align: 'center'	, width: '0%'	, hidden: true},
+					{name:'HOST_NM'		, align: 'center'	, width: '13%'	, hidden: false},
+					{name:'EQ_ORG_NO'	, align: 'center'	, width: '0%'	, hidden: true},
+					{name:'USER_ID'		, align: 'center'	, width: '5%'	, hidden: false},
+					{name:'USER_NM'		, align: 'center'	, width: '5%'	, hidden: false},
+					{name:'DEPT_NM'		, align: 'center'	, width: '10%'	, hidden: false},
+					{name:'GRADE'		, align: 'center'	, width: '5%'	, hidden: false},
+					{name:'ENTER_DT'	, align: 'center'	, width: '10%'	, hidden: false}
+				],
+				autowidth: false,
+				shrinkToFit: false,
+				rowNum : 500,
+				scroll : true
 			});  
 		 
 		 	searchGridData();

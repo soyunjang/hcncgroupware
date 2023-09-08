@@ -6,22 +6,40 @@
 <mapper namespace="cm1000Mapper">
 	<!-- Head Table 조회 -->
     <select id="cm1000HeadSel" parameterType="map" resultType="map">
-		EXEC CM1000_HEAD_SEL #{SYS_CLASS_CD}, #{SYS_CLASS_NAME}, #{USE_YN}
+		SELECT S.SYS_CLASS_CD,
+               S.SYS_CLASS_NAME,
+               (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD LIKE 'USE' AND SYS_ITEM_CD = S.USE_YN) AS USE_YN,
+               S.MEMO
+        FROM SYSCODE_HEAD S
+        WHERE S.SYS_CLASS_CD LIKE '%' + #{SYS_CLASS_CD} + '%'
+          AND S.SYS_CLASS_NAME LIKE '%' + #{SYS_CLASS_NAME} + '%'
+          AND USE_YN = #{USE_YN}
     </select>
     
     <!-- Detail Table 조회 -->
     <select id="cm1000DetailSel" parameterType="map" resultType="map">
-		EXEC CM1000_DETAIL_SEL #{SYS_CLASS_CD}, #{USE_YN}
+		SELECT S.SYS_CLASS_CD,
+               S.SYS_ITEM_CD,
+               S.SYS_ITEM_NAME,
+               (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD LIKE 'USE' AND SYS_ITEM_CD = S.USE_YN) AS USE_YN,
+               S.MEMO
+        FROM SYSCODE_DETAIL S
+        WHERE S.SYS_CLASS_CD = #{SYS_CLASS_CD};
     </select>
     
     <!-- Head Table Cnt 조회 -->
     <select id="cm1000HeadCnt" parameterType="map" resultType="map">
-		EXEC CM1000_HEAD_CNT #{SYS_CLASS_CD}
+        SELECT COUNT(SYS_CLASS_CD) AS CNT
+        FROM SYSCODE_HEAD
+        WHERE SYS_CLASS_CD = #{SYS_CLASS_CD};
     </select>
     
     <!-- Detail Table Cnt 조회 -->
     <select id="cm1000DetailCnt" parameterType="map" resultType="map">
-		EXEC CM1000_DETAIL_CNT #{SYS_CLASS_CD}, #{SYS_ITEM_CD}
+        SELECT COUNT(SYS_ITEM_CD) AS CNT
+        FROM SYSCODE_DETAIL
+        WHERE SYS_CLASS_CD = #{SYS_CLASS_CD}
+          AND SYS_ITEM_CD = #{SYS_ITEM_CD};
     </select>
     
     <!-- Head Table 저장 -->
@@ -33,8 +51,5 @@
     <update id="cm1000DetailSave" parameterType="map">
 		EXEC CM1000_DETAIL_SAVE #{SYS_CLASS_CD}, #{SYS_ITEM_CD}, #{SYS_ITEM_NAME}, #{USE_YN}, #{MEMO}, #{USER_ID}
     </update>
-    
-    <update id="cm1000HeadDel" parameterType="map">
-		EXEC CM1000_HEAD_DEL #{SYS_CLASS_CD}, #{USER_ID}
-    </update>
+
 </mapper>

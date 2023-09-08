@@ -6,21 +6,29 @@
 <mapper namespace="cm1100Mapper">
 	<!-- Table 조회 -->
 	<select id="cm1100Sel" parameterType="map" resultType="map">
-		EXEC CM1100_SEL #{DEPT_NM}
+		SELECT D.DEPT_PID,
+			   D.DEPT_ID,
+			   D.DEPT_NAME,
+			   D.DEPT_GROUP AS DEPT_GROUP_CD,
+			   (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD LIKE 'MGROUP' AND SYS_ITEM_CD = D.DEPT_GROUP) AS DEPT_GROUP,
+			   D.SORT_NO,
+			   (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD LIKE 'USE' AND SYS_ITEM_CD = D.USE_YN) AS USE_YN,
+			   D.MEMO
+		FROM DEPT_INFO D
+		WHERE D.DEPT_NAME LIKE '%' + #{DEPT_NM} + '%'
+		ORDER BY D.DEPT_ID, D.SORT_NO;
 	</select>
 	
 	<!-- 부서코드 중복 확인 -->
 	<select id="cm1100Verification" parameterType="map" resultType="map">
-		EXEC CM1100_DETAIL_CNT #{DEPT_ID}
+		SELECT COUNT(*) AS DEPT_ID
+		FROM DEPT_INFO
+		WHERE DEPT_ID LIKE #{DEPT_ID};
 	</select>
 	
 	<!-- Table 저장 -->
 	<update id="cm1100Save">
 		EXEC CM1100_SAVE #{DEPT_PID}, #{DEPT_ID}, #{DEPT_NM}, #{DEPT_GROUP}, #{SORT_NO}, #{USE_YN}, #{MEMO}, #{USER_ID}
 	</update>
-	
-	<!-- Table 삭제 -->
-	<update id="cm1100Del">
-		EXEC CM1100_DEL #{DEPT_ID}, #{USER_ID}
-	</update>
+
 </mapper>

@@ -6,7 +6,19 @@
 <mapper namespace="cm1600Mapper">
 	<!-- Table 조회 -->
     <select id="cm1600HeadSel" parameterType="map" resultType="map">
-		EXEC CM1600_SEL #{KOR_NM}, #{ENG_NM}, #{CHN_NM}
+        SELECT M.TYPE,
+               M.UNIQUE_ID,
+               M.KOR_NM,
+               M.ENG_NM,
+               M.CHN_NM,
+               M.SORT_NO,
+               (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD LIKE 'USE' AND SYS_ITEM_CD LIKE M.USE_YN) AS USE_YN,
+               M.MEMO
+        FROM MESSAGE_INFO M
+        WHERE M.KOR_NM LIKE '%' + #{KOR_NM} + '%'
+          AND M.ENG_NM LIKE '%' + #{ENG_NM} + '%'
+          AND M.CHN_NM LIKE '%' + #{CHN_NM} + '%'
+        ORDER BY M.TYPE, M.UNIQUE_ID, M.MEMO
     </select>
     
     <!-- Table 저장 -->

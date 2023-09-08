@@ -6,12 +6,29 @@
 <mapper namespace="cm1400Mapper">
 	<!-- Head Table 조회 -->
 	<select id="cm1400Sel" parameterType="map" resultType="map">
-		EXEC CM1400_SEL #{MENU_ID}, #{MENU_NAME}, #{MENU_GROUP}, #{PROG_ID}, #{PROG_PATH}, #{USE_YN}
+		SELECT M.MENU_PID,
+			   M.MENU_ID,
+			   M.MENU_NAME,
+			   (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD LIKE 'MGROUP' AND SYS_ITEM_CD = M.MENU_GROUP) AS MENU_GROUP,
+			   M.MENU_DES,
+			   M.PROG_ID,
+			   M.PROG_PATH,
+			   M.SORT_NO,
+			   (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD LIKE 'USE' AND SYS_ITEM_CD = M.USE_YN) AS USE_YN,
+			   M.MEMO
+		FROM MENU_INFO M
+		WHERE MENU_ID LIKE '%' + #{MENU_ID} + '%'
+		  AND MENU_NAME LIKE '%' + #{MENU_NAME} + '%'
+		  AND MENU_GROUP LIKE '%' + #{MENU_GROUP} + '%'
+		  AND PROG_ID LIKE '%' + #{PROG_ID} + '%'
+		  AND PROG_PATH LIKE '%' + #{PROG_PATH} + '%';
   	</select>		
  
     <!-- 메뉴ID 중복확인 -->
     <select id="cm1400Verification" parameterType="map" resultType="map">
-    	EXEC CM1400_CNT #{MENU_ID}
+		SELECT count(*) AS MENU_ID
+		FROM MENU_INFO
+		WHERE MENU_ID LIKE #{MENU_ID};
     </select>	
     
     <!-- Detail Table 저장 -->
