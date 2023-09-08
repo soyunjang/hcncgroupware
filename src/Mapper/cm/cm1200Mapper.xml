@@ -6,26 +6,27 @@
 <mapper namespace="cm1200Mapper">
 	<!-- Table 조회 -->
 	<select id="cm1200Sel" parameterType="map" resultType="map">
-		SELECT A.USER_ID,
-			   A.USER_NM,
-			   (SELECT DEPT_PID FROM DEPT_INFO WHERE DEPT_ID LIKE A.DEPT_CD) AS PDEPT_CD,
-			   (SELECT DEPT_NAME FROM DEPT_INFO WHERE DEPT_ID LIKE (SELECT DEPT_PID FROM DEPT_INFO WHERE DEPT_ID LIKE A.DEPT_CD)) AS PDEPT_NM,
-			   A.DEPT_CD,
-			   (SELECT DEPT_NAME FROM DEPT_INFO WHERE DEPT_ID LIKE A.DEPT_CD) AS DEPT_NM,
-			   A.GRADE_CD,
-			   (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_ITEM_CD LIKE A.GRADE_CD) AS GRADE_NM,
-			   A.ENTER_DT,
-			   A.BIRTHDAY,
-			   A.EMAIL,
-			   A.PHONE_NUM,
-			   (SELECT dbo.FN_COMMON_NM('USE', A.USE_YN)) AS USE_YN,
-			   A.AUTH_TYPE_CD,
-			   (SELECT AUTH_TYPE_NAME FROM AUTH_TYPE_HEAD WHERE AUTH_TYPE_CD = A.AUTH_TYPE_CD) AS AUTH_TYPE_NAME,
-			   A.MEMO
-		FROM USER_INFO A
-		WHERE A.USER_ID LIKE '%' + #{USER_ID} + '%'
-		  AND A.USER_NM LIKE '%' + #{USER_NM} + '%'
-		ORDER BY A.USER_NM;
+		SELECT U.USER_ID,
+		       U.USER_NUM,
+			   U.USER_NM,
+			   (SELECT DEPT_PID FROM DEPT_INFO WHERE DEPT_ID LIKE U.DEPT_CD) AS PDEPT_CD,
+			   (SELECT DEPT_NAME FROM DEPT_INFO WHERE DEPT_ID LIKE (SELECT DEPT_PID FROM DEPT_INFO WHERE DEPT_ID LIKE U.DEPT_CD)) AS PDEPT_NM,
+			   U.DEPT_CD,
+			   (SELECT DEPT_NAME FROM DEPT_INFO WHERE DEPT_ID LIKE U.DEPT_CD) AS DEPT_NM,
+			   U.GRADE_CD,
+			   (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_ITEM_CD LIKE U.GRADE_CD) AS GRADE_NM,
+			   U.ENTER_DT,
+			   U.BIRTHDAY,
+			   U.EMAIL,
+			   U.PHONE_NUM,
+			   (SELECT dbo.FN_COMMON_NM('USE', U.USE_YN)) AS USE_YN,
+			   U.AUTH_TYPE_CD,
+			   (SELECT AUTH_TYPE_NAME FROM AUTH_TYPE_HEAD WHERE AUTH_TYPE_CD = U.AUTH_TYPE_CD) AS AUTH_TYPE_NAME,
+			   U.MEMO
+		FROM USER_INFO U
+		WHERE U.USER_ID LIKE '%' + #{USER_ID} + '%'
+		  AND U.USER_NM LIKE '%' + #{USER_NM} + '%'
+		ORDER BY U.USER_NM;
 	</select>
 	
 	<!-- 사번 조회 팝업 Table 조회 -->
@@ -33,7 +34,7 @@
 		SELECT DISTINCT D.DEPT_PID,
 						(SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD LIKE 'DEPT' AND SYS_ITEM_CD = D.DEPT_PID) AS DEPT_PNM,
 					    D.DEPT_ID,
-						(SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD LIKE 'DEPT' AND SYS_ITEM_CD = D.DEPT_ID) AS DEPT_NM,
+						(SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD LIKE 'DEPT' AND SYS_ITEM_CD = D.DEPT_ID) AS DEPT_NM
 		FROM DEPT_INFO D LEFT OUTER JOIN SYSCODE_DETAIL S ON S.SYS_CLASS_CD = 'DEPT'
 			AND S.SYS_ITEM_CD = D.DEPT_ID
 			AND S.USE_YN LIKE 'Y'
@@ -52,14 +53,48 @@
 	
 	<!-- 사용자ID 중복 확인 -->
 	<select id="cm1200Verification" parameterType="map" resultType="map">
-		SELECT COUNT(*) AS USER_ID
+		SELECT
+		<if test='USER_ID != Null and !USER_ID.equals("")'>
+		    COUNT(*) AS USER_ID
+		</if>
+		<if test='USER_NUM != Null and !USER_NUM.equals("")'>
+		    COUNT(*) AS USER_NUM
+		</if>
 		FROM USER_INFO
-		WHERE USER_ID LIKE #{USER_ID};
+		WHERE
+		<if test='USER_ID != Null and !USER_ID.equals("")'>
+			USER_ID LIKE #{USER_ID};
+		</if>
+		<if test='USER_NUM != Null and !USER_NUM.equals("")'>
+			USER_NUM LIKE #{USER_NUM};
+		</if>
 	</select>
 	
 	<!-- Table 저장 -->
-	<update id="cm1200Save" parameterType="map">
-		EXEC CM1200_SAVE #{USER_ID}, #{USER_NM}, #{PDEPT_CD}, #{DEPT_CD}, #{GRADE_CD}, #{ENTER_DT}, #{AUTH_TYPE_CD}, #{USE_YN}, #{EMAIL}, #{PHONE_NUM}, #{BIRTHDAY}, #{MEMO}, #{REG_USERID}
+	<insert id="cm1200Save" parameterType="map">
+		INSERT USER_INFO (USER_ID, USER_NUM,USER_NM, PDEPT_CD, DEPT_CD, GRADE_CD, ENTER_DT,
+		    AUTH_TYPE_CD, USE_YN, EMAIL, PHONE_NUM, BIRTHDAY, MEMO, REG_ID, REG_DT)
+		VALUES (#{USER_ID}, #{USER_NUM}, #{USER_NM}, #{PDEPT_CD}, #{DEPT_CD}, #{GRADE_CD}, #{ENTER_DT},
+				#{AUTH_TYPE_CD}, #{USE_YN}, #{EMAIL}, #{PHONE_NUM}, #{BIRTHDAY}, #{MEMO}, #{REG_USERID},
+				CONVERT(VARCHAR(19), getdate(), 121));
+	</insert>
+
+	<update id="cm1200Update" parameterType="map">
+		UPDATE USER_INFO SET USER_NM      = #{USER_NM},
+		                     USER_NUM     = #{USER_NUM},
+							 PDEPT_CD     = #{PDEPT_CD},
+							 DEPT_CD      = #{DEPT_CD},
+							 GRADE_CD     = #{GRADE_CD},
+							 ENTER_DT     = #{ENTER_DT},
+							 AUTH_TYPE_CD = #{AUTH_TYPE_CD},
+							 USE_YN       = #{USE_YN},
+							 EMAIL        = #{EMAIL},
+							 PHONE_NUM    = #{PHONE_NUM},
+							 BIRTHDAY     = #{BIRTHDAY},
+							 MEMO         = #{MEMO},
+							 UPT_ID       = #{REG_USERID},
+							 UPT_DT       = CONVERT(VARCHAR(19), GETDATE(), 121)
+		                 WHERE USER_ID LIKE #{USER_ID}
 	</update>
 
 	<!-- 사용자 추가 시 TABLE HOLIDAY_INFO에 추가 -->

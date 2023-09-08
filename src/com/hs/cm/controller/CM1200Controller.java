@@ -85,9 +85,8 @@ public class CM1200Controller {
    	 */
 	@RequestMapping(value = "/cm1200Verification")
 	public @ResponseBody List<Map<String, Object>> cm1200Varification(@RequestBody Map<String, Object> param){
-		
-		List<Map<String, Object>> list = cm1200Service.cm1200Verification(param);	
-		return list;
+
+		return cm1200Service.cm1200Verification(param);
 	}
 	
 	/**
@@ -100,8 +99,8 @@ public class CM1200Controller {
 	@RequestMapping(value = "/cm1200Save")
 	public @ResponseBody Map<String, Object> CM1200_SAVE(@RequestBody Map<String, Object> param, HttpSession session) {
 		
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
-		
+		Map<String, Object> rtnMap = new HashMap<>();
+
 		try {
 			rtnMap = cm1200Service.cm1200Save(param, session);
 		}catch(Exception e) {

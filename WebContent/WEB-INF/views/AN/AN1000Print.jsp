@@ -297,7 +297,7 @@
 				<td class="common-td"><span class="common-text">소속</span></td>
 	            <td class="common-td"><span class="common-text2">${HolidayPrintInfo.DEPT_NM}</span></td>
 				<td class="common-td"><span class="common-text">사번</span></td>
-	            <td class="common-td"></td>
+	            <td class="common-td"><span>${HolidayPrintInfo.USER_NUM}</span></td>
 	        </tr>
 	        <tr class="common-tr1">
 	            <td><span class="common-text">성명</span></td>

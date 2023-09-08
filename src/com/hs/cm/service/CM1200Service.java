@@ -73,13 +73,12 @@ public class CM1200Service {
 	 * @return List 	list 중복 갯수
 	 */
 	public List<Map<String, Object>> cm1200Verification(Map<String, Object> param){
-		
-		List<Map<String, Object>> rList = sqlSession.selectList("cm1200Mapper.cm1200Verification", param);
-		return rList;
+
+		return sqlSession.selectList("cm1200Mapper.cm1200Verification", param);
 	}
 	
 	/**
-	 * 메소드 설명 : 사용자정보 저장
+	 * 메소드 설명 : 사용자정보 저장 및 수정
 	 * -------------------------------------------------------------------
 	 * 
 	 * @param Map 			param 추가할 정보(사용자ID/비밀번호/부서코드/권한코드/사용유무/비고)
@@ -111,11 +110,11 @@ public class CM1200Service {
 					logger.debug("CM1200Service > CHANGEAHTU :: {}", param);
 					sqlSession.insert("commonMapper.insertAuthChange", param);
 				}
+				sqlSession.update("cm1200Mapper.cm1200Update", param);
 			}
-			
-			sqlSession.update("cm1200Mapper.cm1200Save", param);
 
 			if (param.get("ACTION").equals("C")) {
+				sqlSession.insert("cm1200Mapper.cm1200Save", param);
 				sqlSession.insert("cm1200SaveHolidayInfo", param);
 			}
 		}catch(Exception e) {
