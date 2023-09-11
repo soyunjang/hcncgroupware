@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.*;
 
@@ -36,21 +35,27 @@ public class CO1000Service {
 	 * @param Map param 검색조건 (파일명)
 	 * @return List list 법인카드 사용현황 목록
 	 */
-	public List<Map<String, Object>> co1000SelTemp(Map<String, Object> param, HttpSession session) {
-
-		List<Map<String, Object>> rList = sqlSession.selectList("co1000Mapper.co1000SelTemp", param);
-
-		return rList;
+	public List<Map<String, Object>> co1000SelTemp(Map<String, Object> param) {
+		return sqlSession.selectList("co1000Mapper.co1000SelTemp", param);
 	}
 
-	private String getFileType(String fileName) {
-		// fileName을 . 으로 토튼을 설정하면 가장 뒤에 토튼이 확장자가 된다.
-		StringTokenizer stFileName = new StringTokenizer(fileName, ".");
-		String fileType = "";
-		while (stFileName.hasMoreTokens()) {
-			fileType = stFileName.nextToken();
+	public Map<String, Object> co1000Delete(Map<String, Object> param) {
+
+		Map<String, Object> rtnMap = new HashMap<>();
+
+		try {
+			sqlSession.delete("co1000Mapper.co1000Delete", param);
+		}catch(Exception e) {
+			e.printStackTrace();
+			rtnMap.put("Errmsg", "오류가 발생하였습니다.");
+			rtnMap.put("Errstate", -1);
 		}
-		return fileType;
+
+		return rtnMap;
+	}
+
+	public int co1000MergeDataSave(MultipartFile excelFile, @RequestParam Map<String, Object> param) {
+		return sqlSession.insert("co1000Mapper.co1000Ins", param);
 	}
 
 	public int co1000MergeData(MultipartFile excelFile, @RequestParam Map<String, Object> param, UserInfo user) {
@@ -67,11 +72,7 @@ public class CO1000Service {
 		return insertCnt;
 	}
 
-	public int co1000MergeDataSave(MultipartFile excelFile, @RequestParam Map<String, Object> param) {
-		return sqlSession.insert("co1000Mapper.co1000Ins", param);
-	}
-
-	public int tempDataInsert(MultipartFile excelFile, @RequestParam Map<String, Object> param, String fileType, UserInfo user) {
+	private int tempDataInsert(MultipartFile excelFile, @RequestParam Map<String, Object> param, String fileType, UserInfo user) {
 		
 		Workbook workbook;
 		HSSFSheet hSFSheet = null;
@@ -123,18 +124,14 @@ public class CO1000Service {
 		return insertCnt;
 	}
 
-	public Map<String, Object> co1000Delete(Map<String, Object> param) {
-
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
-
-		try {
-			sqlSession.delete("co1000Mapper.co1000Delete", param);
-		}catch(Exception e) {
-			e.printStackTrace();
-			rtnMap.put("Errmsg", "오류가 발생하였습니다.");
-			rtnMap.put("Errstate", -1);
+	private String getFileType(String fileName) {
+		// fileName을 . 으로 토튼을 설정하면 가장 뒤에 토튼이 확장자가 된다.
+		StringTokenizer stFileName = new StringTokenizer(fileName, ".");
+		String fileType = "";
+		while (stFileName.hasMoreTokens()) {
+			fileType = stFileName.nextToken();
 		}
-
-		return rtnMap;
+		return fileType;
 	}
+
 }

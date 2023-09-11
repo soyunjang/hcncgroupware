@@ -49,10 +49,8 @@ public class CO1000Controller {
    	 * @return	List	list	카드사별 사용내역 목록
    	 */
 	@RequestMapping(value = "/co1000SelTemp")
-	public @ResponseBody List<Map<String, Object>> CO1000_SEL_TEMP(@RequestBody Map<String, Object> param, HttpSession session) {
-		
-		List<Map<String, Object>> list = co1000Service.co1000SelTemp(param, session);
-		return list;
+	public @ResponseBody List<Map<String, Object>> CO1000_SEL_TEMP(@RequestBody Map<String, Object> param) {
+		return co1000Service.co1000SelTemp(param);
 	}
 	
 	@RequestMapping(value = "/co1000MergeData")
