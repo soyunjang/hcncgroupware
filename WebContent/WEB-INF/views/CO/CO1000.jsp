@@ -217,12 +217,6 @@
 				}
 
 				uploadFile(co1000dataForm, 'co1000MergeDataSave', 'co1000SaveCallBack');
-
-				// var saveParam = {
-				// 	FILE_NM : $("#txt01_FILE_NM").val()
-				// }
-				//
-				// getAjaxJsonData("co1000Save", saveParam, "co1000SaveCallBack");
 			}
 		});
 

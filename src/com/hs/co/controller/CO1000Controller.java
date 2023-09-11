@@ -56,9 +56,11 @@ public class CO1000Controller {
 	}
 	
 	@RequestMapping(value = "/co1000MergeData")
-	public String co1000MergeData(final MultipartHttpServletRequest multiRequest, @RequestParam Map<String, Object> param, ModelMap model) throws IOException {
+	public String co1000MergeData(final MultipartHttpServletRequest multiRequest, @RequestParam Map<String, Object> param, ModelMap model, HttpSession session) throws IOException {
 		logger.debug("PopupController > co1000MergeData :: {}", param);
- 
+
+		UserInfo user = (UserInfo) session.getAttribute("User");
+
 		MultipartFile file = null;
       	Iterator<String> iterator = multiRequest.getFileNames();
         
@@ -66,7 +68,7 @@ public class CO1000Controller {
             file = multiRequest.getFile(iterator.next());
         }
         
-        int insertCnt = co1000Service.co1000MergeData(file, param);
+        int insertCnt = co1000Service.co1000MergeData(file, param, user);
 		model.addAttribute("insertCnt", insertCnt);
 		return "jsonView";
 	}
@@ -97,26 +99,13 @@ public class CO1000Controller {
 	 * @param	HttpSession	session		로그인한 사용자ID
 	 * @return	Map 		rtnMap		추가 성공/실패 확인(0:성공/1:실패)
 	 */
-	@RequestMapping(value = "/co1000Save")
-	public @ResponseBody Map<String, Object> CO1000_SAVE(@RequestBody Map<String, Object> param, HttpSession session) {
 
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
-
-		try {
-			rtnMap = co1000Service.co1000Save(param, session);
-		}catch(Exception e) {
-			e.printStackTrace();
-			rtnMap.put("Errmsg", "오류가 발생하였습니다.");
-			rtnMap.put("Errstate", -1);
-		}
-
-		return rtnMap;
-	}
 	@RequestMapping(value = "/co1000Delete")
-	public @ResponseBody Map<String, Object> CO1000_DELETE(@RequestBody Map<String, Object> param) {
+	public @ResponseBody Map<String, Object> CO1000_DELETE(@RequestBody Map<String, Object> param, HttpSession session) {
 
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
-
+		Map<String, Object> rtnMap = new HashMap<>();
+		UserInfo user = (UserInfo) session.getAttribute("User");
+		param.put("USER_ID", user.getUSER_ID());
 		try {
 			rtnMap = co1000Service.co1000Delete(param);
 		}catch(Exception e) {

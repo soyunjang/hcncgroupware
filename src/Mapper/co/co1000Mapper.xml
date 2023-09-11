@@ -6,22 +6,44 @@
 <mapper namespace="co1000Mapper">
 	<!-- 임시 Table 조회 -->
 	<select id="co1000SelTemp" parameterType="map" resultType="map">
-		EXEC CO1000_SEL_TEMP #{FILE_NM}
+		SELECT (SELECT dbo.FN_COMMON_NM('CARD', A.COMPANY)) AS COMPANY,
+			   (SELECT CARD_NUM FROM CARD_INFO
+				WHERE RIGHT(CARD_NUM, 4) = RIGHT(A.CARD_NUM, 4) AND COMPANY = A.COMPANY) AS CARD_NUM,
+			   	A.USE_DATE,
+			   	A.APPROVAL_NUM,
+			   	A.ACCOUNT,
+			   	CASE WHEN A.REFUND != 0 THEN 0 ELSE A.APPROVAL END AS APPROVAL,
+		        A.REFUND
+		FROM CORPORATE_TEMP A
+		WHERE A.FILE_NM = #{FILE_NM}
+		ORDER BY A.USE_DATE;
 	</select>
 
-	<insert id="co1000InsTmp" parameterType="map">
-		EXEC CO1000_INS_TMP #{COMPANY}, #{CARD_NUM}, #{USE_DATE}, #{APPROVAL_NUM}, #{ACCOUNT}, #{APPROVAL}, #{REFUND}, #{FILE_NM}
+	<insert id="co1000InsTmp" parameterType="java.util.List">
+		INSERT INTO CORPORATE_TEMP (COMPANY, CARD_NUM, USE_DATE, APPROVAL_NUM, ACCOUNT, APPROVAL, REFUND, FILE_NM, REG_ID, REG_DT)
+		VALUES
+		<foreach collection="list" item="item" separator=", ">
+			(
+			(SELECT SYS_ITEM_CD FROM SYSCODE_DETAIL WHERE SYS_ITEM_NAME = #{item.COMPANY}),
+			#{item.CARD_NUM},
+			#{item.USE_DATE},
+			#{item.APPROVAL_NUM},
+			#{item.ACCOUNT},
+			(CASE WHEN #{item.APPROVAL} = '' THEN '0' ELSE #{item.APPROVAL} END),
+			(CASE WHEN #{item.REFUND} = '' THEN '0' ELSE #{item.REFUND} END),
+			#{item.FILE_NM},
+			#{item.REG_ID},
+			GETDATE()
+			)
+		</foreach>
 	</insert>
 
-	<insert id="co1000Ins" parameterType="map">
-		EXEC CO1000_INS #{COMPANY}, #{CARD_NUM}, #{USE_DATE}, #{APPROVAL_NUM}, #{ACCOUNT}, #{APPROVAL}, #{REFUND}, #{FILE_NM}, #{REG_ID}
+	<insert id="co1000Ins">
+		INSERT INTO CORPORATECARD_INFO (COMPANY, CARD_NUM, USE_DATE, APPROVAL_NUM, ACCOUNT, APPROVAL, REFUND, FILE_NM, REG_ID, REG_DT)
+		SELECT COMPANY, CARD_NUM, USE_DATE, APPROVAL_NUM, ACCOUNT, APPROVAL, REFUND, FILE_NM, REG_ID, REG_DT FROM CORPORATE_TEMP WHERE REG_ID LIKE #{USER_ID}
 	</insert>
 
-	<insert id="co1000Save" parameterType="map">
-		EXEC CO1000_SAVE #{REG_ID}, #{FILE_NM}
-	</insert>
-
-	<delete id="co1000Delete">
-		DELETE FROM CORPORATE_TEMP
+	<delete id="co1000Delete" parameterType="map">
+		DELETE FROM CORPORATE_TEMP WHERE REG_ID LIKE #{USER_ID}
 	</delete>
 </mapper>

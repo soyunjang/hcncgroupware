@@ -1,39 +1,34 @@
 package com.hs.co.service;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpSession;
-
+import com.hs.home.controller.UserInfo;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.hs.home.controller.UserInfo;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.*;
 
 @Service("co1000Service")
+@Transactional
 public class CO1000Service {
 
-	@Inject
+	@Autowired
 	private SqlSession sqlSession;
 
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	/**
 	 * 메소드 설명 : 법인카드 사용내역 조회
 	 * -------------------------------------------------------------------
@@ -58,18 +53,13 @@ public class CO1000Service {
 		return fileType;
 	}
 
-	public int co1000MergeData(MultipartFile excelFile, @RequestParam Map<String, Object> param) {
+	public int co1000MergeData(MultipartFile excelFile, @RequestParam Map<String, Object> param, UserInfo user) {
 
 		int insertCnt = 0;
 
 		try {
 			String fileType = getFileType(excelFile.getOriginalFilename());
-
-			if (fileType.equals("xlsx")) {
-				insertCnt = getXSSF(excelFile, param);
-			} else if (fileType.equals("xls")) {
-				insertCnt = getHSSF(excelFile, param);
-			}
+			insertCnt = tempDataInsert(excelFile, param, fileType, user);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -78,302 +68,59 @@ public class CO1000Service {
 	}
 
 	public int co1000MergeDataSave(MultipartFile excelFile, @RequestParam Map<String, Object> param) {
+		return sqlSession.insert("co1000Mapper.co1000Ins", param);
+	}
+
+	public int tempDataInsert(MultipartFile excelFile, @RequestParam Map<String, Object> param, String fileType, UserInfo user) {
+		
+		Workbook workbook;
+		HSSFSheet hSFSheet = null;
+		XSSFSheet xSSFSheet = null;
 
 		int insertCnt = 0;
+		String[] wordArray = new String[]{
+				"COMPANY", "CARD_NUM" , "USE_DATE", "APPROVAL_NUM", "ACCOUNT", "APPROVAL"
+		};
 
 		try {
-			String fileType = getFileType(excelFile.getOriginalFilename());
-
 			if (fileType.equals("xlsx")) {
-				insertCnt = getXSSFSave(excelFile, param);
+				workbook = new XSSFWorkbook(excelFile.getInputStream());
+				// 첫번째 시트 불러오기
+				xSSFSheet = (XSSFSheet) workbook.getSheetAt(0);
 			} else if (fileType.equals("xls")) {
-				insertCnt = getHSSFSave(excelFile, param);
+				workbook = new HSSFWorkbook(excelFile.getInputStream());
+				// 첫번째 시트 불러오기
+				hSFSheet = (HSSFSheet) workbook.getSheetAt(0);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
-		return insertCnt;
-	}
+			List<Map<String, Object>> mapList = new ArrayList<>();
 
-	public int getXSSF(MultipartFile excelFile, @RequestParam Map<String, Object> param) {
-
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		Workbook workbook;
-		int insertCnt = 0;
-		
-		try {
-			workbook = new XSSFWorkbook(excelFile.getInputStream());
-			// 첫번째 시트 불러오기
-			XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
-	
-			for (int i = 1; i < sheet.getLastRowNum() + 1; i++) {
-				XSSFRow row = sheet.getRow(i);
-	
-				// 행이 존재하기 않으면 패스
-				if (null == row) {
-					continue;
+			for (Row cells : hSFSheet != null ? hSFSheet : xSSFSheet) {
+				int index = 0;
+				Map<String, Object> map = new HashMap<>();
+				for (Cell cell : cells) {
+					if (cell.getRowIndex() > 0) {
+						map.put(wordArray[index], cell.getCellType() == 0 ? cell.getNumericCellValue() : cell.getStringCellValue());
+					}
+					index++;
 				}
-
-				XSSFCell cell = row.getCell(0);	// 행의 1번째 열(카드사)
-				if (null != cell)
-					paramMap.put("COMPANY", cell.getStringCellValue());
-
-				cell = row.getCell(1);	// 행의 2번째 열(카드번호)
-				if (null != cell)
-				paramMap.put("CARD_NUM", cell.getStringCellValue());
-
-				cell = row.getCell(2);	// 행의 3번째 열(거래일자)
-				if (null != cell) {
-//					String yyyy = cell.getStringCellValue().substring(0, 4);
-//					String mm = Integer.parseInt(cell.getStringCellValue().substring(6, 7)) < 10 ? "0" + cell.getStringCellValue().substring(6, 7) : cell.getStringCellValue().substring(6, 7);
-//					String dd = Integer.parseInt(cell.getStringCellValue().substring(9, 10)) < 10 ? "0" + cell.getStringCellValue().substring(9, 10) : cell.getStringCellValue().substring(9, 10);
-//					paramMap.put("USE_DATE", yyyy + "-" + mm + "-" + dd);
-					paramMap.put("USE_DATE", cell.getStringCellValue());
+				if (map.size() > 0) {
+					map.put("FILE_NM", excelFile.getOriginalFilename());
+					map.put("REG_ID", user.getUSER_ID());
+					mapList.add(map);
 				}
-
-				cell = row.getCell(3);	// 행의 4번째 열(승인번호)
-				if (null != cell)
-					paramMap.put("APPROVAL_NUM", cell.getStringCellValue());
-
-
-				cell = row.getCell(4);	// 행의 5번째 열(거래처)
-				if (null != cell)
-					paramMap.put("ACCOUNT", cell.getStringCellValue());
-
-				cell = row.getCell(5);	// 행의 6번째 열(승인금액)
-				if (null != cell)
-					paramMap.put("APPROVAL", cell.getNumericCellValue());
-
-				cell = row.getCell(6);	// 행의 7번째 열(취소금액)
-				if (null != cell)
-					paramMap.put("REFUND", cell.getNumericCellValue());
-
-				paramMap.put("FILE_NM", excelFile.getOriginalFilename());
-									
-				sqlSession.insert("co1000Mapper.co1000InsTmp", paramMap);
-				insertCnt++;
+				if (mapList.size() == 100) {
+					insertCnt += sqlSession.insert("co1000Mapper.co1000InsTmp", mapList);
+					mapList.clear();
+				}
 			}
+			insertCnt += sqlSession.insert("co1000Mapper.co1000InsTmp", mapList);
+
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		return insertCnt;
-	}
-	
-	public int getHSSF(MultipartFile excelFile, @RequestParam Map<String, Object> param) {
-		
-		Workbook workbook;
-		int insertCnt = 0;
-
-		try {
-			workbook = new HSSFWorkbook(excelFile.getInputStream());
-			// 첫번째 시트 불러오기
-			HSSFSheet sheet = (HSSFSheet) workbook.getSheetAt(0);
-
-			for (int i = 1; i < sheet.getLastRowNum() + 1; i++) {
-				Map<String, Object> paramMap = new HashMap<String, Object>();
-				HSSFRow row = sheet.getRow(i);
-	
-				// 행이 존재하기 않으면 패스
-				if (null == row) {
-					continue;
-				}
-
-				HSSFCell cell = row.getCell(0);	// 행의 1번째 열(카드사)
-				if (null != cell) 
-					paramMap.put("COMPANY", cell.getStringCellValue());
-				
-				cell = row.getCell(1);	// 행의 2번째 열(카드번호)
-				if (null != cell)
-					paramMap.put("CARD_NUM", cell.getStringCellValue());
-								
-				cell = row.getCell(2);	// 행의 3번째 열(사용일자)
-				if (null != cell){
-//					String yyyy = cell.getStringCellValue().substring(0, 4);
-//					String mm = Integer.parseInt(cell.getStringCellValue().substring(6, 7)) < 10 ? "0" + cell.getStringCellValue().substring(6, 7) : cell.getStringCellValue().substring(6, 7);
-//					String dd = Integer.parseInt(cell.getStringCellValue().substring(9, 10)) < 10 ? "0" + cell.getStringCellValue().substring(9, 10) : cell.getStringCellValue().substring(9, 10);
-//					paramMap.put("USE_DATE", yyyy + "-" + mm + "-" + dd);
-					paramMap.put("USE_DATE", cell.getStringCellValue());
-				}
-
-				cell = row.getCell(3);	// 행의 4번째 열(승인번호)
-				if (null != cell)
-					paramMap.put("APPROVAL_NUM", cell.getStringCellValue());
-
-
-				cell = row.getCell(4);	// 행의 5번째 열(거래처)
-				if (null != cell)
-					paramMap.put("ACCOUNT", cell.getStringCellValue());
-									
-				cell = row.getCell(5);	// 행의 6번째 열(승인금액)
-				if (null != cell)
-					paramMap.put("APPROVAL", cell.getNumericCellValue());
-
-				cell = row.getCell(6);	// 행의 7번째 열(취소금액)
-				if (null != cell)
-					paramMap.put("REFUND", cell.getNumericCellValue());
-
-				paramMap.put("FILE_NM", excelFile.getOriginalFilename());
-									
-				sqlSession.insert("co1000Mapper.co1000InsTmp", paramMap);
-				insertCnt++;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return insertCnt;
-	}
-
-	public int getXSSFSave(MultipartFile excelFile, @RequestParam Map<String, Object> param) {
-
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		Workbook workbook;
-		int insertCnt = 0;
-
-		try {
-			workbook = new XSSFWorkbook(excelFile.getInputStream());
-			// 첫번째 시트 불러오기
-			XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
-
-			for (int i = 1; i < sheet.getLastRowNum() + 1; i++) {
-				XSSFRow row = sheet.getRow(i);
-
-				// 행이 존재하기 않으면 패스
-				if (null == row) {
-					continue;
-				}
-
-				XSSFCell cell = row.getCell(0);	// 행의 1번째 열(카드사)
-				if (null != cell)
-					paramMap.put("COMPANY", cell.getStringCellValue());
-
-				cell = row.getCell(1);	// 행의 2번째 열(카드번호)
-				if (null != cell)
-					paramMap.put("CARD_NUM", cell.getStringCellValue());
-
-				cell = row.getCell(2);	// 행의 3번째 열(거래일자)
-				if (null != cell) {
-//					String yyyy = cell.getStringCellValue().substring(0, 4);
-//					String mm = Integer.parseInt(cell.getStringCellValue().substring(6, 7)) < 10 ? "0" + cell.getStringCellValue().substring(6, 7) : cell.getStringCellValue().substring(6, 7);
-//					String dd = Integer.parseInt(cell.getStringCellValue().substring(9, 10)) < 10 ? "0" + cell.getStringCellValue().substring(9, 10) : cell.getStringCellValue().substring(9, 10);
-//					paramMap.put("USE_DATE", yyyy + "-" + mm + "-" + dd);
-					paramMap.put("USE_DATE", cell.getStringCellValue());
-				}
-
-				cell = row.getCell(3);	// 행의 4번째 열(승인번호)
-				if (null != cell)
-					paramMap.put("APPROVAL_NUM", cell.getStringCellValue());
-
-
-				cell = row.getCell(4);	// 행의 5번째 열(거래처)
-				if (null != cell)
-					paramMap.put("ACCOUNT", cell.getStringCellValue());
-
-				cell = row.getCell(5);	// 행의 6번째 열(승인금액)
-				if (null != cell)
-					paramMap.put("APPROVAL", cell.getNumericCellValue());
-
-				cell = row.getCell(6);	// 행의 7번째 열(취소금액)
-				if (null != cell)
-					paramMap.put("REFUND", cell.getNumericCellValue());
-
-				paramMap.put("FILE_NM", excelFile.getOriginalFilename());
-				paramMap.put("REG_ID", param.get("USER_ID"));
-
-				sqlSession.insert("co1000Mapper.co1000Ins", paramMap);
-				insertCnt++;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return insertCnt;
-	}
-
-	public int getHSSFSave(MultipartFile excelFile, @RequestParam Map<String, Object> param) {
-
-		Workbook workbook;
-		int insertCnt = 0;
-
-		try {
-			workbook = new HSSFWorkbook(excelFile.getInputStream());
-			// 첫번째 시트 불러오기
-			HSSFSheet sheet = (HSSFSheet) workbook.getSheetAt(0);
-
-			for (int i = 1; i < sheet.getLastRowNum() + 1; i++) {
-				Map<String, Object> paramMap = new HashMap<String, Object>();
-				HSSFRow row = sheet.getRow(i);
-
-				// 행이 존재하기 않으면 패스
-				if (null == row) {
-					continue;
-				}
-
-				HSSFCell cell = row.getCell(0);	// 행의 1번째 열(카드사)
-				if (null != cell)
-					paramMap.put("COMPANY", cell.getStringCellValue());
-
-				cell = row.getCell(1);	// 행의 2번째 열(카드번호)
-				if (null != cell)
-					paramMap.put("CARD_NUM", cell.getStringCellValue());
-
-				cell = row.getCell(2);	// 행의 3번째 열(사용일자)
-				if (null != cell){
-//					String yyyy = cell.getStringCellValue().substring(0, 4);
-//					String mm = Integer.parseInt(cell.getStringCellValue().substring(6, 7)) < 10 ? "0" + cell.getStringCellValue().substring(6, 7) : cell.getStringCellValue().substring(6, 7);
-//					String dd = Integer.parseInt(cell.getStringCellValue().substring(9, 10)) < 10 ? "0" + cell.getStringCellValue().substring(9, 10) : cell.getStringCellValue().substring(9, 10);
-//					paramMap.put("USE_DATE", yyyy + "-" + mm + "-" + dd);
-					paramMap.put("USE_DATE", cell.getStringCellValue());
-				}
-
-				cell = row.getCell(3);	// 행의 4번째 열(승인번호)
-				if (null != cell)
-					paramMap.put("APPROVAL_NUM", cell.getStringCellValue());
-
-
-				cell = row.getCell(4);	// 행의 5번째 열(거래처)
-				if (null != cell)
-					paramMap.put("ACCOUNT", cell.getStringCellValue());
-
-				cell = row.getCell(5);	// 행의 6번째 열(승인금액)
-				if (null != cell)
-					paramMap.put("APPROVAL", cell.getNumericCellValue());
-
-				cell = row.getCell(6);	// 행의 7번째 열(취소금액)
-				if (null != cell)
-					paramMap.put("REFUND", cell.getNumericCellValue());
-
-				paramMap.put("FILE_NM", excelFile.getOriginalFilename());
-				paramMap.put("REG_ID", param.get("USER_ID"));
-
-				sqlSession.insert("co1000Mapper.co1000Ins", paramMap);
-				insertCnt++;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return insertCnt;
-	}
-
-	public Map<String, Object> co1000Save(Map<String, Object> param, HttpSession session) {
-
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
-		UserInfo vo = (UserInfo) session.getAttribute("User");
-
-		try {
-			param.put("REG_ID", vo.getUSER_ID());
-
-			sqlSession.insert("co1000Mapper.co1000Save", param);
-		}catch(Exception e) {
-			e.printStackTrace();
-			rtnMap.put("Errmsg", "오류가 발생하였습니다.");
-			rtnMap.put("Errstate", -1);
-		}
-
-		return rtnMap;
 	}
 
 	public Map<String, Object> co1000Delete(Map<String, Object> param) {
