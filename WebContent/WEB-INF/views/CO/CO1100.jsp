@@ -34,6 +34,7 @@
 							<dt>카드번호</dt>
 							<dd>
 								<select id="sel01_COMPANY" class="w250"></select>
+								<input type="text" id="txt01_CARD_NUM" class="w100 mg-l10" maxlength="4" placeholder="카드번호 4자리">
 							</dd>
 						</dl>
 					</div>
@@ -142,7 +143,7 @@
 									</td>
 									<th>10.카드번호</th>
 									<td>
-										<input type="text" id="pop01_txt01_CARD_NUM">
+										<input type="text" id="pop01_txt01_CARD_NUM" placeholder="카드번호">
 									</td>
 								</tr>
 								</tbody>
@@ -202,14 +203,18 @@
 		 */
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 공통코드
 		/* 공통코드_다국어 */
-		var langHead;
-		var langPop2;
+		let langHead;
+		let langPop2;
 
-		var SALES_NUMSelect = "";
-		var ACCOUNT_SUBSelect = "";
+		let SALES_NUMSelect = "";
+		let ACCOUNT_SUBSelect = "";
 
-		var chkEditForm = false;
-		var lastid = 0;
+		let chkEditForm = false;
+		let lastid = 0;
+
+		const userDept = '${User.DEPT_CD}'
+
+		const txt01_CARD_NUM = document.querySelector('#txt01_CARD_NUM');
 
 		commonCodeSelectAddMulti("sel01_COMPANY", getCommonCodeCard('CARD'), 'Y');
 		commonCodeSelectAdd("pop01_sel01_ACCOUNT_SUB", getCommonCodeEsc('ACCOUNT'), 'N');
@@ -239,6 +244,10 @@
 					init(); //그리드 리사이징
 				}, 500);
 			});
+
+			if (userDept.indexOf("M") == -1) {
+				txt01_CARD_NUM.remove();
+			}
 		});
 
 		function setButton(action) {
@@ -285,6 +294,30 @@
 				searchGridData();
 			}
 		});
+
+		txt01_CARD_NUM.addEventListener("keydown", (e) => {
+
+			let check = /^[0-9]*$/;
+			if (!check.test(txt01_CARD_NUM.value)) {
+				toast("정보", "숫자만 입력 가능합니다.", "info");
+				txt01_CARD_NUM.value = "";
+			}
+			inputAndSelectCheck();
+
+			if (e.key == 'Backspace' || e.key == 'Delete') inputAndSelectCheck();
+
+			if (e.key == 'Enter') searchGridData();
+		});
+		function inputAndSelectCheck() {
+			console.log(txt01_CARD_NUM.value.trim().length);
+			if (txt01_CARD_NUM.value.trim().length > 0) {
+				$("#sel01_COMPANY option:eq(0)").prop("selected", true);
+				$("#sel01_COMPANY").prop("disabled", true);
+			} else {
+				$("#sel01_COMPANY").prop("disabled", false);
+			}
+		}
+
 
 		/* 출력 버튼 */
 		$("#btn01_PRINT").on({
@@ -411,7 +444,7 @@
 					, {name: 'ACCOUNT'			, align: 'left'		, width: '9%'	, hidden: false	, editable: false}
 					, {name: 'BREAKDOWN'		, align: 'left'		, width: '9%'	, hidden: false	, editable: true}
 					, {name: 'APPROVAL'			, align: 'right'	, width: '3%'	, hidden: false	, editable: false	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
-					, {name: 'REFUND'			, align: 'right'	, width: '3%'	, hidden: false	, editable: false	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
+					// , {name: 'REFUND'			, align: 'right'	, width: '3%'	, hidden: false	, editable: false	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
 					, {name: 'MEMO'				, align: 'left' 	, width: '8%'	, hidden: false	, editable: true}
 					, {name: 'COMPANY'			, align: 'center'	, width: '0%'	, hidden: true	, editable: false}
 					, {name: 'CARD_NUM'			, align: 'center'	, width: '0%'	, hidden: true	, editable: false}
@@ -497,11 +530,12 @@
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: CRUD
 		/* Table 조회 */
 		function searchGridData(){
-			var cardNum = $("#sel01_COMPANY option:checked").text();
-			var searchParam = {
-				COMPANY: cardNum == "전체" ? $("#sel01_COMPANY").val() : $("#sel01_COMPANY option:checked").text().split(/\s+/g)[0].trim()
-				, CARD_NUM : cardNum == "전체" ? cardNum : $("#sel01_COMPANY option:checked").text().split(/\s+/g)[1]
-				, DATE: $("#date01_DATE").val()
+			let cardNum = $("#sel01_COMPANY option:checked").text();
+			let searchParam = {
+				COMPANY: cardNum == "전체" ? $("#sel01_COMPANY").val() : $("#sel01_COMPANY option:checked").text().split(/\s+/g)[0].trim(),
+				CARD_NUM : cardNum == "전체" ? cardNum : $("#sel01_COMPANY option:checked").text().split(/\s+/g)[1],
+				DATE: $("#date01_DATE").val(),
+				CARD_NUMBER : $("#txt01_CARD_NUM").val().trim()
 			};
 			
 			getAjaxJsonData("co1100Sel", searchParam, "searchGridDataCallBack");
