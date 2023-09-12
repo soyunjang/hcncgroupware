@@ -1,6 +1,5 @@
 package com.hs.co.controller;
 
-import java.io.IOException;
 import java.util.*;
 
 import javax.annotation.Resource;
@@ -10,12 +9,8 @@ import com.hs.home.controller.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -28,7 +23,11 @@ public class CO1000Controller {
 	private CO1000Service co1000Service;
 	
 	private static final Logger logger = LoggerFactory.getLogger(CO1000Controller.class);
-	
+
+	@ModelAttribute("User")
+	public UserInfo userInfo(HttpSession session) {
+		return (UserInfo) session.getAttribute("User");
+	}
 
 	/**
    	 * 메소드 설명 : 판매품의서관리 페이지로 이동
@@ -37,8 +36,8 @@ public class CO1000Controller {
    	 * @param	Model 	model 	
    	 * @return	String 	result	판매품의서관리 페이지ID
    	 */
-	@RequestMapping(value = "/co1000")
-	public String co1000(Locale locale, Model model) {
+	@RequestMapping(value = "/co1000", method = RequestMethod.GET)
+	public String co1000() {
 		return "CO/CO1000";
 	}
 
@@ -48,16 +47,17 @@ public class CO1000Controller {
    	 * @param	Map		param	검색조건 (파일명)
    	 * @return	List	list	카드사별 사용내역 목록
    	 */
+	@ResponseBody
 	@RequestMapping(value = "/co1000SelTemp")
-	public @ResponseBody List<Map<String, Object>> CO1000_SEL_TEMP(@RequestBody Map<String, Object> param) {
+	public List<Map<String, Object>> CO1000_SEL_TEMP(@RequestBody Map<String, Object> param) {
 		return co1000Service.co1000SelTemp(param);
 	}
 	
-	@RequestMapping(value = "/co1000MergeData")
-	public String co1000MergeData(final MultipartHttpServletRequest multiRequest, @RequestParam Map<String, Object> param, ModelMap model, HttpSession session) throws IOException {
+	@RequestMapping(value = "/co1000MergeData", method = RequestMethod.POST)
+	public String co1000MergeData(final MultipartHttpServletRequest multiRequest,
+								  @RequestParam Map<String, Object> param, ModelMap model,
+								  @ModelAttribute("User") UserInfo user) {
 		logger.debug("PopupController > co1000MergeData :: {}", param);
-
-		UserInfo user = (UserInfo) session.getAttribute("User");
 
 		MultipartFile file = null;
       	Iterator<String> iterator = multiRequest.getFileNames();
@@ -71,11 +71,12 @@ public class CO1000Controller {
 		return "jsonView";
 	}
 
-	@RequestMapping(value = "/co1000MergeDataSave")
-	public String co1000MergeDataSave(final MultipartHttpServletRequest multiRequest, @RequestParam Map<String, Object> param, ModelMap model, HttpSession session) {
+	@RequestMapping(value = "/co1000MergeDataSave", method = RequestMethod.POST)
+	public String co1000MergeDataSave(final MultipartHttpServletRequest multiRequest,
+									  @RequestParam Map<String, Object> param, ModelMap model,
+									  @ModelAttribute("User") UserInfo user) {
 		logger.debug("PopupController > co1000MergeDataSave :: {}", param);
 
-		UserInfo user = (UserInfo) session.getAttribute("User");
 		param.put("USER_ID", user.getUSER_ID());
 
 		MultipartFile file = null;
@@ -98,11 +99,11 @@ public class CO1000Controller {
 	 * @return	Map 		rtnMap		추가 성공/실패 확인(0:성공/1:실패)
 	 */
 
-	@RequestMapping(value = "/co1000Delete")
-	public @ResponseBody Map<String, Object> CO1000_DELETE(@RequestBody Map<String, Object> param, HttpSession session) {
+	@ResponseBody
+	@RequestMapping(value = "/co1000Delete", method = RequestMethod.POST)
+	public Map<String, Object> CO1000_DELETE(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
 
 		Map<String, Object> rtnMap = new HashMap<>();
-		UserInfo user = (UserInfo) session.getAttribute("User");
 		param.put("USER_ID", user.getUSER_ID());
 		try {
 			rtnMap = co1000Service.co1000Delete(param);
@@ -113,5 +114,23 @@ public class CO1000Controller {
 		}
 
 		return rtnMap;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/co1000/selects", method = RequestMethod.GET)
+	public List<Map<String, Object>> co1000SelectTagGet(@ModelAttribute("User") UserInfo user) {
+		return co1000Service.co1000SelectTagGet(user);
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/co1000/select", method = RequestMethod.POST)
+	public List<Map<String, Object>> co1000SelectGet(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
+		return co1000Service.co1000SelectGet(param, user);
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/co1000/select", method = RequestMethod.DELETE)
+	public Map<String, Object> co1000SelectDelete(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
+		return co1000Service.co1000SelectDelete(param, user);
 	}
 }

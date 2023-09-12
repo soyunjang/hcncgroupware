@@ -26,13 +26,17 @@
 							<dl class="dl-2n">
 								<dt>첨부파일</dt>
 								<dd class="fl-sb">
-									<input type="text" id="txt01_FILE_NM" readonly="readonly">
+									<input type="text" id="txt01_FILE_NM" readonly>
+								</dd>
+								<dd class="fl-sb">
+									<select id="sel01_FILE_NM" class="mg-l10"></select>
 								</dd>
 							</dl>
 						</div>
 						<div class="srch-btn">
 			                <ul>
 			                	<li><input type="file" id="file01_FILE" class="dis-n" accept=".xls,.xlsx"></li>
+								<li><a href="javascript:void(0);" id="btn01_DELETE" class="btn-file">삭제</a></li>
 			                    <li><a href="javascript:void(0);" id="btn01_FILE" class="btn-file">파일</a></li>
 			                    <li><a href="javascript:void(0);" id="btn01_UPLOAD" class="btn-file dis-n">업로드</a></li>
 			                    <li><a href="javascript:void(0);" id="btn01_CONFIRM" class="btn-confirm">저장</a></li>
@@ -79,9 +83,9 @@
 		 */
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 공통코드
 		/* 공통코드_다국어 */
-		var langHead;
-		var arrayFile = new Array();
-		var tableCnt = 0;
+		let langHead;
+		let arrayFile = new Array();
+		let tableCnt = 0;
 
 		/* Document가 로드되었을 때 실행되는 코드 */
 		$(document).ready(function() {
@@ -98,8 +102,22 @@
 
 			setGrid();
 			init(); //그리드 리사이징
+
+			getAjaxJsonData("/co1000/selects", "", "selectDataCallBack", "GET");
+			deleteGridData();
+
 		});
 
+		function selectDataCallBack(datas) {
+			$("#sel01_FILE_NM").empty();
+			$("#sel01_FILE_NM").append($("<option>업로드한 파일</option>"));
+			datas.forEach((data, i) => {
+				let value = (data.FILE_NM + "/" + data.REG_DT.replace(" ", "-") + "/" + data.COUNT);
+				let option = $("<option value=" + value + ">" + (i + 1) + ". " + data.FILE_NM + "_" + data.REG_DT.replace(" ", "-") + "_" + data.COUNT + "건</option>");
+				$("#sel01_FILE_NM").append(option);
+			});
+
+		}
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 버튼
 		/* 검색 버튼 */
 		$("#btn01_SEARCH").on({
@@ -107,6 +125,26 @@
 				searchGridData();
 			}
 		});
+
+		$("#sel01_FILE_NM").change(() => {
+			let option = $("#sel01_FILE_NM option:selected").val();
+			let option2 = $("#sel01_FILE_NM option:selected").val().substring(option.indexOf("/") + 1);
+
+			let fileName = option.substring(0, option.indexOf("/"));
+			let count = option2.substring(option2.indexOf("/") + 1);
+			let regDate = option2.substring(0, option2.indexOf("/"))
+			let regDate2 = regDate.substring(0, 10) + " " + regDate.substring(11)
+
+			let param = {
+				FILE_NM: fileName,
+				REG_DT: regDate2,
+				COUNT: count
+			}
+
+			getAjaxJsonData("/co1000/select", param, "searchGridDataCallBack");
+
+		});
+
 
 		$("#txt01_FILE_NM").on({
 			click: function(){
@@ -119,6 +157,18 @@
 				$("#table1_cnt").text(0);
 
 				$("#file01_FILE").trigger("click");
+			}
+		});
+
+		/* 삭제 버튼*/
+		$("#btn01_DELETE").on({
+			click: function () {
+				let option = $("#sel01_FILE_NM option:selected").val();
+				if (option == '업로드한 파일') {
+					toast("정보", "삭제할 파일을 선택해주시기 바랍니다. ", "info");
+				} else {
+					confirms("정말로 삭제하시겠습니까?\n ※ 개인별 사용내역 등록에 작성된 자료가 있으면 삭제할 수 없습니다.", "D");
+				}
 			}
 		});
 		
@@ -139,7 +189,7 @@
 		$("#file01_FILE").on('change', function(e) {
 			e.preventDefault();
 
-			var file = document.getElementById("file01_FILE").files[0];
+			let file = document.getElementById("file01_FILE").files[0];
 			arrayFile = new Array();
 			arrayFile.push(file);
             
@@ -155,7 +205,7 @@
 			click: function(){
 				showLoadingPanel();
 
-				var co1000dataForm = new FormData($('form#CO1000dataForm')[0]);
+				let co1000dataForm = new FormData($('form#CO1000dataForm')[0]);
 				co1000dataForm.append('file' + 0, arrayFile[0], arrayFile[0].name);
 
 				for(let key of co1000dataForm.keys()) { 
@@ -169,7 +219,18 @@
 				uploadFile(co1000dataForm, 'co1000MergeData', 'co1000MergeDataCallBack');
 			}
 		});
-		
+
+		function selectDeleteCallBack(data) {
+			if (data.DELETE == "N") {
+				toast("경고", "개인별 사용내역 등록에 작성된 자료는 삭제할 수 없습니다.", "error");
+			}else if (data.DELETE == "Y") {
+				toast("성공", data.REG_DT  + " 에 업로드된 " + data.FILE_NM + "을 삭제하였습니다.", "success");
+				getAjaxJsonData("/co1000/selects", "", "selectDataCallBack", "GET");
+				$("#table1").clearGridData();
+				$("#table1_cnt").text(0);
+			}
+		}
+
 		function co1000MergeDataCallBack(res) {
 			if(res != undefined || res != null) {
 				if(Math.abs(res.insertCnt) > 0) {
@@ -203,20 +264,7 @@
 		/* 저장 버튼 */
 		$("#btn01_CONFIRM").on({
 			click: function(){
-				showLoadingPanel();
-
-				var co1000dataForm = new FormData($('form#CO1000dataForm')[0]);
-				co1000dataForm.append('file' + 0, arrayFile[0], arrayFile[0].name);
-
-				for(let key of co1000dataForm.keys()) {
-					console.log('co1000dataForm key : ', key);
-				}
-
-				for(let value of co1000dataForm.values()) {
-					console.log('co1000dataForm value : ', value);
-				}
-
-				uploadFile(co1000dataForm, 'co1000MergeDataSave', 'co1000SaveCallBack');
+				confirms("첨부파일을 저장하시겠습니까?", "C");
 			}
 		});
 
@@ -244,10 +292,46 @@
 			}
 
 			closeLoadingPanel();
+
+			getAjaxJsonData("/co1000/selects", "", "selectDataCallBack", "GET");
 		}
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: confirm
-		
+		function confirmYes(action){
+			if(action == "C"){
+				showLoadingPanel();
+
+				let co1000dataForm = new FormData($('form#CO1000dataForm')[0]);
+				co1000dataForm.append('file' + 0, arrayFile[0], arrayFile[0].name);
+
+				for(let key of co1000dataForm.keys()) {
+					console.log('co1000dataForm key : ', key);
+				}
+
+				for(let value of co1000dataForm.values()) {
+					console.log('co1000dataForm value : ', value);
+				}
+
+				uploadFile(co1000dataForm, 'co1000MergeDataSave', 'co1000SaveCallBack');
+
+
+			}else if (action == "D") {
+				let option = $("#sel01_FILE_NM option:selected").val();
+				let option2 = $("#sel01_FILE_NM option:selected").val().substring(option.indexOf("/") + 1);
+
+				let fileName = option.substring(0, option.indexOf("/"));
+				let count = option2.substring(option2.indexOf("/") + 1);
+				let regDate = option2.substring(0, option2.indexOf("/"))
+				let regDate2 = regDate.substring(0, 10) + " " + regDate.substring(11)
+
+				let param = {
+					FILE_NM: fileName,
+					REG_DT: regDate2,
+					COUNT: count
+				}
+				getAjaxJsonData("/co1000/select", param, "selectDeleteCallBack", "Delete");
+			}
+		}
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 그리드
 		/* jqGrid 셋팅 */
 		function setGrid(){
@@ -266,15 +350,15 @@
 					, {name: 'APPROVAL_NUM'		, align: 'center'	, width: '4%'	, hidden: false}
 					, {name: 'ACCOUNT'			, align: 'center' 	, width: '10%'	, hidden: false}
 					, {name: 'APPROVAL'			, align: 'right'	, width: '8%'	, hidden: false , formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}					
-					, {name: 'REFUND'			, align: 'right'	, width: '8%'	, hidden: false , formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
+					// , {name: 'REFUND'			, align: 'right'	, width: '8%'	, hidden: false , formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
 				]
 				, autowidth: false
 				, shrinkToFit: false
 				, rowNum : 1000
 				, footerrow : true
 				, onLoadComplete : function() {
-					var countSum = $("#table1").jqGrid('getCol','APPROVAL', false, 'sum');
-					var amountSum = $("#table1").jqGrid('getCol','REFUND', false, 'sum');
+					let countSum = $("#table1").jqGrid('getCol','APPROVAL', false, 'sum');
+					let amountSum = $("#table1").jqGrid('getCol','REFUND', false, 'sum');
 					
 					$("#table1").jqGrid('footerData', 'set', {PaymethodName : '합계', APPROVAL : countSum});
 				}
@@ -286,7 +370,7 @@
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: CRUD
 		/* Table 조회 */
 		function searchGridData(){
-			var searchParam = {
+			let searchParam = {
 				FILE_NM : $("#txt01_FILE_NM").val()
 			};
 
@@ -309,7 +393,7 @@
 		};
 
 		function deleteGridData() {
-			var searchParam = {};
+			let searchParam = {};
 
 			getAjaxJsonData("co1000Delete", searchParam, "");
 		}

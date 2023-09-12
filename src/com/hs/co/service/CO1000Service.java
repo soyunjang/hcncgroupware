@@ -134,4 +134,24 @@ public class CO1000Service {
 		return fileType;
 	}
 
+	public List<Map<String, Object>> co1000SelectTagGet(UserInfo user) {
+		return sqlSession.selectList("co1000Mapper.co1000SelectTagGet", user.getUSER_ID());
+	}
+
+	public List<Map<String, Object>> co1000SelectGet(Map<String, Object> param, UserInfo user) {
+		param.put("REG_ID", user.getUSER_ID());
+		return sqlSession.selectList("co1000Mapper.co1000SelectGet", param);
+	}
+
+	public Map<String, Object> co1000SelectDelete(Map<String, Object> param, UserInfo user) {
+		param.put("REG_ID", user.getUSER_ID());
+		int count = sqlSession.selectOne("co1000Mapper.co1000SelectCheck", param);
+		if (count == 0) {
+			sqlSession.delete("co1000Mapper.co1000SelectDelete", param);
+			param.put("DELETE", "Y");
+		} else {
+			param.put("DELETE", "N");
+		}
+		return param;
+	}
 }
