@@ -33,13 +33,6 @@ public class SA1000Service {
 	@Inject
 	private SqlSession sqlSession;
 
-	/**
-	 * 메소드 설명 : 연차신청내역 조회
-	 * -------------------------------------------------------------------
-	 * 
-	 * @param Map 		param 검색조건 (사용자ID)
-	 * @return List 	list 사용자정보 목록
-	 */
 	public List<Map<String, Object>> sa1000Sel(Map<String, Object> param, HttpSession session) {
 		
 		String searchValue = param.get("SEARCH_VAL").toString();
@@ -67,108 +60,36 @@ public class SA1000Service {
 		if(preRevision.equals("Y")) {
 			param.put("PRE", "");
 		}
-		
-		List<Map<String, Object>> rList = sqlSession.selectList("sa1000Mapper.sa1000Sel", param);
-		
-		return rList;
+
+		return sqlSession.selectList("sa1000Mapper.sa1000Sel", param);
 	}
 
-	/**
-	 * 메소드 설명 : 연차신청내역 조회
-	 * -------------------------------------------------------------------
-	 * 
-	 * @param Map 		param 검색조건 (사용자ID)
-	 * @return List 	list 사용자정보 목록
-	 */
-	public List<Map<String, Object>> sa1001Sel(Map<String, Object> param, HttpSession session) {
-		
-		List<Map<String, Object>> rList = sqlSession.selectList("sa1000Mapper.sa1001Sel", param);
-		
-		return rList;
+	public List<Map<String, Object>> sa1001Sel(Map<String, Object> param) {
+		return sqlSession.selectList("sa1000Mapper.sa1001Sel", param);
 	}
 
-	/**
-	 * 메소드 설명 : 연차신청내역 조회
-	 * -------------------------------------------------------------------
-	 * 
-	 * @param Map 		param 검색조건 (사용자ID)
-	 * @return List 	list 사용자정보 목록
-	 */
-	public List<Map<String, Object>> sa1002Sel(Map<String, Object> param, HttpSession session) {
-		
-		List<Map<String, Object>> rList = sqlSession.selectList("sa1000Mapper.sa1002Sel", param);
-		
-		return rList;
+	public List<Map<String, Object>> sa1002Sel(Map<String, Object> param) {
+		return sqlSession.selectList("sa1000Mapper.sa1002Sel", param);
 	}
 
-	/**
-	 * 메소드 설명 : 연차신청내역 조회
-	 * -------------------------------------------------------------------
-	 * 
-	 * @param Map 		param 검색조건 (사용자ID)
-	 * @return List 	list 사용자정보 목록
-	 */
-	public List<Map<String, Object>> sa1003Sel(Map<String, Object> param, HttpSession session) {
-		
-		List<Map<String, Object>> rList = sqlSession.selectList("sa1000Mapper.sa1003Sel", param);
-		
-		return rList;
+	public List<Map<String, Object>> sa1003Sel(Map<String, Object> param) {
+		return sqlSession.selectList("sa1000Mapper.sa1003Sel", param);
 	}
 
-	/**
-	 * 메소드 설명 : 연차신청내역 조회
-	 * -------------------------------------------------------------------
-	 * 
-	 * @param Map 		param 검색조건 (사용자ID)
-	 * @return List 	list 사용자정보 목록
-	 */
-	public List<Map<String, Object>> sa1004Sel(Map<String, Object> param, HttpSession session) {
-		
-		List<Map<String, Object>> rList = sqlSession.selectList("sa1000Mapper.sa1004Sel", param);
-		
-		return rList;
+	public List<Map<String, Object>> sa1004Sel(Map<String, Object> param) {
+		return sqlSession.selectList("sa1000Mapper.sa1004Sel", param);
 	}
 
-	/**
-	 * 메소드 설명 : 연차신청내역 조회
-	 * -------------------------------------------------------------------
-	 * 
-	 * @param Map 		param 검색조건 (사용자ID)
-	 * @return List 	list 사용자정보 목록
-	 */
-	public List<Map<String, Object>> sa1005Sel(Map<String, Object> param, HttpSession session) {
-		
-		List<Map<String, Object>> rList = sqlSession.selectList("sa1000Mapper.sa1005Sel", param);
-		
-		return rList;
+	public List<Map<String, Object>> sa1005Sel(Map<String, Object> param) {
+		return sqlSession.selectList("sa1000Mapper.sa1005Sel", param);
 	}
 
-	/**
-	 * 메소드 설명 : 연차신청내역 조회
-	 * -------------------------------------------------------------------
-	 * 
-	 * @param Map 		param 검색조건 (사용자ID)
-	 * @return List 	list 사용자정보 목록
-	 */
-	public List<Map<String, Object>> sa1006Sel(Map<String, Object> param, HttpSession session) {
-		
-		List<Map<String, Object>> rList = sqlSession.selectList("sa1000Mapper.sa1006Sel", param);
-		
-		return rList;
+	public List<Map<String, Object>> sa1006Sel(Map<String, Object> param) {
+		return sqlSession.selectList("sa1000Mapper.sa1006Sel", param);
 	}
 
-	/**
-	 * 메소드 설명 : 연차신청내역 조회
-	 * -------------------------------------------------------------------
-	 * 
-	 * @param Map 		param 검색조건 (사용자ID)
-	 * @return List 	list 사용자정보 목록
-	 */
-	public List<Map<String, Object>> sa1007Sel(Map<String, Object> param, HttpSession session) {
-		
-		List<Map<String, Object>> rList = sqlSession.selectList("sa1000Mapper.sa1007Sel", param);
-		
-		return rList;
+	public List<Map<String, Object>> sa1007Sel(Map<String, Object> param) {
+		return sqlSession.selectList("sa1000Mapper.sa1007Sel", param);
 	}
 	
 	/**
@@ -179,7 +100,7 @@ public class SA1000Service {
    	 */
 	public List<Map<String, Object>> sa1000SelExchange(Map<String, Object> param) throws IOException {
 		
-		List<Map<String, Object>> rList = new ArrayList<Map<String,Object>>();
+		List<Map<String, Object>> rList = new ArrayList<>();
 		
 		StringBuilder builder = new StringBuilder("https://www.koreaexim.go.kr/site/program/financial/exchangeJSON");
 		builder.append("?authkey=" + "fCf0P4WdNYuhdkI8kVhucTxJYHGq3RXp");
@@ -213,7 +134,6 @@ public class SA1000Service {
 			
 			rd.close();
 			conn.disconnect();
-			System.out.println("sb : " + sb.toString());
 						
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -229,10 +149,7 @@ public class SA1000Service {
    	 * @return	String	string	판매품의서 번호
    	 */
 	public String sa1000SelSalesNum(Map<String, Object> param) {
-		
-		String rString = sqlSession.selectOne("sa1000Mapper.sa1000SelSalesNum", param);
-		
-		return rString;
+		return sqlSession.selectOne("sa1000Mapper.sa1000SelSalesNum", param);
 	}
 
 	public void sa1000Delete(Map<String, Object> param) {
@@ -259,7 +176,7 @@ public class SA1000Service {
 	}
 
 	@SuppressWarnings("unchecked")
-	public int sa1000MergeData(Map<String, Object> param, HttpSession session) {
+	public int sa1000MergeData(Map<String, Object> param) {
 		logger.debug("sa1000Service > sa1000MergeData :: {}", param);
 
 		int resultCnt = 0;
@@ -310,7 +227,7 @@ public class SA1000Service {
 	@Transactional
 	public Map<String, Object> sa1000Save(Map<String, Object> param, HttpSession session) {
 		
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		Map<String, Object> rtnMap = new HashMap<>();
 		UserInfo vo = (UserInfo) session.getAttribute("User");
 		
 		try {
@@ -335,7 +252,7 @@ public class SA1000Service {
 	@Transactional
 	public Map<String, Object> sa1000Update(Map<String, Object> param, HttpSession session) {
 
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		Map<String, Object> rtnMap = new HashMap<>();
 		UserInfo vo = (UserInfo) session.getAttribute("User");
 
 		try {
@@ -359,7 +276,7 @@ public class SA1000Service {
    	 */
 	public Map<String, Object> sa1000Confirm(Map<String, Object> param, HttpSession session) {
 		
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		Map<String, Object> rtnMap = new HashMap<>();
 		UserInfo vo = (UserInfo) session.getAttribute("User");
 		
 		try {
@@ -376,19 +293,25 @@ public class SA1000Service {
 
 	public Map<String, Object> sa1000UpVersoin(Map<String, Object> param, HttpSession session) {
 
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		Map<String, Object> rtnMap = new HashMap<>();
 		UserInfo vo = (UserInfo) session.getAttribute("User");
 
+		String nextRevision = nextRevisionAdd((String) param.get("REVISION"));
+		param.put("NEXT_REVISION", nextRevision);
+		int count = sqlSession.selectOne("sa1000Mapper.sa1000ConfirmCheck", param);
+
 		try {
-			param.put("REG_ID", vo.getUSER_ID());
-			sqlSession.update("sa1000Mapper.sa1000UpdateVersion", param);
-			sqlSession.insert("sa1000Mapper.sa1000Confirm", param);
-			sqlSession.insert("sa1000Mapper.sa1001Confirm", param);
-			sqlSession.insert("sa1000Mapper.sa1002Confirm", param);
-			sqlSession.insert("sa1000Mapper.sa1003Confirm", param);
-			sqlSession.insert("sa1000Mapper.sa1004Confirm", param);
-			sqlSession.insert("sa1000Mapper.sa1005Confirm", param);
-			sqlSession.insert("sa1000Mapper.sa1006Confirm", param);
+			if (count == 0) {
+				param.put("REG_ID", vo.getUSER_ID());
+				sqlSession.update("sa1000Mapper.sa1000UpdateVersion", param);
+				sqlSession.insert("sa1000Mapper.sa1000Confirm", param);
+				sqlSession.insert("sa1000Mapper.sa1001Confirm", param);
+				sqlSession.insert("sa1000Mapper.sa1002Confirm", param);
+				sqlSession.insert("sa1000Mapper.sa1003Confirm", param);
+				sqlSession.insert("sa1000Mapper.sa1004Confirm", param);
+				sqlSession.insert("sa1000Mapper.sa1005Confirm", param);
+				sqlSession.insert("sa1000Mapper.sa1006Confirm", param);
+			}
 		}catch(Exception e) {
 			e.printStackTrace();
 			rtnMap.put("Errmsg", "오류가 발생하였습니다.");
@@ -396,6 +319,17 @@ public class SA1000Service {
 		}
 
 		return rtnMap;
+	}
+
+	private String nextRevisionAdd(String revision) {
+		String result;
+		int nextRevision = Integer.parseInt(revision) + 1;
+		if (nextRevision < 10) {
+			result = "0" + nextRevision;
+		} else {
+			result = String.valueOf(nextRevision);
+		}
+		return result;
 	}
 
 	/**

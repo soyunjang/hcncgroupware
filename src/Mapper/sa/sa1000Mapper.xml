@@ -288,4 +288,8 @@
 		                               AND SALES_NUM LIKE #{SALES_NUM}
 		                               AND REVISION LIKE #{REVISION};
 	</delete>
+
+	<select id="sa1000ConfirmCheck" parameterType="map" resultType="int">
+		SELECT COUNT(SALES_NUM) FROM SALES_INQUIRY_INFO WHERE SALES_NUM LIKE #{SALES_NUM} AND REVISION LIKE #{NEXT_REVISION};
+	</select>
 </mapper>

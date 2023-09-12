@@ -43,108 +43,44 @@ public class SA1000Controller {
 		return "SA/SA1000";
 	}
 
-	/**
-   	 * 메소드 설명 : 연차신청내역 조회
-   	 * -------------------------------------------------------------------
-   	 * @param	Map		param	검색조건 
-   	 * @return	List	list	연차신청 목록
-   	 */
 	@RequestMapping(value = "/sa1000Sel")
 	public @ResponseBody List<Map<String, Object>> SA1000_SEL(@RequestBody Map<String, Object> param, HttpSession session) {
-		
-		List<Map<String, Object>> list = sa1000Service.sa1000Sel(param, session);
-		return list;
+		return sa1000Service.sa1000Sel(param, session);
 	}
 
-	/**
-   	 * 메소드 설명 : 연차신청내역 조회
-   	 * -------------------------------------------------------------------
-   	 * @param	Map		param	검색조건 
-   	 * @return	List	list	연차신청 목록
-   	 */
 	@RequestMapping(value = "/sa1001Sel")
-	public @ResponseBody List<Map<String, Object>> SA1001_SEL(@RequestBody Map<String, Object> param, HttpSession session) {
-		
-		List<Map<String, Object>> list = sa1000Service.sa1001Sel(param, session);
-		return list;
+	public @ResponseBody List<Map<String, Object>> SA1001_SEL(@RequestBody Map<String, Object> param) {
+		return sa1000Service.sa1001Sel(param);
 	}
 
-	/**
-   	 * 메소드 설명 : 연차신청내역 조회
-   	 * -------------------------------------------------------------------
-   	 * @param	Map		param	검색조건 
-   	 * @return	List	list	연차신청 목록
-   	 */
 	@RequestMapping(value = "/sa1002Sel")
-	public @ResponseBody List<Map<String, Object>> SA1002_SEL(@RequestBody Map<String, Object> param, HttpSession session) {
-		
-		List<Map<String, Object>> list = sa1000Service.sa1002Sel(param, session);
-		return list;
+	public @ResponseBody List<Map<String, Object>> SA1002_SEL(@RequestBody Map<String, Object> param) {
+		return sa1000Service.sa1002Sel(param);
 	}
 
-	/**
-   	 * 메소드 설명 : 연차신청내역 조회
-   	 * -------------------------------------------------------------------
-   	 * @param	Map		param	검색조건 
-   	 * @return	List	list	연차신청 목록
-   	 */
 	@RequestMapping(value = "/sa1003Sel")
-	public @ResponseBody List<Map<String, Object>> SA1003_SEL(@RequestBody Map<String, Object> param, HttpSession session) {
-		
-		List<Map<String, Object>> list = sa1000Service.sa1003Sel(param, session);
-		return list;
+	public @ResponseBody List<Map<String, Object>> SA1003_SEL(@RequestBody Map<String, Object> param) {
+		return sa1000Service.sa1003Sel(param);
 	}
 
-	/**
-   	 * 메소드 설명 : 연차신청내역 조회
-   	 * -------------------------------------------------------------------
-   	 * @param	Map		param	검색조건 
-   	 * @return	List	list	연차신청 목록
-   	 */
 	@RequestMapping(value = "/sa1004Sel")
-	public @ResponseBody List<Map<String, Object>> SA1004_SEL(@RequestBody Map<String, Object> param, HttpSession session) {
-		
-		List<Map<String, Object>> list = sa1000Service.sa1004Sel(param, session);
-		return list;
+	public @ResponseBody List<Map<String, Object>> SA1004_SEL(@RequestBody Map<String, Object> param) {
+		return sa1000Service.sa1004Sel(param);
 	}
 
-	/**
-   	 * 메소드 설명 : 연차신청내역 조회
-   	 * -------------------------------------------------------------------
-   	 * @param	Map		param	검색조건 
-   	 * @return	List	list	연차신청 목록
-   	 */
 	@RequestMapping(value = "/sa1005Sel")
-	public @ResponseBody List<Map<String, Object>> SA1005_SEL(@RequestBody Map<String, Object> param, HttpSession session) {
-		
-		List<Map<String, Object>> list = sa1000Service.sa1005Sel(param, session);
-		return list;
+	public @ResponseBody List<Map<String, Object>> SA1005_SEL(@RequestBody Map<String, Object> param) {
+		return sa1000Service.sa1005Sel(param);
 	}
 
-	/**
-   	 * 메소드 설명 : 연차신청내역 조회
-   	 * -------------------------------------------------------------------
-   	 * @param	Map		param	검색조건 
-   	 * @return	List	list	연차신청 목록
-   	 */
 	@RequestMapping(value = "/sa1006Sel")
-	public @ResponseBody List<Map<String, Object>> SA1006_SEL(@RequestBody Map<String, Object> param, HttpSession session) {
-		
-		List<Map<String, Object>> list = sa1000Service.sa1006Sel(param, session);
-		return list;
+	public @ResponseBody List<Map<String, Object>> SA1006_SEL(@RequestBody Map<String, Object> param) {
+		return sa1000Service.sa1006Sel(param);
 	}
 
-	/**
-   	 * 메소드 설명 : 연차신청내역 조회
-   	 * -------------------------------------------------------------------
-   	 * @param	Map		param	검색조건 
-   	 * @return	List	list	연차신청 목록
-   	 */
 	@RequestMapping(value = "/sa1007Sel")
-	public @ResponseBody List<Map<String, Object>> SA1007_SEL(@RequestBody Map<String, Object> param, HttpSession session) {
-		
-		List<Map<String, Object>> list = sa1000Service.sa1007Sel(param, session);
-		return list;
+	public @ResponseBody List<Map<String, Object>> SA1007_SEL(@RequestBody Map<String, Object> param) {
+		return sa1000Service.sa1007Sel(param);
 	}
 
 	/**
@@ -187,7 +123,7 @@ public class SA1000Controller {
 	public String SA1000_MERGEDATA(@RequestBody Map<String, Object> param, HttpSession session, ModelMap model) {
 		logger.debug("SA1000Controller > sa1000MergeData :: {}", param);
 
-		int resultCnt  = sa1000Service.sa1000MergeData(param, session);
+		int resultCnt  = sa1000Service.sa1000MergeData(param);
 		model.addAttribute("result", resultCnt);
 		return "jsonView";
 	}
@@ -202,7 +138,7 @@ public class SA1000Controller {
 	@RequestMapping(value = "/sa1000Save")
 	public @ResponseBody Map<String, Object> SA1000_SAVE(@RequestBody Map<String, Object> param, HttpSession session) {
 
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		Map<String, Object> rtnMap = new HashMap<>();
 		
 		try {
 			rtnMap = sa1000Service.sa1000Save(param, session);
@@ -225,7 +161,7 @@ public class SA1000Controller {
 	@RequestMapping(value = "/sa1000Update")
 	public @ResponseBody Map<String, Object> SA1000_UPDATE(@RequestBody Map<String, Object> param, HttpSession session) {
 
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		Map<String, Object> rtnMap = new HashMap<>();
 
 		try {
 			rtnMap = sa1000Service.sa1000Update(param, session);
@@ -246,8 +182,8 @@ public class SA1000Controller {
    	 * @return	Map 		rtnMap		추가 성공/실패 확인(0:성공/1:실패)
    	 */
 	@RequestMapping(value = "/sa1000Confirm")
-	public @ResponseBody Map<String, Object> SA1000_CONFIRM(@RequestBody Map<String, Object> param, HttpSession session, ModelMap model) {
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
+	public @ResponseBody Map<String, Object> SA1000_CONFIRM(@RequestBody Map<String, Object> param, HttpSession session) {
+		Map<String, Object> rtnMap = new HashMap<>();
 		
 		try {
 			rtnMap = sa1000Service.sa1000Confirm(param, session);
@@ -261,8 +197,8 @@ public class SA1000Controller {
 	}
 
 	@RequestMapping(value = "/sa1000UpVersoin")
-	public @ResponseBody Map<String, Object> SA1000_UP_VERSION(@RequestBody Map<String, Object> param, HttpSession session, ModelMap model) {
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
+	public @ResponseBody Map<String, Object> SA1000_UP_VERSION(@RequestBody Map<String, Object> param, HttpSession session) {
+		Map<String, Object> rtnMap = new HashMap<>();
 
 		try {
 			rtnMap = sa1000Service.sa1000UpVersoin(param, session);
@@ -283,8 +219,8 @@ public class SA1000Controller {
    	 * @return	Map 		rtnMap		추가 성공/실패 확인(0:성공/1:실패)
    	 */
 	@RequestMapping(value = "/sa1001Copy")
-	public @ResponseBody Map<String, Object> SA1000_COPY(@RequestBody Map<String, Object> param, HttpSession session, ModelMap model) {
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
+	public @ResponseBody Map<String, Object> SA1000_COPY(@RequestBody Map<String, Object> param, HttpSession session) {
+		Map<String, Object> rtnMap = new HashMap<>();
 		
 		try {
 			rtnMap = sa1000Service.sa1001Copy(param, session);
@@ -298,12 +234,10 @@ public class SA1000Controller {
 	}
 
 	@RequestMapping(value = "/sa1000Print")
-	public String SA1000_PRINT(@RequestParam Map<String, Object> param, HttpSession session, ModelMap model) throws Exception {
+	public String SA1000_PRINT(@RequestParam Map<String, Object> param, ModelMap model) {
 		model.addAttribute("param", param);
+		model.addAttribute("sa1000List", sa1000Service.selectSA1000List(param));
 
-		Map<String, Object> sa1000List = sa1000Service.selectSA1000List(param);
-		model.addAttribute("sa1000List", sa1000List);
-		
 		List<Map<String, Object>> sa1002List = sa1000Service.selectSA1002List(param);
 		model.addAttribute("sa1002List", sa1002List);
 		model.addAttribute("sa1002ListCnt", sa1002List.size());
@@ -311,19 +245,12 @@ public class SA1000Controller {
 		List<Map<String, Object>> sa1003List = sa1000Service.selectSA1003List(param);
  		model.addAttribute("sa1003List", sa1003List);
 		model.addAttribute("sa1003ListCnt", sa1003List.size());
-		
-		List<Map<String, Object>> sa1004List = sa1000Service.selectSA1004List(param);
-		model.addAttribute("sa1004List", sa1004List);
-		
-		List<Map<String, Object>> sa1005List = sa1000Service.selectSA1005List(param);
-		model.addAttribute("sa1005List", sa1005List);
-		
-		List<Map<String, Object>> sa1006List = sa1000Service.selectSA1006List(param);
-		model.addAttribute("sa1006List", sa1006List);
-		
-		List<Map<String, Object>> sa1007List = sa1000Service.selectSA1007List(param);
-		model.addAttribute("sa1007List", sa1007List);
-		
+
+		model.addAttribute("sa1004List", sa1000Service.selectSA1004List(param));
+		model.addAttribute("sa1005List", sa1000Service.selectSA1005List(param));
+		model.addAttribute("sa1006List", sa1000Service.selectSA1006List(param));
+		model.addAttribute("sa1007List", sa1000Service.selectSA1007List(param));
+
 		return "SA/SA1000Print";
 	}
 

@@ -222,7 +222,7 @@
 												<dl>
 													<dt>판매금액</dt>
 													<dd>
-														<input type="text" id="COLLECT_SALES_AMOUNT" class="ta-r readonly" placeholder="판매금액(원)">
+														<input type="text" id="COLLECT_SALES_AMOUNT" class="ta-r" placeholder="판매금액(원)">
 													</dd>
 												</dl>
 												<dl>
@@ -773,52 +773,26 @@
 
 				let rowid = $("#table1").getGridParam("selrow");
 				let rowdata = $("#table1").getRowData(rowid);
-				let gridAllData = $("#table1").getRowData();
 
-				let count1 = 0;
-				let count2 = 0;
-				gridAllData.forEach(item => {
-					let check = item.SALES_NUM == rowdata.SALES_NUM.substring(0, 13);
-					let check2 = item.SALES_CONFIRM == '미확정';
-					// 같은 판품번호에 미확정이 있는지 확인
-					if (check && check2) {
-						return count1++;
-					}
-
-					let check3 = item.SALES_NUM.substring(0, 13) == rowdata.SALES_NUM.substring(0, 13);
-					let check4 = parseInt(item.SALES_NUM.substring(13, 15)) > parseInt(rowdata.SALES_NUM.substring(13, 15));
-					let check5 = item.SALES_CONFIRM == '확정';
-					// 확정이고 판매품의서 번호는 같지만 리버전이 높은걸 확인
-					if (check3 && check4 && check5) {
-						return count2++;
-					}
-				});
-``
-				if (count1 > 0) {
-					return false;
-				} else if(count2 > 0) {
-
+				if(rowdata.SALES_CONFIRM == "확정") {
+					// selRowSalesNum = rowdata.SALES_NUM;
+					// console.log('selRowSalesNum : ', selRowSalesNum);
+					updatePreVersion();
 				} else {
-					if(rowdata.SALES_CONFIRM == "확정") {
-						// selRowSalesNum = rowdata.SALES_NUM;
-						// console.log('selRowSalesNum : ', selRowSalesNum);
-						updatePreVersion();
-					} else {
-						setButton('modify');
-						inputAbled();
+					setButton('modify');
+					inputAbled();
 
-						$("#date01_REG_DT").text(rowdata.OBTAIN_REG_DT);
+					$("#date01_REG_DT").text(rowdata.OBTAIN_REG_DT);
 
-						updateGridData(rowdata);
+					updateGridData(rowdata);
 
-						searchGrid1Data(rowdata.SALES_NUM, rowdata.REVISION);
-						searchGrid2Data(rowdata.SALES_NUM, rowdata.REVISION);
-						searchGrid3Data(rowdata.SALES_NUM, rowdata.REVISION);
-						searchGrid4Data(rowdata.SALES_NUM, rowdata.REVISION);
-						searchGrid5Data(rowdata.SALES_NUM, rowdata.REVISION);
-						searchGrid6Data(rowdata.SALES_NUM, rowdata.REVISION);
-						searchGrid7Data(rowdata.SALES_NUM, rowdata.REVISION);
-					}
+					searchGrid1Data(rowdata.SALES_NUM, rowdata.REVISION);
+					searchGrid2Data(rowdata.SALES_NUM, rowdata.REVISION);
+					searchGrid3Data(rowdata.SALES_NUM, rowdata.REVISION);
+					searchGrid4Data(rowdata.SALES_NUM, rowdata.REVISION);
+					searchGrid5Data(rowdata.SALES_NUM, rowdata.REVISION);
+					searchGrid6Data(rowdata.SALES_NUM, rowdata.REVISION);
+					searchGrid7Data(rowdata.SALES_NUM, rowdata.REVISION);
 				}
 			}
 		});
