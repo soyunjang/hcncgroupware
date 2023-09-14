@@ -5,7 +5,6 @@ import com.hs.home.service.HomeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -16,10 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 @Controller
@@ -35,7 +32,7 @@ public class HomeController {
 
 	/* 세션에 사용자 정보가 있으면 메인 페이지로 이동, 없으면 로그인 페이지로 이동 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Locale locale, Model model, HttpSession session, HttpServletResponse response)
+	public String home(HttpSession session, HttpServletResponse response)
 			throws IOException {
 
 		if (session.getAttribute("User") != null) {
@@ -49,9 +46,9 @@ public class HomeController {
 	/* 사용자 정보 조회 */
 	@RequestMapping(value = "/loginCheck")
 	public String loginCheck(String id, String pwd, HttpSession session, HttpServletRequest request,
-			HttpServletResponse res, Model model, RedirectAttributes red) throws UnknownHostException {
+			HttpServletResponse res, RedirectAttributes red) {
 
-		HashMap<String, Object> map = new HashMap<String, Object>();
+		HashMap<String, Object> map = new HashMap<>();
 		String userPw = "";
 
 		try {

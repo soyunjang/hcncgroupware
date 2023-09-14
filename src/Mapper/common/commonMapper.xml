@@ -55,7 +55,10 @@
     
     <!-- 권한부여/변경 사항 저장 -->
     <insert id="insertAuthChange" parameterType="map">
-		EXEC EXCEPTIONAUTH_INS #{USER_ID}, #{USER_IP}, #{EVNT_NM}, #{EVNT_SVRY}, #{HOST_NM}, #{DEPT_CD}
+        INSERT INTO LOG_USER_AUTH(SYS_ID, PROCESS_DT, USER_ID, USER_IP,
+                                  EVNT_NM, EVNT_SVRY, HOST_NM, DEPT_CD)
+        VALUES('HCNC', CONVERT(VARCHAR(19), GETDATE(), 121), #{USER_ID},
+               #{USER_IP}, #{EVNT_NM}, #{EVNT_SVRY}, #{HOST_NM}, #{DEPT_CD});
     </insert>    
     
     <!-- 사용자 정보 변경 저장 -->
@@ -65,16 +68,13 @@
     
     <!-- 시스템코드 목록 -->
     <select id="selectLists" parameterType="map" resultType="map">
-    	SELECT A.SYS_ITEM_CD AS CODE
-    		 , A.SYS_ITEM_NAME AS VALUE
-		  FROM SYSCODE_DETAIL A
-		 WHERE A.SYS_CLASS_CD = #{LIST_TYPE}
-		 ORDER BY A.SYS_ITEM_CD
+    	SELECT SYS_ITEM_CD AS CODE, SYS_ITEM_NAME AS VALUE
+		  FROM SYSCODE_DETAIL
+		 WHERE SYS_CLASS_CD = #{LIST_TYPE}
+		 ORDER BY SYS_ITEM_CD
     </select>
 
     <select id="selectSalesNum" parameterType="map" resultType="map">
-        SELECT DISTINCT A.PROJECT_NM AS CODE
-             , A.SALES_NUM AS VALUE
-          FROM SALES_INQUIRY_INFO A
+        SELECT DISTINCT PROJECT_NM AS CODE, SALES_NUM AS VALUE FROM SALES_INQUIRY_INFO
     </select>
 </mapper>

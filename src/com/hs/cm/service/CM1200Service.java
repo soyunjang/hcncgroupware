@@ -104,7 +104,6 @@ public class CM1200Service {
 				if(param.get("CHANGE").equals("CHANGEAHTU")) {
 					param.put("EVNT_NM", "권한변경");
 					param.put("EVNT_SVRY", "중");
-					param.put("DEPT_CD", vo.getDEPT_CD());
 					param.put("USER_IP", vo.getUSER_IP());
 
 					logger.debug("CM1200Service > CHANGEAHTU :: {}", param);

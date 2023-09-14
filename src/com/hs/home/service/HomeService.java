@@ -30,9 +30,7 @@ public class HomeService {
 	public List<Map<String,Object>> userMenuList(Map<String, Object> param, String id){
 		
 		param.put("USER_ID", id);
-		logger.debug("HomeService > userMenuList ::::::::::::::::::::::::::::::::::::::: {}", param);	
-		List<Map<String,Object>> rList = sqlSession.selectList("homeMapper.userMenuList", param);
-		return rList;
+		return sqlSession.selectList("homeMapper.userMenuList", param);
 	}
 
 	/* 접속 정보 저장 */

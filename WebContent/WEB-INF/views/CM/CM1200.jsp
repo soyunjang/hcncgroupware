@@ -409,6 +409,7 @@
 			}
 
 			getAjaxJsonData("cm1200Save", params, "reLoadCallback");
+			$("#pop02_txt01_DEPT").val("");
 			$("#viewForm1").dialog("close");
 		}
 		
