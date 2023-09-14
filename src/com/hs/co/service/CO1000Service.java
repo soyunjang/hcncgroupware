@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 
 @Service("co1000Service")
@@ -36,6 +37,8 @@ public class CO1000Service {
 	 * @return List list 법인카드 사용현황 목록
 	 */
 	public List<Map<String, Object>> co1000SelTemp(Map<String, Object> param) {
+		String replace = param.get("FILE_NM").toString().replace(" ", "_");
+		param.replace("FILE_NM", replace);
 		return sqlSession.selectList("co1000Mapper.co1000SelTemp", param);
 	}
 
@@ -100,13 +103,25 @@ public class CO1000Service {
 				int index = 0;
 				Map<String, Object> map = new HashMap<>();
 				for (Cell cell : cells) {
-					if (cell.getRowIndex() > 0) {
-						map.put(wordArray[index], cell.getCellType() == 0 ? cell.getNumericCellValue() : cell.getStringCellValue());
+					if (cell.getRowIndex() > 0 && cell.getColumnIndex() < 6) {
+						if (wordArray[index].equals("USE_DATE")) {
+							map.put(wordArray[index], cell.getStringCellValue().length() < 9 ?
+									dataFormatter(cell.getStringCellValue()) :
+									cell.getStringCellValue());
+						} else if (wordArray[index].equals("APPROVAL")) {
+							map.put(wordArray[index], cell.getCellType() == 0 ?
+									cell.getNumericCellValue() :
+									cell.getStringCellValue()
+											.replace(",", "")
+											.replaceAll(" ", ""));
+						} else {
+							map.put(wordArray[index], cell.getStringCellValue());
+						}
 					}
 					index++;
 				}
 				if (map.size() > 0) {
-					map.put("FILE_NM", excelFile.getOriginalFilename());
+					map.put("FILE_NM", excelFile.getOriginalFilename().replace(" ","_"));
 					map.put("REG_ID", user.getUSER_ID());
 					mapList.add(map);
 				}
@@ -122,6 +137,14 @@ public class CO1000Service {
 			e.printStackTrace();
 		}
 		return insertCnt;
+	}
+
+	private LocalDate dataFormatter(String date) {
+		return LocalDate.parse(new StringBuilder()
+				.append(date.substring(0, 4)).append("-")
+				.append(date.substring(4, 6)).append("-")
+				.append(date.substring(6, 8))
+		);
 	}
 
 	private String getFileType(String fileName) {
