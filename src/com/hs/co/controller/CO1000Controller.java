@@ -1,20 +1,21 @@
 package com.hs.co.controller;
 
-import java.util.*;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
-
+import com.hs.co.service.CO1000Service;
 import com.hs.home.controller.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.hs.co.service.CO1000Service;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class CO1000Controller {
@@ -55,9 +56,8 @@ public class CO1000Controller {
 	
 	@RequestMapping(value = "/co1000MergeData", method = RequestMethod.POST)
 	public String co1000MergeData(final MultipartHttpServletRequest multiRequest,
-								  @RequestParam Map<String, Object> param, ModelMap model,
-								  @ModelAttribute("User") UserInfo user) {
-		logger.debug("PopupController > co1000MergeData :: {}", param);
+								  @ModelAttribute("User") UserInfo user,
+								  Model model) {
 
 		MultipartFile file = null;
       	Iterator<String> iterator = multiRequest.getFileNames();
@@ -65,29 +65,18 @@ public class CO1000Controller {
       	if(iterator.hasNext()) {
             file = multiRequest.getFile(iterator.next());
         }
-        
-        int insertCnt = co1000Service.co1000MergeData(file, param, user);
-		model.addAttribute("insertCnt", insertCnt);
+
+		model.addAttribute("insertCnt", co1000Service.co1000MergeData(file, user));
 		return "jsonView";
 	}
 
 	@RequestMapping(value = "/co1000MergeDataSave", method = RequestMethod.POST)
-	public String co1000MergeDataSave(final MultipartHttpServletRequest multiRequest,
-									  @RequestParam Map<String, Object> param, ModelMap model,
-									  @ModelAttribute("User") UserInfo user) {
-		logger.debug("PopupController > co1000MergeDataSave :: {}", param);
-
+	public String co1000MergeDataSave(@RequestParam Map<String, Object> param,
+									  @ModelAttribute("User") UserInfo user,
+									  Model model) {
 		param.put("USER_ID", user.getUSER_ID());
 
-		MultipartFile file = null;
-		Iterator<String> iterator = multiRequest.getFileNames();
-
-		if(iterator.hasNext()) {
-			file = multiRequest.getFile(iterator.next());
-		}
-
-		int insertCnt = co1000Service.co1000MergeDataSave(file, param);
-		model.addAttribute("insertCnt", insertCnt);
+		model.addAttribute("insertCnt", co1000Service.co1000MergeDataSave(param));
 		return "jsonView";
 	}
 
@@ -101,8 +90,8 @@ public class CO1000Controller {
 
 	@ResponseBody
 	@RequestMapping(value = "/co1000Delete", method = RequestMethod.POST)
-	public Map<String, Object> CO1000_DELETE(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
-
+	public Map<String, Object> CO1000_DELETE(@RequestBody Map<String, Object> param,
+											 @ModelAttribute("User") UserInfo user) {
 		Map<String, Object> rtnMap = new HashMap<>();
 		param.put("USER_ID", user.getUSER_ID());
 		try {
@@ -112,7 +101,6 @@ public class CO1000Controller {
 			rtnMap.put("Errmsg", "오류가 발생하였습니다.");
 			rtnMap.put("Errstate", -1);
 		}
-
 		return rtnMap;
 	}
 

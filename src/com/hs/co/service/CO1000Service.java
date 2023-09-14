@@ -14,10 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -57,17 +57,17 @@ public class CO1000Service {
 		return rtnMap;
 	}
 
-	public int co1000MergeDataSave(MultipartFile excelFile, @RequestParam Map<String, Object> param) {
+	public int co1000MergeDataSave(Map<String, Object> param) {
 		return sqlSession.insert("co1000Mapper.co1000Ins", param);
 	}
 
-	public int co1000MergeData(MultipartFile excelFile, @RequestParam Map<String, Object> param, UserInfo user) {
+	public int co1000MergeData(MultipartFile excelFile, UserInfo user) {
 
 		int insertCnt = 0;
 
 		try {
 			String fileType = getFileType(excelFile.getOriginalFilename());
-			insertCnt = tempDataInsert(excelFile, param, fileType, user);
+			insertCnt = tempDataInsert(excelFile, fileType, user);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -75,7 +75,7 @@ public class CO1000Service {
 		return insertCnt;
 	}
 
-	private int tempDataInsert(MultipartFile excelFile, @RequestParam Map<String, Object> param, String fileType, UserInfo user) {
+	private int tempDataInsert(MultipartFile excelFile, String fileType, UserInfo user) {
 		
 		Workbook workbook;
 		HSSFSheet hSFSheet = null;
@@ -103,20 +103,35 @@ public class CO1000Service {
 				int index = 0;
 				Map<String, Object> map = new HashMap<>();
 				for (Cell cell : cells) {
-					if (cell.getRowIndex() > 0 && cell.getColumnIndex() < 6) {
-						if (wordArray[index].equals("USE_DATE")) {
-							map.put(wordArray[index], cell.getStringCellValue().length() < 9 ?
-									dataFormatter(cell.getStringCellValue()) :
-									cell.getStringCellValue());
-						} else if (wordArray[index].equals("APPROVAL")) {
-							map.put(wordArray[index], cell.getCellType() == 0 ?
-									cell.getNumericCellValue() :
-									cell.getStringCellValue()
+					if (cell.getRowIndex() > 0 && cell.getColumnIndex() < 6) { //EXCEL 2행부터 시작하고 6열까지만 저장
+						Object value = null;
+						switch (cell.getCellType()) {
+							case 0 : // 숫자로 들어올때
+								if (wordArray[index].equals("USE_DATE")) {
+									String replace = new DecimalFormat().format(cell.getNumericCellValue()).replace(",", "");
+									value = dataFormatter(replace);
+								} else {
+									value = cell.getNumericCellValue();
+								}
+								break;
+							case 1 : // 문자로 들어올때
+								if (wordArray[index].equals("USE_DATE")) {
+									int length = cell.getStringCellValue().length();
+									if (length == 8) {
+										value = dataFormatter(cell.getStringCellValue());
+									} else {
+										value = cell.getStringCellValue().replace(".", "-");
+									}
+								} else if (wordArray[index].equals("APPROVAL")) {
+									value = cell.getStringCellValue()
 											.replace(",", "")
-											.replaceAll(" ", ""));
-						} else {
-							map.put(wordArray[index], cell.getStringCellValue());
+											.replaceAll(" ", "");
+								} else {
+									value = cell.getStringCellValue();
+								}
+								break;
 						}
+						map.put(wordArray[index], value);
 					}
 					index++;
 				}
@@ -131,20 +146,18 @@ public class CO1000Service {
 				}
 			}
 			insertCnt += sqlSession.insert("co1000Mapper.co1000InsTmp", mapList);
-
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return insertCnt;
 	}
 
-	private LocalDate dataFormatter(String date) {
+	private String dataFormatter(String date) {
 		return LocalDate.parse(new StringBuilder()
 				.append(date.substring(0, 4)).append("-")
 				.append(date.substring(4, 6)).append("-")
 				.append(date.substring(6, 8))
-		);
+		).toString();
 	}
 
 	private String getFileType(String fileName) {
@@ -168,7 +181,7 @@ public class CO1000Service {
 
 	public Map<String, Object> co1000SelectDelete(Map<String, Object> param, UserInfo user) {
 		param.put("REG_ID", user.getUSER_ID());
-		int count = sqlSession.selectOne("co1000Mapper.co1000SelectCheck", param);
+		int count = sqlSession.selectOne("co1000Mapper.co1000SelectCheck", param); // 작성된게 있는지 확인
 		if (count == 0) {
 			sqlSession.delete("co1000Mapper.co1000SelectDelete", param);
 			param.put("DELETE", "Y");
