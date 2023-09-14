@@ -7,16 +7,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 @Controller
@@ -26,38 +22,36 @@ public class CO1100Controller {
 	private CO1100Service co1100Service;
 	
 	private static final Logger logger = LoggerFactory.getLogger(CO1100Controller.class);
-	
+
+	@ModelAttribute("User")
+	public UserInfo userInfo(HttpSession session) {
+		return (UserInfo) session.getAttribute("User");
+	}
+
 	@RequestMapping(value = "/co1100")
 	public String co1100() {
 		return "CO/CO1100";
 	}
 
 	@RequestMapping(value = "/co1100Project")
-	public String co1100Project(Locale locale, Model model, @RequestParam Map<String, Object> param) {
+	public String co1100Project(Model model, @RequestParam Map<String, Object> param) {
 		model.addAttribute("param", param);
 
 		return "CO/CO1100Project";
 	}
 
 	@RequestMapping(value = "/co1100Sel")
-	public @ResponseBody List<Map<String, Object>> CO1100_SEL(@RequestBody Map<String, Object> param, HttpSession session) {
-
-		UserInfo user = (UserInfo) session.getAttribute("User");
-
+	public @ResponseBody List<Map<String, Object>> CO1100_SEL(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
 		return co1100Service.co1100Sel(param, user);
 	}
 
 	@RequestMapping(value = "/co1100SelProject")
 	public @ResponseBody List<Map<String, Object>> CO1100_SEL_PROJECT(@RequestBody Map<String, Object> param) {
-
-		List<Map<String, Object>> list = co1100Service.co1100SelProject(param);
-		return list;
+		return co1100Service.co1100SelProject(param);
 	}
 
 	@RequestMapping(value = "/co1100Save")
-	public @ResponseBody Map<String, Object> CO1100_SAVE(@RequestBody Map<String, Object> param, HttpSession session) {
-
-		UserInfo user = (UserInfo) session.getAttribute("User");
+	public @ResponseBody Map<String, Object> CO1100_SAVE(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
 
 		Map<String, Object> rtnMap = new HashMap<>();
 
@@ -73,9 +67,8 @@ public class CO1100Controller {
 	}
 
 	@RequestMapping(value = "/co1100MergeData")
-	public String CO1100_MERGEDATA(@RequestBody Map<String, Object> param, HttpSession session, ModelMap model) {
+	public String CO1100_MERGEDATA(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user, ModelMap model) {
 		logger.debug("CO1100Controller > co1100MergeData :: {}", param);
-		UserInfo user = (UserInfo) session.getAttribute("User");
 		int resultCnt  = co1100Service.co1100MergeData(param, user);
 		model.addAttribute("result", resultCnt);
 		return "jsonView";
@@ -84,13 +77,8 @@ public class CO1100Controller {
 	@RequestMapping(value = "/co1100Print")
 	public String CO1100_PRINT(@RequestParam Map<String, Object> param, ModelMap model) {
 		model.addAttribute("param", param);
-
-		Map<String, Object> co1000List = co1100Service.selectCO1000List(param);
-		model.addAttribute("co1000List", co1000List);
-
-		List<Map<String, Object>> co1001List = co1100Service.selectCO1001List(param);
-		model.addAttribute("co1001List", co1001List);
-
+		model.addAttribute("co1000List", co1100Service.selectCO1000List(param));
+		model.addAttribute("co1001List", co1100Service.selectCO1001List(param));
 		return "CO/CO1100Print";
 	}
 }

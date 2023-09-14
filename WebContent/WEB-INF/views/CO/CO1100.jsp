@@ -471,8 +471,9 @@
 				, footerrow: true
 			});
 
-			var newWidth = $("#table1_SALES_NUM").width() + $("#table1_PROJECT_NM").outerWidth(true) - 5;
+			let newWidth = $("#table1_SALES_NUM").width() + $("#table1_PROJECT_NM").outerWidth(true) - 5;
 			console.log('newWidth : ', newWidth);
+
 			jQuery("#table1").jqGrid("setLabel", "SALES_NUM", "<em style='font-style: inherit;'>판품번호</em>", "", {
 												style : "width: " + newWidth + "px;",
 												colspan : "2"
@@ -531,13 +532,14 @@
 		/* Table 조회 */
 		function searchGridData(){
 			let cardNum = $("#sel01_COMPANY option:checked").text();
+
 			let searchParam = {
 				COMPANY: cardNum == "전체" ? $("#sel01_COMPANY").val() : $("#sel01_COMPANY option:checked").text().split(/\s+/g)[0].trim(),
 				CARD_NUM : cardNum == "전체" ? cardNum : $("#sel01_COMPANY option:checked").text().split(/\s+/g)[1],
 				DATE: $("#date01_DATE").val(),
-				CARD_NUMBER : $("#txt01_CARD_NUM").val().trim()
+				CARD_NUMBER : $("#txt01_CARD_NUM").val() == undefined ? "" : $("#txt01_CARD_NUM").val().trim()
 			};
-			
+
 			getAjaxJsonData("co1100Sel", searchParam, "searchGridDataCallBack");
 		};
 		
