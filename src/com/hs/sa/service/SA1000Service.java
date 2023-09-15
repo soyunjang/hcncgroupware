@@ -33,34 +33,7 @@ public class SA1000Service {
 	@Inject
 	private SqlSession sqlSession;
 
-	public List<Map<String, Object>> sa1000Sel(Map<String, Object> param, HttpSession session) {
-		
-		String searchValue = param.get("SEARCH_VAL").toString();
-		String preRevision = param.get("PRE_REVISION").toString();		
-
-		param.put("SALES_NUM", "");
-		param.put("PROJECT_NM", "");
-		param.put("OBTAIN_ACCOUNT", "");
-		param.put("OBTAIN_SALES_PIC", "");
-		param.put("OBTAIN_PM", "");
-		param.put("PRE", "N");
-		
-		if(searchValue.equals("saleNo")) {
-			param.put("SALES_NUM", param.get("SEARCH_TEXT").toString());
-		} else if(searchValue.equals("projectNm")) {
-			param.put("PROJECT_NM", param.get("SEARCH_TEXT").toString());
-		} else if(searchValue.equals("custNm")) {
-			param.put("OBTAIN_ACCOUNT", param.get("SEARCH_TEXT").toString());
-		} else if(searchValue.equals("chargeNm")) {
-			param.put("OBTAIN_SALES_PIC", param.get("SEARCH_TEXT").toString());
-		}else if(searchValue.equals("pmNm")) {
-			param.put("OBTAIN_PM", param.get("SEARCH_TEXT").toString());
-		}
-		
-		if(preRevision.equals("Y")) {
-			param.put("PRE", "");
-		}
-
+	public List<Map<String, Object>> sa1000Sel(Map<String, Object> param) {
 		return sqlSession.selectList("sa1000Mapper.sa1000Sel", param);
 	}
 

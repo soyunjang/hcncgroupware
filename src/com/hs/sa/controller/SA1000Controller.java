@@ -1,26 +1,18 @@
 package com.hs.sa.controller;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
-
+import com.hs.sa.service.SA1000Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import com.hs.sa.service.SA1000Service;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class SA1000Controller {
@@ -39,13 +31,13 @@ public class SA1000Controller {
    	 * @return	String 	result	판매품의서관리 페이지ID
    	 */
 	@RequestMapping(value = "/sa1000")
-	public String sa1000(Locale locale, Model model) {
+	public String sa1000() {
 		return "SA/SA1000";
 	}
 
 	@RequestMapping(value = "/sa1000Sel")
-	public @ResponseBody List<Map<String, Object>> SA1000_SEL(@RequestBody Map<String, Object> param, HttpSession session) {
-		return sa1000Service.sa1000Sel(param, session);
+	public @ResponseBody List<Map<String, Object>> SA1000_SEL(@RequestBody Map<String, Object> param) {
+		return sa1000Service.sa1000Sel(param);
 	}
 
 	@RequestMapping(value = "/sa1001Sel")
@@ -92,9 +84,7 @@ public class SA1000Controller {
 	@ResponseBody
 	@RequestMapping(value = "/sa1000SelExchange")
 	public List<Map<String, Object>> SA1000_SEL_EXCHANGE(@RequestBody Map<String, Object> param) throws IOException {
-				
-		List<Map<String, Object>> list = sa1000Service.sa1000SelExchange(param);
-		return list;
+		return sa1000Service.sa1000SelExchange(param);
 	}	
 
 	/**
@@ -120,7 +110,7 @@ public class SA1000Controller {
 	 * @return
 	 */
 	@RequestMapping(value = "/sa1000MergeData")
-	public String SA1000_MERGEDATA(@RequestBody Map<String, Object> param, HttpSession session, ModelMap model) {
+	public String SA1000_MERGEDATA(@RequestBody Map<String, Object> param, ModelMap model) {
 		logger.debug("SA1000Controller > sa1000MergeData :: {}", param);
 
 		int resultCnt  = sa1000Service.sa1000MergeData(param);

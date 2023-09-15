@@ -43,13 +43,36 @@
     </select>
     
     <!-- Head Table 저장 -->
-    <update id="cm1000HeadSave" parameterType="map">
-		EXEC CM1000_HEAD_SAVE #{SYS_CLASS_CD}, #{SYS_CLASS_NAME}, #{USE_YN}, #{MEMO}, #{USER_ID}
+    <insert id="cm1000HeadSave" parameterType="map">
+        INSERT (SYS_CLASS_CD, SYS_CLASS_NAME, USE_YN, MEMO REG_ID, REG_DT)
+        VALUES(#{SYS_CLASS_CD}, #{SYS_CLASS_NAME}, #{USE_YN}, #{MEMO}, #{USER_ID}, CONVERT(VARCHAR(19), GETDATE(), 121)
+    </insert>
+
+    <update id="cm1000HeadUpdate" parameterType="map">
+        UPDATE SYSCODE_HEAD SET SYS_CLASS_NAME = #{SYS_CLASS_NAME}, USE_YN = #{USE_YN}, MEMO = #{MEMO},
+                                UPT_ID= #{USER_ID}, UPT_DT = CONVERT(VARCHAR(19), GETDATE(), 121)
+        WHERE SYS_CLASS_CD LIKE #{SYS_CLASS_CD}
     </update>
+
+    <select id="cm1000HeadCount" parameterType="map" resultType="int">
+        SELECT COUNT(*) FROM SYSCODE_HEAD WHERE SYS_CLASS_CD LIKE #{SYS_CLASS_CD}
+    </select>
+
     
     <!-- Detail Table 저장 -->
-    <update id="cm1000DetailSave" parameterType="map">
-		EXEC CM1000_DETAIL_SAVE #{SYS_CLASS_CD}, #{SYS_ITEM_CD}, #{SYS_ITEM_NAME}, #{USE_YN}, #{MEMO}, #{USER_ID}
+    <insert id="cm1000DetailSave" parameterType="map">
+        INSERT INTO SYSCODE_DETAIL (SYS_CLASS_CD, SYS_ITEM_CD, SYS_ITEM_NAME, USE_YN, MEMO, REG_ID, REG_DT)
+        VALUES(#{SYS_CLASS_CD}, #{SYS_ITEM_CD}, #{SYS_ITEM_NAME}, #{USE_YN}, #{MEMO}, #{USER_ID}, CONVERT(VARCHAR(19), GETDATE(), 121))
+    </insert>
+
+    <update id="cm1000DetailUpdate" parameterType="map">
+        UPDATE SYSCODE_DETAIL
+        SET SYS_ITEM_NAME = #{SYS_ITEM_NAME}, USE_YN = #{USE_YN}, MEMO = #{MEMO}, UPT_ID = #{USER_ID}, UPT_DT = CONVERT(VARCHAR(19), GETDATE(), 121)
+        WHERE SYS_CLASS_CD LIKE #{SYS_CLASS_CD} AND SYS_ITEM_CD LIKE #{SYS_ITEM_CD}
     </update>
+
+    <select id="cm1000DetailCount" parameterType="map" resultType="int">
+        SELECT COUNT(*) FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD LIKE #{SYS_CLASS_CD} AND SYS_ITEM_CD LIKE #{SYS_ITEM_CD}
+    </select>
 
 </mapper>

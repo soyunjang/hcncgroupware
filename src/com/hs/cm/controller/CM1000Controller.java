@@ -8,11 +8,13 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import com.hs.home.controller.UserInfo;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,7 +28,12 @@ public class CM1000Controller {
 	private CM1000Service cm1000Service;
 	
 	private static final Logger logger = LoggerFactory.getLogger(CM1000Controller.class);
-	
+
+	@ModelAttribute("User")
+	public UserInfo userInfo(HttpSession session) {
+		return (UserInfo) session.getAttribute("User");
+	}
+
 	/**
    	 * 메소드 설명 : 공통코드관리 페이지로 이동
    	 * -------------------------------------------------------------------
@@ -35,7 +42,7 @@ public class CM1000Controller {
    	 * @return	String 	result	공통코드관리 페이지ID
    	 */
 	@RequestMapping(value = "/cm1000")
-	public String cm1000(Locale locale, Model model){
+	public String cm1000(){
 		return "CM/CM1000";
 	}
 
@@ -47,9 +54,7 @@ public class CM1000Controller {
    	 */
 	@RequestMapping(value = "/cm1000HeadSel")
 	public @ResponseBody List<Map<String, Object>> cm1000HeadSel(@RequestBody Map<String, Object> param) {
-
-		List<Map<String,Object>> list = cm1000Service.cm1000HeadSel(param);
-		return list;
+		return cm1000Service.cm1000HeadSel(param);
 	}
 
 	/**
@@ -60,9 +65,7 @@ public class CM1000Controller {
    	 */
 	@RequestMapping(value = "/cm1000DetailSel")
 	public @ResponseBody List<Map<String, Object>> cm1000DetailSel(@RequestBody Map<String, Object> param) {
-		
-		List<Map<String,Object>> list = cm1000Service.cm1000DetailSel(param);
-		return list;
+		return cm1000Service.cm1000DetailSel(param);
 	}
 
 	/**
@@ -73,9 +76,7 @@ public class CM1000Controller {
    	 */
 	@RequestMapping(value = "/cm1000HeadCnt")
 	public @ResponseBody Map<String, Object> cm1000HeadCnt(@RequestBody Map<String, Object> param) {
-		
-		Map<String,Object> map = cm1000Service.cm1000HeadCnt(param);
-		return map;
+		return cm1000Service.cm1000HeadCnt(param);
 	}
 
 	/**
@@ -86,9 +87,7 @@ public class CM1000Controller {
    	 */
 	@RequestMapping(value = "/cm1000DetailCnt")
 	public @ResponseBody Map<String, Object> cm1000DetailCnt(@RequestBody Map<String, Object> param) {
-		
-		Map<String,Object> map = cm1000Service.cm1000DetailCnt(param);
-		return map;
+		return cm1000Service.cm1000DetailCnt(param);
 	}
 
 	/**
@@ -99,12 +98,12 @@ public class CM1000Controller {
    	 * @return	Map 		rtnMap		추가 성공/실패 확인(0:성공/1:실패)
    	 */
 	@RequestMapping(value = "/cm1000HeadSave")
-	public @ResponseBody Map<String, Object> cm1000HeadSave(@RequestBody Map<String, Object> param, HttpSession session) {
+	public @ResponseBody Map<String, Object> cm1000HeadSave(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
 		
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		Map<String, Object> rtnMap = new HashMap<>();
 		
 		try {
-			rtnMap = cm1000Service.cm1000HeadSave(param, session);
+			rtnMap = cm1000Service.cm1000HeadSave(param, user);
 			System.out.println("cm1000HeadSave 성공/실패 여부 : " + rtnMap);
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -123,13 +122,12 @@ public class CM1000Controller {
    	 * @return	Map 		rtnMap		추가 성공/실패 확인(0:성공/1:실패)
    	 */
 	@RequestMapping(value = "/cm1000DetailSave")
-	public @ResponseBody Map<String, Object> cm1000DetailSave(@RequestBody Map<String, Object> param, HttpSession session) {
+	public @ResponseBody Map<String, Object> cm1000DetailSave(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
 		
-		Map <String, Object> rtnMap = new HashMap<String, Object>();
+		Map <String, Object> rtnMap = new HashMap<>();
 		
 		try {
-			rtnMap = cm1000Service.cm1000DetailSave(param, session);
-			System.out.println("cm1000DetailSave 성공/실패 여부 : " + rtnMap);
+			rtnMap = cm1000Service.cm1000DetailSave(param, user);
 		}catch(Exception e) {
 			e.printStackTrace();
 			rtnMap.put("Errmsg", "오류가 발생하였습니다.");

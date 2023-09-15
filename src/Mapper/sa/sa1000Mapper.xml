@@ -6,71 +6,242 @@
 <mapper namespace="sa1000Mapper">
 	<!-- Table 조회 -->
 	<select id="sa1000Sel" parameterType="map" resultType="map">
-		EXEC SA1000_SEL #{SALES_NUM}, #{PROJECT_NM}, #{OBTAIN_ACCOUNT}, #{OBTAIN_SALES_PIC}, #{OBTAIN_PM}, #{PRE}
+		SELECT CASE WHEN A.SALES_CONFIRM = 'N' THEN CONCAT(A.SALES_NUM, '-') ELSE CONCAT(A.SALES_NUM, '-', A.REVISION) END AS SALES_NUM,
+			   A.REVISION,
+			   A.PRE_VERSION,
+			   (SELECT dbo.FN_COMMON_NM('CONFIRM', A.SALES_CONFIRM)) AS SALES_CONFIRM,
+			   A.PROJECT_NM,
+			   A.OBTAIN_ACCOUNT,
+			   A.OBTAIN_PRICE,
+			   A.OBTAIN_SALES_PIC,
+			   A.OBTAIN_PM,
+			   A.OBTAIN_REG_DT,
+			   A.OBTAIN_UPT_DT,
+			   A.OBTAIN_REASON,
+			   A.OFFICE_TYPE,
+			   A.OBTAIN_CONTRACT_DT,
+			   A.OBTAIN_ITEM,
+			   A.OBTAIN_PROJECT_START,
+			   A.OBTAIN_PROJECT_END,
+			   A.OBTAIN_ITEM_CNT,
+			   FORMAT(A.COLLECT_UNIT_PRICE, N'#,0') AS COLLECT_UNIT_PRICE,
+			   FORMAT(A.COLLECT_SALES_AMOUNT, N'#,0') AS COLLECT_SALES_AMOUNT,
+			   A.COLLECT_MARGIN_PER,
+			   FORMAT(A.COLLECT_MARGIN, N'#,0') AS COLLECT_MARGIN,
+			   A.COLLECT_FINAL_MARGIN_PER,
+			   FORMAT(A.COLLECT_FINAL_MARGIN, N'#,0') AS COLLECT_FINAL_MARGIN
+		FROM SALES_INQUIRY_INFO A
+		<choose>
+			<when test='SEARCH_TEXT != Null and !SEARCH_TEXT.equals("")'>
+				WHERE
+				<if test='SEARCH_VAL.equals("saleNo")'>
+					CONCAT(A.SALES_NUM, '-', A.REVISION) LIKE '%' + #{SEARCH_TEXT} + '%'
+				</if>
+				<if test='SEARCH_VAL.equals("projectNm")'>
+					A.PROJECT_NM LIKE '%' + #{SEARCH_TEXT} + '%'
+				</if>
+				<if test='SEARCH_VAL.equals("custNm")'>
+					A.OBTAIN_ACCOUNT LIKE '%' + #{SEARCH_TEXT} + '%'
+				</if>
+				<if test='SEARCH_VAL.equals("chargeNm")'>
+					A.OBTAIN_SALES_PIC LIKE '%' + #{SEARCH_TEXT} + '%'
+				</if>
+				<if test='SEARCH_VAL.equals("pmNm")'>
+					A.OBTAIN_PM LIKE '%' + #{SEARCH_TEXT} + '%'
+				</if>
+				<if test='PRE_REVISION.equals("N")'>
+					AND A.PRE_VERSION LIKE #{PRE_REVISION}
+				</if>
+			</when>
+			<otherwise>
+				<if test='PRE_REVISION.equals("N")'>
+					WHERE A.PRE_VERSION LIKE #{PRE_REVISION}
+				</if>
+			</otherwise>
+		</choose>
+		ORDER BY A.SALES_NUM DESC, A.REVISION DESC
 	</select>
 	
 	<!-- Table 조회 -->
 	<select id="sa1001Sel" parameterType="map" resultType="map">
-		EXEC SA1000_SEL_COLLECT #{SALES_NUM}, #{REVISION}
+		SELECT A.COLLECT_CONDITION, A.COLLECT_DT, A.COLLECT_PAYMENT, A.COLLECT_CASH_DT, A.COLLECT_PRICE, A.COLLECT_PER, A.SALES_NUM, A.REVISION
+		FROM SALES_INQUIRY_COLLECT A
+		WHERE A.SALES_NUM = LEFT(#{SALES_NUM}, 12)
+		  AND A.REVISION = #{REVISION}
 	</select>
 	
 	<!-- Table 조회 -->
 	<select id="sa1002Sel" parameterType="map" resultType="map">
-		EXEC SA1000_SEL_BUY #{SALES_NUM}, #{REVISION}
+		SELECT A.BUY_ITEM, A.BUY_CNT, A.BUY_UNIT, A.BUY_COIN, A.BUY_UNIT_PRICE, A.BUY_PRICE, A.BUY_PURCHASE, A.BUY_PAYMENT,
+			   A.BUY_MEMO, A.SALES_NUM, A.REVISION
+		FROM SALES_INQUIRY_BUY A
+		WHERE A.SALES_NUM = LEFT(#{SALES_NUM}, 12)
+		  AND A.REVISION = #{REVISION}
+		ORDER BY A.SALES_NUM, A.REVISION, A.BUY_ITEM
 	</select>
 	
 	<!-- Table 조회 -->
 	<select id="sa1000SelList" parameterType="map" resultType="map">
-		EXEC SA1000_SEL_LIST #{SALES_NUM}, #{REVISION}
+		SELECT CASE WHEN LEN(A.SALES_NUM) = 9 THEN A.SALES_NUM ELSE CONCAT(A.SALES_NUM, '-', A.REVISION) END AS SALES_NUM,
+			   A.REVISION,
+			   A.PRE_VERSION,
+			   A.PROJECT_NM,
+			   A.OBTAIN_ACCOUNT,
+			   A.OBTAIN_PRICE,
+			   A.OBTAIN_SALES_PIC,
+			   A.OBTAIN_PM,
+			   A.OBTAIN_REG_DT,
+			   A.OBTAIN_UPT_DT,
+			   A.OBTAIN_REASON,
+			   A.OFFICE_TYPE,
+			   A.OBTAIN_CONTRACT_DT,
+			   A.OBTAIN_ITEM,
+			   A.OBTAIN_PROJECT_START,
+			   A.OBTAIN_PROJECT_END,
+			   A.OBTAIN_ITEM_CNT,
+			   A.COLLECT_UNIT_PRICE,
+			   A.COLLECT_SALES_AMOUNT,
+			   A.COLLECT_MARGIN_PER,
+			   A.COLLECT_MARGIN,
+			   A.COLLECT_FINAL_MARGIN_PER,
+			   A.COLLECT_FINAL_MARGIN,
+			   (SELECT SUM(CONVERT(FLOAT, BUY_PRICE)) FROM SALES_INQUIRY_BUY WHERE SALES_NUM = #{SALES_NUM} AND REVISION = #{REVISION}) AS BUY_PRICE,
+			   (SELECT SUM(MANHOUR_PRICE) FROM SALES_INQUIRY_MANHOUR WHERE SALES_NUM = #{SALES_NUM} AND REVISION = #{REVISION}) AS MANHOUR_PRICE,
+			   (SELECT SUM(EXPENSE_PRICE) FROM SALES_INQUIRY_EXPENSE WHERE SALES_NUM = #{SALES_NUM} AND REVISION = #{REVISION}) AS EXPENSE_PRICE
+		FROM SALES_INQUIRY_INFO A
+		WHERE A.SALES_NUM = LEFT(#{SALES_NUM}, 12)
+		  AND A.REVISION = #{REVISION}
 	</select>
 	
 	<!-- Table 조회 -->
 	<select id="sa1002SelList" parameterType="map" resultType="map">
-		EXEC SA1002_SEL_LIST #{SALES_NUM}, #{REVISION}
+		SELECT (SELECT dbo.FN_COMMON_NM('ITEM', A.BUY_ITEM)) AS BUY_ITEM,
+			   A.BUY_CNT,
+			   A.BUY_UNIT,
+			   A.BUY_COIN,
+			   A.BUY_UNIT_PRICE,
+			   A.BUY_PRICE,
+			   A.BUY_PURCHASE,
+			   A.BUY_PAYMENT,
+			   A.BUY_MEMO,
+			   A.SALES_NUM,
+			   A.REVISION
+		FROM SALES_INQUIRY_BUY A
+		WHERE A.SALES_NUM = LEFT(#{SALES_NUM}, 12)
+		  AND A.REVISION = #{REVISION}
+		ORDER BY A.SALES_NUM, A.REVISION, A.BUY_ITEM
 	</select>
 	
 	<!-- Table 조회 -->
 	<select id="sa1003SelList" parameterType="map" resultType="map">
-		EXEC SA1003_SEL_LIST #{SALES_NUM}, #{REVISION}
+		SELECT (SELECT dbo.FN_COMMON_NM('ITEMMM', A.MANHOUR_ITEM)) AS MANHOUR_ITEM,
+			   A.MANHOUR_CNT,
+			   A.MANHOUR_UNIT,
+			   A.MANHOUR_UNIT_PRICE,
+			   A.MANHOUR_PRICE,
+			   A.MANHOUR_MEMO,
+			   A.SALES_NUM,
+			   A.REVISION,
+			   (SELECT COUNT(*) FROM SALES_INQUIRY_BUY WHERE SALES_NUM = LEFT(#{SALES_NUM}, 12) AND REVISION = #{REVISION}) AS IDX
+		FROM SALES_INQUIRY_MANHOUR A
+		WHERE A.SALES_NUM = LEFT(#{SALES_NUM}, 12)
+		  AND A.REVISION = #{REVISION}
+		ORDER BY A.MANHOUR_ITEM
 	</select>
 	
 	<!-- Table 조회 -->
 	<select id="sa1004SelList" parameterType="map" resultType="map">
-		EXEC SA1004_SEL_LIST #{SALES_NUM}, #{REVISION}
+		SELECT A.EXPENSE_ITEM,
+			   A.EXPENSE_PRICE,
+			   A.EXPENSE_MEMO,
+			   A.SALES_NUM,
+			   A.REVISION,
+			   (SELECT COUNT(*) FROM SALES_INQUIRY_BUY WHERE SALES_NUM = LEFT(#{SALES_NUM}, 12) AND REVISION = #{REVISION}) AS IDX1,
+			   (SELECT COUNT(*) FROM SALES_INQUIRY_MANHOUR WHERE SALES_NUM = LEFT(#{SALES_NUM}, 12) AND REVISION = #{REVISION}) AS IDX2
+		FROM SALES_INQUIRY_EXPENSE A
+		WHERE A.SALES_NUM = LEFT(#{SALES_NUM}, 12)
+		  AND A.REVISION = #{REVISION}
 	</select>
 	
 	<!-- Table 조회 -->
 	<select id="sa1003Sel" parameterType="map" resultType="map">
-		EXEC SA1000_SEL_MANHOUR #{SALES_NUM}, #{REVISION}
+		SELECT A.MANHOUR_ITEM,
+			   A.MANHOUR_CNT,
+			   A.MANHOUR_UNIT,
+			   A.MANHOUR_UNIT_PRICE,
+			   A.MANHOUR_PRICE,
+			   A.MANHOUR_MEMO,
+			   A.SALES_NUM,
+			   A.REVISION
+		FROM SALES_INQUIRY_MANHOUR A
+		WHERE A.SALES_NUM = LEFT(#{SALES_NUM}, 12)
+		  AND A.REVISION = #{REVISION}
+		ORDER BY A.MANHOUR_ITEM
 	</select>
 	
 	<!-- Table 조회 -->
 	<select id="sa1004Sel" parameterType="map" resultType="map">
-		EXEC SA1000_SEL_EXPENSE #{SALES_NUM}, #{REVISION}
+		SELECT A.EXPENSE_ITEM,
+			   A.EXPENSE_PRICE,
+			   A.EXPENSE_MEMO,
+			   A.SALES_NUM,
+			   A.REVISION
+		FROM SALES_INQUIRY_EXPENSE A
+		WHERE A.SALES_NUM = LEFT(#{SALES_NUM}, 12)
+		  AND A.REVISION = #{REVISION}
 	</select>
 	
 	<!-- Table 조회 -->
 	<select id="sa1005Sel" parameterType="map" resultType="map">
-		EXEC SA1000_SEL_COST #{SALES_NUM}, #{REVISION}
+		SELECT A.COST_VENDOR,
+			   A.COST_CNT,
+			   A.COST_ORDER_PRICE,
+			   A.COST_UNIT_PRICE,
+			   A.COST_UNIT_PRICE,
+			   A.COST_SERVICE_UNIT_PRICE,
+			   A.COST_SERVICE_PRICE,
+			   A.COST_TOTAL_PRICE,
+			   A.COST_MEMO,
+			   A.SALES_NUM,
+			   A.REVISION
+		FROM SALES_INQUIRY_COST A
+		WHERE A.SALES_NUM = LEFT(#{SALES_NUM}, 12)
+		  AND A.REVISION = #{REVISION}
 	</select>
 	
 	<!-- Table 조회 -->
 	<select id="sa1006Sel" parameterType="map" resultType="map">
-		EXEC SA1000_SEL_SM #{SALES_NUM}, #{REVISION}
+		SELECT A.SM_ITEM,
+			   A.SM_CLASS,
+			   A.SM_DELIVERY_DT,
+			   A.SM_INSPECT_DT,
+			   A.SM_WARRANTY,
+			   A.SM_MAINTENANCE_DT,
+			   A.SM_MAINTENANCE_PRICE,
+			   A.SM_BACKLINE,
+			   A.SM_BACKLINE_GOAL,
+			   A.SM_BACKLINE_PRICE,
+			   A.SALES_NUM,
+			   A.REVISION
+		FROM SALES_INQUIRY_SM A
+		WHERE A.SALES_NUM = LEFT(#{SALES_NUM}, 12)
+		  AND A.REVISION = #{REVISION}
 	</select>
 	
 	<!-- Table 조회 -->
 	<select id="sa1007Sel" parameterType="map" resultType="map">
-		EXEC SA1000_SEL_DETAIL #{SALES_NUM}, #{REVISION}
+		SELECT A.DETAIL_TRANSACTIONAL,
+			   A.DETAIL_SIGNIFICANT,
+			   A.SALES_NUM,
+			   A.REVISION
+		FROM SALES_INQUIRY_INFO A
+		WHERE A.SALES_NUM = LEFT(#{SALES_NUM}, 12)
+		  AND A.REVISION = #{REVISION};
 	</select>
 	
 	<!-- 판매품의서 번호 조회 -->
 	<select id="sa1000SelSalesNum" parameterType="map" resultType="String">
 		EXEC SA1000_SEL_SALESNUM #{OFFICE_TYPE}
-	</select>
-	
-	<select id="selectSA1000List" parameterType="map" resultType="String">
-		EXEC SA1000_SEL_PRINT #{SALES_NUM}, #{REVISION}
 	</select>
 	
 	<!-- Table 저장 -->
