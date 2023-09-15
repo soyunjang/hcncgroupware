@@ -19,11 +19,19 @@
 	<!-- 공통코드 조회 -->
     <select id="getCommonCode" parameterType="map" resultType="map">
 		EXEC GET_COMMONCODE #{sysClassCd}
+        SELECT SYS_CLASS_CD, SYS_ITEM_CD, SYS_ITEM_NAME, USE_YN, MEMO
+        FROM SYSCODE_DETAIL
+        WHERE SYS_CLASS_CD = #{sysClassCd}
+          AND USE_YN = 'Y';
     </select>
     
 	<!-- 공통코드 조회 -->
     <select id="getCommonCodeEsc" parameterType="map" resultType="map">
-		EXEC GET_COMMONCODE_ESC #{sysClassCd}
+        SELECT SYS_CLASS_CD, SYS_ITEM_CD, SYS_ITEM_NAME, USE_YN, MEMO
+        FROM SYSCODE_DETAIL
+        WHERE SYS_CLASS_CD = #{sysClassCd}
+          AND USE_YN = 'Y'
+        ORDER BY SYS_ITEM_NAME;
     </select>
 
     <!-- 카드정보 조회 -->
@@ -40,17 +48,22 @@
 
     <!-- 권한분류 조회 -->
     <select id="getAuthCode" parameterType="map" resultType="map">
-		EXEC GET_AUTHCODE
+        SELECT AUTH_TYPE_CD, AUTH_TYPE_NAME FROM AUTH_TYPE_HEAD WHERE USE_YN = 'Y';
 	</select>
     
     <!-- 로그 저장 -->
     <insert id="insertMenuLog" parameterType="map">
-		EXEC MENULOG_INS #{SYS_ID}, #{USER_ID}, #{MENU_ID}, #{USER_IP}, #{HOST_NM}, #{DEPT_CD}
+        INSERT INTO LOG_ACCESS(SYS_ID, PROCESS_DT, USER_ID, MENU_ID, MENU_NAME, USER_IP, HOST_NM, DEPT_CD)
+        VALUES(#{SYS_ID}, CONVERT(VARCHAR(19), GETDATE(), 121), #{USER_ID}, #{MENU_ID},
+                (SELECT dbo.FN_MENU_NM(#{MENU_ID})), #{USER_IP}, #{HOST_NM}, #{DEPT_CD})
     </insert>
     
     <!-- 예외사항 저장 -->
     <insert id="insertExceptionLog" parameterType="map">
-		EXEC EXCEPTIONLOG_INS #{USER_ID}, #{USER_IP}, #{EVNT_CD}, #{EVNT_NM}, #{EVNT_DETAIL}, #{EVNT_SVRY}, #{PROG_NM}, #{HOST_NM}
+        INSERT INTO LOG_EXCEPTION(SYS_ID, PROCESS_DT, USER_ID, USER_IP, EVNT_CD, EVNT_NM, EVNT_DETAIL, EVNT_SVRY,
+                                  PROG_NM, HOST_NM)
+        VALUES('HCNC', CONVERT(VARCHAR(19), GETDATE(), 121), #{USER_ID}, #{USER_IP}, #{EVNT_CD}, #{EVNT_NM},
+                #{EVNT_DETAIL}, #{EVNT_SVRY}, #{PROG_NM}, #{HOST_NM});
     </insert>
     
     <!-- 권한부여/변경 사항 저장 -->
@@ -63,7 +76,12 @@
     
     <!-- 사용자 정보 변경 저장 -->
     <insert id="insertUserInfo" parameterType="map">
-    	EXEC CM0000_EXCEPTION_USER_INS #{REG_USERID}, #{REG_IP}, #{HOST_NM}, #{USER_ID}
+        INSERT INTO LOG_USER_INFO(SYS_ID, PROCESS_DT, REG_USER, REG_IP, EVNT_NM, EVNT_SVRY,
+                    HOST_NM, USER_ID, USER_NM, DEPT_CD, GRADE_CD, AUTH_TYPE_CD, ENTER_DT)
+        SELECT 'HCNC' AS SYS_ID, CONVERT(VARCHAR(19), GETDATE(), 121), #{REG_USERID}, #{REG_IP}, '사용자정보 변경', '중', #{HOST_NM},
+               #{USER_ID}, USER_NM, DEPT_CD, GRADE_CD, AUTH_TYPE_CD, ENTER_DT
+        FROM USER_INFO
+        WHERE USER_ID = #{USER_ID};
     </insert>
     
     <!-- 시스템코드 목록 -->
