@@ -384,7 +384,7 @@
 	<section class="con-section" id="register-2">
 		<div style="display: flex;justify-content: space-between;">
 			<div>
-				<p>작성일자 : <span id="date-span">${co1000List.USE_DATE}</span></p>
+				<p>작성일자 : <span id="date-span"></span></p>
 				<p>카드번호 : <span>${co1000List.CARD_NUM}</span><span class="padding-l">[${co1000List.COMPANY}]</span></p>
 			</div>
 			<div style="text-align: right;">
@@ -401,13 +401,9 @@
 	            <td rowspan="2" class="td-60">계정과목</td>
 	            <td rowspan="2" class="td-100">거래처</td>
 	            <td rowspan="2" class="td-100">내역</td>
-	            <td colspan="2" class="td-75">금액(원)</td>
+	            <td class="td-75">금액(원)</td>
 	            <td rowspan="2" class="td-75">비고</td>
 	        </tr>
-			<tr class="td-color font-w">
-				<td class="td-35">승인금액</td>
-				<td class="td-35">취소금액</td>
-			</tr>
 	        <c:choose>
 		        <c:when test="${fn:length(co1001List) > 0 }">
 		        	<tbody id="table-bottom">
@@ -419,7 +415,6 @@
 					        	<td><span id="accout">${item.ACCOUNT}</span></td>
 					        	<td><span id="breakdown">${item.BREAKDOWN}</span></td>
 					        	<td class="align-r padding-r"><span id="approval">${item.APPROVAL}</span></td>
-					        	<td class="align-r padding-r"><span id="refund">${item.REFUND}</span></td>
 					        	<td class="align-l padding-l"><span id="memo">${item.MEMO}</span></td>
 					        </tr>
 		        		</c:forEach>
@@ -433,14 +428,13 @@
 			        	<td><span id="accout"></span></td>
 			        	<td><span id="breakdown"></span></td>
 			        	<td><span id="approval"></span></td>
-			        	<td><span id="refund"></span></td>
 			        	<td><span id="memo"></span></td>
 			        </tr>
 		        </c:otherwise>
 		    </c:choose>
 	        <tr class="td-color font-w h-20">
 	            <td colspan="5">총 계</td>
-	            <td colspan="2" class="align-r padding-r"><span><fmt:formatNumber value="${co1000List.TOTAL}" pattern="#,###" /></span></td>
+	            <td class="align-r padding-r"><span><fmt:formatNumber value="${co1000List.TOTAL}" pattern="#,###" /></span></td>
 	            <td class="align-r padding-r"><span>주식회사 에이치씨엔씨</span></td>
 	        </tr>
 	    </table>
@@ -448,6 +442,10 @@
 </div>
 
 <script>
+	const useDate = ${co1000List.USE_DATE};
+	const useDateSpan = document.querySelector('#date-span');
+	useDateSpan.innerText = useDate.toString().substring(0, 4) + "년 " + useDate.toString().substring(4, 6) + "월 " + useDate.toString().substring(6, 8) + "일";
+
 	$(document).ready(function() {
 		$('#btnPrint').click(function() {
 			window.print();
