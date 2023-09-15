@@ -1,6 +1,29 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
+<style>
+	.search-zone-info {
+		height: 112px;
+	}
+	.search-wrap-info2 {
+		top: 56px;
+		position: relative;
+	}
+	#holiday-info-text1, #holiday-info-text2 {
+		color: red;
+		font-size: 1.3rem;
+		letter-spacing: 2px;
+	}
+	#holiday-info-text1 {
+		margin: 10px 0px 0px 30px;
+		padding-top: 10px;
+
+	}
+	#holiday-info-text2 {
+		margin-top: 0;
+		margin-left: 50px;
+	}
+</style>
 	<body>
 		<!-- .contents-wrap 컨텐츠영역 START -->
 		<div class="contents-wrap an1000-page">
@@ -82,6 +105,12 @@
 						</dl>
 					</div>
 				</div>
+				<div class="search-wrap-info2">
+					<div class="sch-box-info">
+						<p id="holiday-info-text1"></p>
+						<p id="holiday-info-text2"></p>
+					</div>
+				</div>
 			</div>
 			<!-- .search-wrap 검색영역 END -->
 			
@@ -97,7 +126,7 @@
 	                        <div class="btn-right-box">
 	                            <ul>
 									<li><a href="javascript:void(0);" id="btn01_PRINT">출력</a></li>
-	                            	<li><a href="javascript:void(0);" id="btn01_INSERT">추가</a></li>
+	                            	<li><a href="javascript:void(0);" id="btn01_INSERT">작성</a></li>
 									<li><a href="javascript:void(0);" id="btn01_UPDATE" class="dis-n">신청취소</a></li>
 	                            </ul>
 	                        </div>
@@ -192,6 +221,10 @@
 											<input type="text" id="pop01_txt01_REASON" Placeholder="사유" class="wp100">
 										</td>
 									</tr>
+									<tr>
+
+										<th class="req" colspan="4">※ 휴가신청서는 서면 결재 받으셔야 합니다.</th>
+									</tr>
 								</tbody>
 							</table>
 						</section>
@@ -267,22 +300,26 @@
 		/* 공통코드_다국어 */
 		let langHead;
 		let langPop1;
-		let userDept = '${User.DEPT_CD}'
+		const userDept = '${User.DEPT_CD}'
+		const userEnterDate = '${Holiday.ENTER_DT}'
+		const userName = '${User.USER_NM}'
 
 		/* 공통코드_콤보박스 */ 
 		commonCodeSelectAdd("pop01_sel01_TYPE", getCommonCode('HOLIDAY'), 'N');
 		commonCodeSelectAdd("sel01_HOLIDAY_TYPE", getCommonCode('HOLIDAY'), 'Y');
+
+
 
 		/* Document가 로드되었을 때 실행되는 코드 */
 		$(document).ready(function() {
 			function init() {
 				jQuery("#table1").jqGrid('setGridWidth', (jQuery(".table-wrap").width()),true);
 			}
-			
+
 			jQuery(window).on('resize.jqGrid', function () {
 				jQuery("#table1").jqGrid('setGridWidth', (jQuery(".table-wrap").width()),true);
 			});
-			
+
 			// 화면ID, 화면ID사이즈(6:CM1000/13:CM1000_Detail), 다국어
 			langHead = getLangCode("AN1000", 6, "${LANG}");
 			langPop1 = getLangCodeDetail("AN1000_Pop3", 11, "${LANG}");
@@ -314,13 +351,22 @@
 			if (count == 0) {
 				autoOpenModalPopup();
 			}
+
+			holidayPeriodGuideWord(userEnterDate);
+
 		});
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 버튼
+
 		/* 출력 버튼 */
 		$("#btn01_PRINT").on({
 			click: function(){
 				let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
+
+				if (rowData.length > 1 || (rowData instanceof Array == true && rowData instanceof Object == true) ) {
+					toast("정보", "출력할 휴가를 선택해주시기 바랍니다.", "info");
+					return false;
+				}
 				let valueArr = [
 					rowData.GRADE_CD, rowData.GRADE_NM,
 					rowData.HOLIDAY_CNT, rowData.HOLIDAY_START,
@@ -328,43 +374,8 @@
 					rowData.HOLIDAY_TYPE, rowData.USER_NM,
 					rowData.USER_ID
 				];
-				let nameArr = [
-					"gradeCd", "gradeNm",
-					"holidayCnt", "holidayStart",
-					"holidayEnd", "holidayReason",
-					"holidayType","userNm",
-					"userId"
-				];
-				if (rowData.length > 1 || (rowData instanceof Array == true && rowData instanceof Object == true) ) {
-					toast("정보", "출력할 휴가를 선택해주시기 바랍니다.", "info");
-					return false;
-				}
-				let windowWidth = window.outerWidth;
-				let windowHeight = window.outerHeight;
-				let openWidth = 1025;
-				let openHeight = 1000;
-				let top = (windowHeight - openHeight) / 2;
-				let left = (windowWidth - openWidth) / 2;
-				const url = '/an1000/print';
-				const target = 'an1000Print';
-				const option = 'width=' + openWidth + 'px , height=' + openWidth + 'px , top=' + top + 'px , left=' + left + 'px , toolbar=no, menubar=no, lacation=no, scrollbars=no, status=no';
 
-				const form = document.querySelector('form');
-				form.action = url;
-				form.method = 'post';
-				form.target = target
-
-				valueArr.forEach((item, i) => {
-					let hiddenField = document.createElement("input");
-					hiddenField.setAttribute("type", "hidden");
-					hiddenField.setAttribute("name", nameArr[i]);
-					hiddenField.setAttribute("value", item);
-					form.appendChild(hiddenField);
-				});
-
-				window.open("", target, option);
-				form.submit();
-				form.innerHTML = "";
+				holidayPrint(valueArr);
 			}
 		});
 
@@ -381,7 +392,7 @@
 			}
 		});
 		
-		/* 추가 버튼 */
+		/* 작성 버튼 */
 		$("#btn01_INSERT").on({
 			click: function(){
 				checkAction = "C";
@@ -455,7 +466,7 @@
 					HOLIDAY_REASON: $('#pop01_txt01_REASON').val()
 				}
 
-				getAjaxJsonData('/an1000', param, '', 'POST');
+				getAjaxJsonData('/an1000', param, 'holidayGetAfterSave', 'POST');
 
 				setTimeout(() => {
 					if($("#txt01_USER_NM").val().length > 0) {
@@ -487,7 +498,7 @@
 				holidayInfoSel(null);
 			}
 		}
-		
+
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 그리드
 		/* jqGrid 셋팅 */
 		function setGrid(){
@@ -689,13 +700,13 @@
 						text : pop01_btn01_SAVE,
 	                    click : function(){
 							if($('#pop01_date01_START').val() == ''){
-								toast("경고", "휴가시작일을 입력해주세요.", "error");
+								toast("정보", "휴가시작일을 입력해주세요.", "info");
 								return false;
 							} else if($('#pop01_date01_END').val() == ''){
-								toast("경고", "휴가종료일을 입력해주세요.", "error");
+								toast("정보", "휴가종료일을 입력해주세요.", "info");
 								return false;
 							} else if($('#pop01_txt01_REASON').val() == ''){
-								toast("경고", "사유을 입력해주세요.", "error");
+								toast("정보", "사유을 입력해주세요.", "info");
 								return false;
 							}
 							let idsH = $("#table1").jqGrid('getDataIDs');
@@ -801,7 +812,7 @@
 								toast("정보", "선택된 사용자가 없습니다.", "info");
 								return false;
 							} else {
-								var rowdata = $("#table3").getRowData(rowid);
+								let rowdata = $("#table3").getRowData(rowid);
 
 								$("#pop01_txt01_USER_ID").val(rowdata.USER_ID);
 								$("#pop01_txt01_USER_NM").val(rowdata.USER_NM);
@@ -857,7 +868,7 @@
 					]
 					if (check.indexOf(true) >= 0) {
 						console.log(check.indexOf(true));
-						toast("경고", "휴가기간 중복으로 확인해 주세요.(" + $('#pop01_date01_START').val() + "~" + $('#pop01_date01_END').val()+")", "error");
+						toast("정보", "휴가기간 중복으로 확인해 주세요.(" + $('#pop01_date01_START').val() + "~" + $('#pop01_date01_END').val()+")", "info");
 						$('#pop01_date01_START').val("")
 						$('#pop01_date01_END').val("");
 						return;
@@ -894,7 +905,7 @@
 			} else if (startDate != '' && endDate != '') {
 				// 반차, 민방위, 공식 휴무일이 아닌 경우
 				if (new Date(startDate) > new Date(endDate)) {
-					toast("경고", "휴가기간을 확인해 주세요.", "error");
+					toast("정보", "휴가기간을 확인해 주세요.", "info");
 					$('#pop01_date01_END').val(startDate);
 				}
 				let url = '/an1000/publicHoliday?startDate=' + startDate + '&endDate=' + endDate;
@@ -965,6 +976,87 @@
 			if (new Date($("#date01_START").val()) > new Date($("#date01_END").val())) {
 				$("#date01_END").val($("#date01_START").val())
 			}
+		}
+
+		/**
+		 * 휴가 저장 후 출력 조회
+		 */
+		function holidayGetAfterSave(data) {
+			let valueArr = [
+				data.GRADE_CD, data.GRADE_NM,
+				data.HOLIDAY_CNT, data.HOLIDAY_START,
+				data.HOLIDAY_END, data.HOLIDAY_REASON,
+				data.HOLIDAY_TYPE, data.USER_NM,
+				data.USER_ID
+			];
+			holidayPrint(valueArr);
+		}
+
+		/**
+		 * 휴가 출력
+		 */
+		function holidayPrint(valueArr) {
+
+			let nameArr = [
+				"gradeCd", "gradeNm",
+				"holidayCnt", "holidayStart",
+				"holidayEnd", "holidayReason",
+				"holidayType", "userNm",
+				"userId"
+			];
+
+			let windowWidth = window.outerWidth;
+			let windowHeight = window.outerHeight;
+			let openWidth = 1025;
+			let openHeight = 1000;
+			let top = (windowHeight - openHeight) / 2;
+			let left = (windowWidth - openWidth) / 2;
+			const url = '/an1000/print';
+			const target = 'an1000Print';
+			const option = 'width=' + openWidth + 'px , height=' + openWidth + 'px , top=' + top + 'px , left=' + left + 'px , toolbar=no, menubar=no, lacation=no, scrollbars=no, status=no';
+
+			const form = document.querySelector('form');
+			form.action = url;
+			form.method = 'post';
+			form.target = target
+
+			valueArr.forEach((item, i) => {
+				let hiddenField = document.createElement("input");
+				hiddenField.setAttribute("type", "hidden");
+				hiddenField.setAttribute("name", nameArr[i]);
+				hiddenField.setAttribute("value", item);
+				form.appendChild(hiddenField);
+			});
+
+			window.open("", target, option);
+			form.submit();
+			form.innerHTML = "";
+		}
+
+		/**
+		 * 연차 기간 안내 문구
+		 */
+		function holidayPeriodGuideWord (enterDate) {
+			let userEnterDate = new Date(enterDate);
+			let userEnterDateNext = new Date(new Date(userEnterDate).setDate(userEnterDate.getDate() - 1));
+			let today = new Date();
+			let startDate, endDate;
+
+			for (let i = 0; i < 100; i++) {
+				startDate = new Date(userEnterDate.getFullYear() + i, userEnterDate.getMonth() + 1, userEnterDate.getDate());
+				endDate = new Date(userEnterDateNext.getFullYear() + i + 1, userEnterDateNext.getMonth() + 1, userEnterDateNext.getDate());
+				if (startDate <= today && today < endDate) {
+					console.log(startDate, endDate);
+					break;
+				}
+			}
+
+			const holidayInfoText1 = document.querySelector('#holiday-info-text1');
+			const holidayInfoText2 = document.querySelector('#holiday-info-text2');
+			holidayInfoText1.innerText = "※ " + userName + "님의 미사용 연차는 갱신 시 이월되지 않으니 기한 내에 모두 사용하여 주십시오.";
+			holidayInfoText2.innerText = "(사용 기한: 입사일 기준 갱신되는 날짜 " + startDate.getFullYear() + "." + startDate.getMonth() + "." + startDate.getDate() + "~"
+					+ endDate.getFullYear() + "." + endDate.getMonth() + "." + endDate.getDate() + ")";;
+
 		}
 	</script>
 </html>

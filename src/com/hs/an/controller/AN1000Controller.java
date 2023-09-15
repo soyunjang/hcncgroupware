@@ -69,9 +69,9 @@ public class AN1000Controller {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/an1000", method = RequestMethod.POST)
-	public void an1000_save(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
-
+	public Map<String, Object> an1000_save(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
 		an1000Service.an1000Save(param, user);
+		return an1000Service.an1000GetHolidayAfterSave(param, user);
 	}
 
 	/**

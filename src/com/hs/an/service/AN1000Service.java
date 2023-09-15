@@ -27,7 +27,7 @@ public class AN1000Service {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final String[] HOLIDAY_CHECK_TYPE = {"ANNUAL", "HALF01", "HALF02", "OFFICE01"};
 
-	protected enum Type {
+    protected enum Type {
 		PLUS, MINUS
 	}
 
@@ -117,6 +117,13 @@ public class AN1000Service {
 			throw new RuntimeException("휴가 신청 취소 에러 발생", e);
 		}
 	}
+
+	public Map<String, Object> an1000GetHolidayAfterSave(Map<String, Object> param, UserInfo user) {
+		Map<String, Object> result = sqlSession.selectOne("an1000Mapper.an1000GetHolidayAfterSave", param);
+		logger.info(result.toString());
+		return sqlSession.selectOne("an1000Mapper.an1000GetHolidayAfterSave", param);
+	}
+
 
 	/**
 	 * 휴가 출력 조회
@@ -241,10 +248,7 @@ public class AN1000Service {
 	 * @return List 	list 사용자정보 목록
 	 */
 	public List<Map<String, Object>> an1000SelUser(Map<String, Object> param) {
-
-		List<Map<String, Object>> rList = sqlSession.selectList("an1000Mapper.an1000SelUser", param);
-
-		return rList;
+		return sqlSession.selectList("an1000Mapper.an1000SelUser", param);
 	}
 
 }

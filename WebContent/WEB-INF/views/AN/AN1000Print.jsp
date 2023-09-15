@@ -137,6 +137,15 @@
 	    margin-top: 20px;
 	    margin-left: 10px;
 	}
+	#btnPrint {
+		display: block;
+		background: #DE012B no-repeat 15px center;
+		color: #fff;
+		font-weight: bold;
+		padding: 6px 20px 6px 20px;
+		border-radius: 5px;
+		cursor: pointer;
+	}
 	.column-text {
 	    line-height: 14px;
 	    width: 25px;
@@ -243,7 +252,7 @@
 	    <img src="/resources/img/common/hcnc_logo_web.png" alt="HCNC LOGO">
 		<h1>휴가신청서</h1>
 	    <div class="btn-box">
-	        <input type="button" id="btnPrint" class="btn btn-primary" value="출력">
+	        <input type="button" id="btnPrint" class="btn" value="출력">
 	    </div>
 	</div>
 	<section class="con-section" id="register-1">
