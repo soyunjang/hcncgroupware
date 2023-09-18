@@ -184,10 +184,10 @@
 		 */
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 공통코드
 		/* 공통코드_다국어 */
-		var langHead;
+		let langHead;
 		
 		/* 변수 선언 */
-		var verification = 0; // 중복확인 여부 CHECK 지역변수 (0: 중복확인 안눌려짐, 1: 중복확인 버튼 눌려짐)
+		let verification = 0; // 중복확인 여부 CHECK 지역변수 (0: 중복확인 안눌려짐, 1: 중복확인 버튼 눌려짐)
 	
 		/* 공통코드_콤보박스 */ 
 		// 검색조건
@@ -352,29 +352,29 @@
 		/* jqGrid 셋팅 */
 		function setGrid(){
 			$("#table1").jqGrid({
-				mtype: 'POST'
-				, datatype: 'local'
-				, jsonReader: {
+				mtype: 'POST',
+				datatype: 'local',
+				jsonReader: {
 					repeatitems: false
-				}
-				, colNames: langHead
-				, colModel: [
-					{name:'MENU_PID'		, align:'center'	, width: '5%'}
-					, {name:'MENU_ID'		, align:'center'	, width: '5%'}
-					, {name:'MENU_NAME'		, align:'left'		, width: '15%'}
-					, {name:'MENU_GROUP'	, align:'center'	, width: '5%'}
-					, {name:'MENU_DES'		, align:'center'	, width: '20%'}
-					, {name:'PROG_ID'		, align:'center'	, width: '8%'}
-					, {name:'PROG_PATH'		, align:'center'	, width: '8%'}
-					, {name:'SORT_NO'		, align:'center'	, width: '5%'}
-					, {name:'USE_YN'		, align:'center'	, width: '5%'}
-					, {name:'MEMO'			, align:'left'		, width: '20%'}
-				]
-				, autowidth: true
-				, shrinkToFit: false
-				, rowNum : 5000
-			 	, onSelectRow: function(rowid, status, iCol, cellcontent, e){
-			 		var rowData = $("#table1").getRowData(rowid);
+				},
+			 	colNames: langHead,
+			 	colModel: [
+					{name:'MENU_PID'	, align:'center'	, width: '5%' },
+					{name:'MENU_ID'		, align:'center'	, width: '5%' },
+					{name:'MENU_NAME'	, align:'left'		, width: '15%'},
+					{name:'MENU_GROUP'	, align:'center'	, width: '5%' },
+					{name:'MENU_DES'	, align:'center'	, width: '20%'},
+					{name:'PROG_ID'		, align:'center'	, width: '8%' },
+					{name:'PROG_PATH'	, align:'center'	, width: '8%' },
+					{name:'SORT_NO'		, align:'center'	, width: '5%' },
+					{name:'USE_YN'		, align:'center'	, width: '5%' },
+					{name:'MEMO'		, align:'left'		, width: '20%'}
+				],
+				autowidth: true,
+				shrinkToFit: false,
+				rowNum : 5000,
+			 	onSelectRow: function(rowid, status, iCol, cellcontent, e){
+			 		let rowData = $("#table1").getRowData(rowid);
 			 		updateGridData(rowData);
 				}
 			});
@@ -389,7 +389,7 @@
 	 		$("#pop01_sel01_USE_YN option").filter(function() {return this.text == rowdata.USE_YN;}).attr('selected', true);
 			$('#pop01_txt01_PROG_ID').val(rowdata.PROG_ID);
 			$('#pop01_txt01_PROG_PATH').val(rowdata.PROG_PATH);
-	 		$('#pop01_sel01_MENU_GROUP').val(rowdata.MENU_GROUP);
+			$('#pop01_sel01_MENU_GROUP').val($('#pop01_sel01_MENU_GROUP option:contains(' + rowdata.MENU_GROUP + ')').val());
 			$('#pop01_txt01_SORT').val(rowdata.SORT_NO);
 			$('#pop01_txt01_MENU_DESC').val(rowdata.MENU_DES);
 			$('#pop01_txt01_MEMO').val(rowdata.MEMO);
@@ -412,7 +412,7 @@
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: CRUD
 		/* Table 조회 */
 		function searchGridDataHead(){
-			var searchParam = {
+			let searchParam = {
 					MENU_ID: $('#txt01_MENU_ID').val()
 			        , MENU_NAME: $('#txt01_MENU_NM').val()
 			        , MENU_GROUP: $("#sel01_MENU_GROUP option:selected").val()
@@ -439,45 +439,21 @@
 
 			$("#table1").jqGrid('setSelection', 1, true);
 
-// 			$('#pop01_txt01_MENU_PID').val("");
-// 			$('#pop01_txt01_MENU_ID').val("");
-// 			$('#pop01_txt01_MENU_NM').val("");
-// 			$('#pop01_sel01_USE_YN').val("Y");
-// 			$('#pop01_txt01_PROG_ID').val("");
-// 			$('#pop01_txt01_PROG_PATH').val("");
-// 			$("#pop01_sel01_MENU_GROUP option:eq(0)").prop("selected", true);
-// 			$('#pop01_txt01_SORT').val("");
-// 			$('#pop01_txt01_MENU_DESC').val("");
-// 			$('#pop01_txt01_MEMO').val("");
-			
-// 			$('#pop01_txt01_MENU_PID').attr("disabled", true);
-// 			$('#pop01_txt01_MENU_ID').attr("disabled", true);
-// 			$('#pop01_txt01_MENU_NM').attr("disabled", true);
-// 			$('#pop01_sel01_USE_YN').attr("disabled", true);
-// 			$('#pop01_txt01_PROG_ID').attr("disabled", true);
-// 			$('#pop01_txt01_PROG_PATH').attr("disabled", true);
-// 			$('#pop01_sel01_MENU_GROUP').attr("disabled", true);
-// 			$('#pop01_txt01_SORT').attr("disabled", true);
-// 			$('#pop01_txt01_MENU_DESC').attr("disabled", true);
-// 			$('#pop01_txt01_MEMO').attr("disabled", true);
-			
-// 			$('#pop01_btn01_VERIFICATION').css("display", "block");
-// 			$('#pop01_btn01_CHANGE').css("display", "none");
 		};
 			
 		/* 메뉴 마스터 추가 */
 		function searchGridDetailSave(){
-			var saveParam = {
-					MENU_PID: $("#pop01_txt01_MENU_PID").val()
-					, MENU_ID: $("#pop01_txt01_MENU_ID").val()
-				    , MENU_NAME: $("#pop01_txt01_MENU_NM").val()
-				    , USE_YN: $("#pop01_sel01_USE_YN").val()
-				    , PROG_ID: $("#pop01_txt01_PROG_ID").val()
-				    , PROG_PATH: $("#pop01_txt01_PROG_PATH").val()
-				    , MENU_GROUP: $("#pop01_sel01_MENU_GROUP").val()
-				    , SORT_NO: $("#pop01_txt01_SORT").val()
-				    , MENU_DESC: $("#pop01_txt01_MENU_DESC").val()
-				    , MEMO: $("#pop01_txt01_MEMO").val()
+			let saveParam = {
+					MENU_PID: $("#pop01_txt01_MENU_PID").val(),
+					MENU_ID: $("#pop01_txt01_MENU_ID").val(),
+				    MENU_NAME: $("#pop01_txt01_MENU_NM").val(),
+				    USE_YN: $("#pop01_sel01_USE_YN").val(),
+				    PROG_ID: $("#pop01_txt01_PROG_ID").val(),
+				    PROG_PATH: $("#pop01_txt01_PROG_PATH").val(),
+				    MENU_GROUP: $("#pop01_sel01_MENU_GROUP").val(),
+				    SORT_NO: $("#pop01_txt01_SORT").val(),
+				    MENU_DESC: $("#pop01_txt01_MENU_DESC").val(),
+				    MEMO: $("#pop01_txt01_MEMO").val()
 			};
 			
 			getAjaxJsonData("cm1400Save", saveParam, "searchGridDetailSaveCallBack");
@@ -496,7 +472,7 @@
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 유효성
 		/* 메뉴 ID 중복확인 */
 		function searchVerification(){
-			var searchParam = {
+			let searchParam = {
 					MENU_ID: $("#pop01_txt01_MENU_ID").val()
 			};
 			
@@ -504,7 +480,7 @@
 		};
 			
 		function searchVerificationCallBack(data) {
-			var check = parseInt(data[0].MENU_ID);
+			let check = parseInt(data[0].MENU_ID);
 			
 			if (check > 0){
 				toast("경고", "이미 존재하는 메뉴ID입니다.", "error");
