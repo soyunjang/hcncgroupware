@@ -76,14 +76,13 @@ public class AN1300Service {
     public Map<String, Object> getPdtFileByUse(Integer num) {
         Map<String, Object> result;
         try {
-//            if (num != null) {
-                result = sqlSession.selectOne("an1300Mapper.getPdtFileByUse", num);
-                String filePath = result.get("FILE_PATH").toString().replace("\\", "/");
-                result.put("FILE_PATH", filePath);
-//            }
+            result = sqlSession.selectOne("an1300Mapper.getPdtFileByUse", num);
+            String filePath = result.get("FILE_PATH").toString().replace("\\", "/");
+            result.put("FILE_PATH", filePath);
             return result;
         } catch (Exception e) {
-            throw new RuntimeException("getPdtFileByUse.error", e);
+            return new HashMap<>();
+//            throw new RuntimeException("getPdtFileByUse.error", e);
         }
     }
 

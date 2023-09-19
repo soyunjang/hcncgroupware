@@ -32,7 +32,9 @@
 	section {
 		display: flex;
 		flex-direction: column;
-
+	}
+	#txt01_FILE_PATH {
+		cursor: pointer;
 	}
 </style>
 	<body>
@@ -69,7 +71,7 @@
 							</dd>
 						</dl>
 						<dl class="dl-2n">
-							<dt>첨부파일</dt>
+							<dt>첨부파일 목록</dt>
 							<dd class="fl-sb">
 								<select id="sel01_FILE"></select>
 							</dd>
@@ -91,10 +93,9 @@
 				<div class="col col-1 wp100">
 					<section>
 						<div class="title-wrap">
-	                        <div class="title-zone">
-	                            <h2 class="title1">휴가현황 목록</h2>
-								<span id="table1_cnt"></span>
-	                        </div>
+<%--	                        <div class="title-zone">--%>
+<%--	                            <h2 class="title1">업무캘린더 현황</h2>--%>
+<%--	                        </div>--%>
 	                    </div>
 						<canvas id="pdfCanvas"></canvas>
 					</section>
@@ -119,6 +120,11 @@
 			let fileName = $("#txt01_FILE").val();
 			$(".upload-name").val(fileName);
 		});
+
+		$("#txt01_FILE_PATH").on('click', () => {
+			$("#txt01_FILE").click();
+		});
+
 
 		$("#sel01_FILE").on('change', () => {
 			let num = $("#sel01_FILE").val();
@@ -202,9 +208,7 @@
 			}
 
 			// PDF -> CANVAS START
-
 			const PDF_CANVAS = document.getElementById("pdfCanvas");
-
 			const CMAP_URL = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.5.207/cmaps/';
 
 			// PDF.JS (pdf to image convertor)
@@ -232,7 +236,7 @@
 					let pageNumber = 1;
 					pdf.getPage(pageNumber).then(function (page) {
 
-						let scale = 1.5;
+						let scale = 3;
 						let viewport = page.getViewport({scale: scale});
 
 						// Prepare canvas using PDF page dimensions
