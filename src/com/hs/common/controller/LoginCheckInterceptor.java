@@ -62,9 +62,9 @@ public class LoginCheckInterceptor extends HandlerInterceptorAdapter{
 		
 		if(modelAndView != null) {
 			if(!isAjaxRequest(request)) {
-				Map <String, Object> param = new HashMap<String, Object>();
+				Map <String, Object> param = new HashMap<>();
 				String view = "";
-				String viewNM = (String)modelAndView.getViewName();
+				String viewNM = modelAndView.getViewName();
 				if(viewNM.equals("main")) {
 					view = "main";
 				} else if(viewNM.split("/")[1].equals("SA1000Print")) {
