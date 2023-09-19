@@ -1,20 +1,17 @@
 package com.hs.an.service;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpSession;
-
+import com.hs.home.controller.UserInfo;
 import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hs.home.controller.UserInfo;
+import java.util.List;
+import java.util.Map;
 
 @Service("an1100Service")
 public class AN1100Service {
 
-	@Inject
+	@Autowired
 	private SqlSession sqlSession;
 
 	/**
@@ -27,10 +24,8 @@ public class AN1100Service {
 	public List<Map<String, Object>> an1100Sel(Map<String, Object> param, UserInfo user) {
 		
 		param.put("USER_ID", user.getUSER_ID());
-		
-		List<Map<String, Object>> rList = sqlSession.selectList("an1100Mapper.an1100Sel", param);
-		
-		return rList;
+
+		return sqlSession.selectList("an1100Mapper.an1100Sel", param);
 	}
 	
 }

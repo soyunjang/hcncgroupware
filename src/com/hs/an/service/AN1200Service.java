@@ -1,25 +1,20 @@
 package com.hs.an.service;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpSession;
-
-import com.hs.an.controller.AN1200Controller;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hs.home.controller.UserInfo;
+import java.util.List;
+import java.util.Map;
 
 @Service("an1200Service")
 public class AN1200Service {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Inject
+	@Autowired
 	private SqlSession sqlSession;
 
 	/**
