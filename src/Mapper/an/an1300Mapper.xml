@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="an1300Mapper">
+
+	<insert id="uploadPathSave" parameterType="map">
+		INSERT INTO FILE_INFO (FILE_TYPE, FILE_PATH, FILE_CHANGE_NAME, FILE_ORIGINAL_NAME, USE_YN, REG_ID, REG_DT)
+		VALUES (#{FILE_TYPE}, #{FILE_PATH}, #{FILE_CHANGE_NAME}, #{FILE_ORIGINAL_NAME}, #{USE_YN}, #{REG_ID}, GETDATE())
+	</insert>
+
+	<select id="getPdtFileByUse" parameterType="Integer" resultType="map">
+		SELECT
+		<if test='value == null'>
+			TOP 1
+		</if>
+		FILE_NUM, FILE_PATH, FILE_CHANGE_NAME, FILE_ORIGINAL_NAME, REG_ID, REG_DT
+		FROM FILE_INFO
+		WHERE FILE_TYPE IN ('pdf', 'PDF')
+		AND USE_YN LIKE 'Y'
+		<if test ='value != null'>
+			AND FILE_NUM LIKE #{num}
+		</if>
+		ORDER BY FILE_NUM DESC
+	</select>
+
+	<select id="getFileList" resultType="map">
+		SELECT FILE_NUM, FILE_CHANGE_NAME, FILE_ORIGINAL_NAME, REG_ID, REG_DT
+		FROM FILE_INFO
+		WHERE FILE_TYPE IN ('pdf', 'PDF')
+		AND USE_YN LIKE 'Y'
+		ORDER BY FILE_NUM DESC
+	</select>
+
+	<update id="fileInfoUpdate" parameterType="map">
+		UPDATE FILE_INFO SET USE_YN = #{USE_YN}, UPT_ID = #{USER_ID}, UPT_DT = GETDATE()
+		WHERE FILE_NUM LIKE #{NUM}
+		  AND FILE_TYPE LIKE #{FILE_TYPE}
+		  AND USE_YN LIKE 'Y'
+	</update>
+</mapper>
