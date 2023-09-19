@@ -57,4 +57,11 @@
 	<task:annotation-driven scheduler="jobScheduler" />
 	<!-- Scheduler End -->
 
+	<bean id="uploadPath" class="java.lang.String">
+<!--		<constructor-arg value="D:/5.Project/HSFrame_230702/WebContent/resources/file" />-->
+		<constructor-arg value="D:/Tomcat/apache-tomcat-8.5.93/webapps/ROOT/resources/file" />
+		<!-- <beans:constructor-arg value="/usr/src/tomcat9/webapps/Gieok/resources/upload/" /> -->
+		<!-- <beans:constructor-arg value="/data/tomcat/tomcat9/webapps/Gieok/resources/upload/" /> -->
+	</bean>
+
 </beans>
