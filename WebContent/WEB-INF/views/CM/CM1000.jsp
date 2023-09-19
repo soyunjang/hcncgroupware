@@ -200,11 +200,11 @@
 		 */
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 공통코드
 		/* 공통코드_다국어 */
-		var langHead;
-		var langDetail;
+		let langHead;
+		let langDetail;
 		
 		/* 변수 선언 */
-		var gridSetChK2 = "N";
+		let gridSetChK2 = "N";
 		
 		/* 공통코드_콤보박스 */ 
 		commonCodeSelectAdd("sel01_USE_YN", getCommonCode('USE'), 'N');
@@ -299,7 +299,7 @@
 		/* confirm 확인버튼 클릭시 */
 		function confirmYes(action){
 			if(action.indexOf("HEAD_") > -1){
-				var param = {
+				let param = {
 						SYS_CLASS_CD : $("#pop01_txt01_SYS_CD").val()
 						, SYS_CLASS_NAME : $("#pop01_txt01_SYS_NM").val()
 						, USE_YN : $("#pop01_sel01_USE_YN").val()
@@ -316,7 +316,7 @@
 					getAjaxJsonData("cm1000HeadSave", param, "HeadDataControlCallBack");
 				}
 			} else{
-				var param = {
+				let param = {
 						SYS_CLASS_CD : $("#table1").getRowData($("#table1").getGridParam("selrow")).SYS_CLASS_CD
 						, SYS_ITEM_CD : $("#pop02_txt01_ITEM_CD").val()
 						, SYS_ITEM_NAME : $("#pop02_txt01_ITEM_NM").val()
@@ -338,27 +338,28 @@
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 그리드
 		function setGrid(){
 			$("#table1").jqGrid({
-				mtype: 'POST'
-				, datatype: 'local'
-				, height: 540
-				, jsonReader: {
+				mtype: 'POST',
+				datatype: 'local',
+				height: 540,
+				jsonReader: {
 					repeatitems: false
-				}
-				, colNames: langHead
-				, colModel: [
-					{name: 'SYS_CLASS_CD'		, align:'center'	, width: '20%'}
-					, {name: 'SYS_CLASS_NAME'	, align:'left'		, width: '30%'}
-					, {name: 'USE_YN'			, align:'center'	, width: '10%'}
-					, {name: 'MEMO'				, align:'left'		, width: '30%'}
-				]
-				, autowidth: true		// 컬럼 사이즈 조절시 필요 (true)
-				, shrinkToFit: false	// 컬럼 사이즈 조절시 필요 (false)
-	            , viewrecords: false
-				, onSelectRow: function(rowid, status, e){
+				},
+				colNames: langHead,
+				colModel: [
+					{name: 'SYS_CLASS_CD'	, align:'center'	, width: '20%'},
+					{name: 'SYS_CLASS_NAME'	, align:'left'		, width: '30%'},
+					{name: 'USE_YN'			, align:'center'	, width: '10%'},
+					{name: 'MEMO'			, align:'left'		, width: '30%'}
+				],
+				 autowidth: true,		// 컬럼 사이즈 조절시 필요 (true)
+				 shrinkToFit: false,	// 컬럼 사이즈 조절시 필요 (false)
+	             viewrecords: false,
+				 rowNum : 5000,
+				 onSelectRow: function(rowid, status, e){
 					gridSetChK2 = "N";
 					searchGridDataDetail();
-				}
-				, ondblClickRow : function(rowid, iRow, iCol, e) {
+				},
+				ondblClickRow : function(rowid, iRow, iCol, e) {
 					openHeadPopup("HEAD_U");
 				}
 			});
@@ -366,22 +367,22 @@
 			searchGridDataHead();
 			
 			$("#table2").jqGrid({
-				mtype: 'POST'
-				, datatype: 'local'
-				, height: 540
-				, jsonReader: {
+				mtype: 'POST',
+				datatype: 'local',
+				height: 540,
+				jsonReader: {
 					repeatitems: false
-				}
-				, colNames: langDetail
-				, colModel: [
-					{name:'SYS_ITEM_CD'		, align:'center'	, width: '20%'}
-					, {name:'SYS_ITEM_NAME'	, align:'left'		, width: '30%'}
-					, {name:'USE_YN'		, align:'center'	, width: '10%'}
-					, {name:'MEMO'			, align:'left'		, width: '30%'}
-				]
-				, autowidth: true
-				, shrinkToFit: false
-				, ondblClickRow : function(rowid, iRow, iCol, e) {
+				},
+				colNames: langDetail,
+				colModel: [
+					{name:'SYS_ITEM_CD'		, align:'center'	, width: '10%'},
+					{name:'SYS_ITEM_NAME'	, align:'left'		, width: '30%'},
+					{name:'USE_YN'			, align:'center'	, width: '10%'},
+					{name:'MEMO'			, align:'left'		, width: '20%'}
+				],
+				autowidth: true,
+				rowNum : 5000,
+				ondblClickRow : function(rowid, iRow, iCol, e) {
 					openDetailPopup("DETAIL_U");
 				}
 			});
@@ -390,10 +391,10 @@
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: CRUD
 		/* Head Table 조회 */
 		function searchGridDataHead(){
-			var searchParam = {
-				SYS_CLASS_CD: $("#txt01_SYS_CD").val()
-				, SYS_CLASS_NAME: $("#txt01_SYS_NM").val()
-				, USE_YN : $("#sel01_USE_YN").val()
+			let searchParam = {
+				SYS_CLASS_CD: $("#txt01_SYS_CD").val(),
+				SYS_CLASS_NAME: $("#txt01_SYS_NM").val(),
+				USE_YN : $("#sel01_USE_YN").val()
 			};
 			
 			getAjaxJsonData("cm1000HeadSel", searchParam, "searchGridDataHeadCallBack");
@@ -402,8 +403,8 @@
 		function searchGridDataHeadCallBack(data) {
 			$("#table1").clearGridData();
 			$('#table1').jqGrid('setGridParam', {
-				datatype: 'local'
-				, data: data
+				datatype: 'local',
+				data: data
 			}).trigger("reloadGrid");
 
 			if(data.length > 0){
@@ -418,19 +419,19 @@
 
 		/* Detail Table 조회 */
 		function searchGridDataDetail() {
-			var seachParam = {
-				SYS_CLASS_CD : $("#table1").getRowData($("#table1").getGridParam("selrow")).SYS_CLASS_CD
-				, USE_YN : $("#sel01_USE_YN").val()
+			let searchParam = {
+				SYS_CLASS_CD : $("#table1").getRowData($("#table1").getGridParam("selrow")).SYS_CLASS_CD,
+				USE_YN : $("#sel01_USE_YN").val()
 			};
-			
-			getAjaxJsonData("cm1000DetailSel", seachParam, "searchGridDataDetailCallBack");
+
+			getAjaxJsonData("cm1000DetailSel", searchParam, "searchGridDataDetailCallBack");
 		};
 
 		function searchGridDataDetailCallBack(data) {
 			$("#table2").clearGridData();
-			$('#table2').jqGrid('setGridParam', {
-				datatype: 'local'
-				, data: data
+			$("#table2").jqGrid('setGridParam', {
+				datatype: 'local',
+				data: data
 			}).trigger("reloadGrid");
 
 			if(data.length > 0){
@@ -477,11 +478,11 @@
 			else{
 				$("#viewForm1").dialog("close");
 				
-				var param = {
-						SYS_CLASS_CD : $("#pop01_txt01_SYS_CD").val()
-						, SYS_CLASS_NAME : $("#pop01_txt01_SYS_NM").val()
-						, USE_YN : $("#pop01_sel01_USE_YN").val()
-						, MEMO : $("#pop01_txt01_MEMO").val()
+				let param = {
+						SYS_CLASS_CD : $("#pop01_txt01_SYS_CD").val(),
+						SYS_CLASS_NAME : $("#pop01_txt01_SYS_NM").val(),
+						USE_YN : $("#pop01_sel01_USE_YN").val(),
+						MEMO : $("#pop01_txt01_MEMO").val()
 				}
 				
 				getAjaxJsonData("cm1000HeadSave", param, "HeadDataControlCallBack");
@@ -498,12 +499,12 @@
 			else{
 				$("#viewForm2").dialog("close");
 				
-				var param = {
-						SYS_CLASS_CD : $("#table1").getRowData($("#table1").getGridParam("selrow")).SYS_CLASS_CD
-						, SYS_ITEM_CD : $("#pop02_txt01_ITEM_CD").val()
-						, SYS_ITEM_NAME : $("#pop02_txt01_ITEM_NM").val()
-						, USE_YN : $("#pop02_sel01_USE_YN").val()
-						, MEMO : $("#pop02_txt01_MEMO").val()
+				let param = {
+						SYS_CLASS_CD : $("#table1").getRowData($("#table1").getGridParam("selrow")).SYS_CLASS_CD,
+						SYS_ITEM_CD : $("#pop02_txt01_ITEM_CD").val(),
+						SYS_ITEM_NAME : $("#pop02_txt01_ITEM_NM").val(),
+						USE_YN : $("#pop02_sel01_USE_YN").val(),
+						MEMO : $("#pop02_txt01_MEMO").val()
 				}
 				
 				gridSetChK2 = "Y";
@@ -514,18 +515,18 @@
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: Popup
 		function openHeadPopup(action) {
 			// 화면ID, 화면ID사이즈(ex. 6:CM1000 / 13:CM1000_Detail), 팝업ID, 다국어
-			var returnPopup = getLangCodePopup("CM1000_Pop1", 11, "viewForm1", "${LANG}");
-			var titlePop = returnPopup[0];
-			var pop01_btn01_SAVE = returnPopup[1];
-			var pop01_btn01_CLOSE = returnPopup[2];
+			let returnPopup = getLangCodePopup("CM1000_Pop1", 11, "viewForm1", "${LANG}");
+			let titlePop = returnPopup[0];
+			let pop01_btn01_SAVE = returnPopup[1];
+			let pop01_btn01_CLOSE = returnPopup[2];
 			
 			$("#viewForm1").dialog({
-				autoOpen : true
-				, title : titlePop
-				, width : 600
-				, height : 350
-				, modal : true
-				, open : function(event, ui) {
+				autoOpen : true,
+				title : titlePop,
+				width : 600,
+				height : 350,
+				modal : true,
+				open : function(event, ui) {
 					popReset("viewForm1");
 					
 					$("#pop01_txt01_SYS_CD").removeClass("readonly");
@@ -533,7 +534,7 @@
 					$("#pop01_sel01_USE_YN").find("option:eq(1)").prop("selected", "selected");
 					
 					if(action == "HEAD_U"){
-						var rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
+						let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
 						$("#pop01_txt01_SYS_CD").val(rowData.SYS_CLASS_CD);
 						$("#pop01_txt01_SYS_CD").addClass("readonly");
 						$("#pop01_txt01_SYS_CD").attr("readonly", true);
@@ -542,14 +543,14 @@
 						$("#pop01_sel01_USE_YN").val(rowData.USE_YN == "사용" ? "Y" : "N");
 						$("#pop01_txt01_MEMO").val(rowData.MEMO);
 					}
-				}
-				, close : function() {
+				},
+				close : function() {
 					$(this).dialog("close");
-				}
-				, buttons : [
+				},
+				buttons : [
 					{
-						text : pop01_btn01_SAVE
-						, click : function() {
+						text : pop01_btn01_SAVE,
+						click : function() {
 							if(action == "HEAD_C"){
 								if($("#pop01_txt01_SYS_CD").val() == ""){
 									toast("오류", "시스템코드를 입력해주세요.", "error");
@@ -572,8 +573,8 @@
 							
 							confirms("저장하시겠습니까?", action);
 						}
-					}
-					, {
+					},
+					{
 						text : pop01_btn01_CLOSE,
 	                    click : function() {
 							$(this).dialog("close");
@@ -585,18 +586,18 @@
 		
 		function openDetailPopup(action) {
 			// 화면ID, 화면ID수, 팝업ID, 다국어
-			var returnPopup = getLangCodePopup("CM1000_Pop2", 11, "viewForm2 ", "${LANG}");
-			var titlePop = returnPopup[0];
-			var pop02_btn01_SAVE = returnPopup[1];
-			var pop02_btn01_CLOSE = returnPopup[2];
+			let returnPopup = getLangCodePopup("CM1000_Pop2", 11, "viewForm2 ", "${LANG}");
+			let titlePop = returnPopup[0];
+			let pop02_btn01_SAVE = returnPopup[1];
+			let pop02_btn01_CLOSE = returnPopup[2];
 			
 			$("#viewForm2").dialog({
-				autoOpen : true
-				, title : titlePop
-				, width : 600
-				, height : 350
-				, modal : true
-				, open : function(event, ui) {
+				autoOpen : true,
+				title : titlePop,
+				width : 600,
+				height : 350,
+				modal : true,
+				open : function(event, ui) {
 					popReset("viewForm2");
 					
 					$("#pop02_txt01_ITEM_CD").removeClass("readonly");
@@ -604,7 +605,7 @@
 					$("#pop02_sel01_USE_YN").find("option:eq(1)").prop("selected", "selected");
 					
 					if(action == "DETAIL_U"){
-						var rowData = $("#table2").getRowData($("#table2").getGridParam("selrow"));
+						let rowData = $("#table2").getRowData($("#table2").getGridParam("selrow"));
 						$("#pop02_txt01_ITEM_CD").val(rowData.SYS_ITEM_CD);
 						$("#pop02_txt01_ITEM_CD").addClass("readonly");
 						$("#pop02_txt01_ITEM_CD").attr("readonly", true);
@@ -613,11 +614,11 @@
 						$("#pop02_sel01_USE_YN").val(rowData.USE_YN == "사용" ? "Y" : "N");
 						$("#pop02_txt01_MEMO").val(rowData.MEMO);
 					}
-				}
-				, close : function() {
+				},
+				close : function() {
 					$(this).dialog("close");
-				}
-				, buttons : [
+				},
+				buttons : [
 					{
 						text : pop02_btn01_SAVE,
 	                    click : function() {
@@ -647,10 +648,10 @@
 								confirms("저장하시겠습니까?", "DETAIL_U");
 							}
 						}
-					}
-					, {
-						text : pop02_btn01_CLOSE
-						, click : function() {
+					},
+					{
+						text : pop02_btn01_CLOSE,
+						click : function() {
 							$(this).dialog("close");
 						}
 					}

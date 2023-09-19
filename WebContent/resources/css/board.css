@@ -43,7 +43,7 @@ table a.btn {padding:5px 10px; white-space: nowrap;}
 /*=================================================================================
  * Table - list, write
  =================================================================================*/
- .table-wrap {width:100%; height:calc(100% - 45px); overflow-y:hidden; overflow-x:auto; border-top: 1px solid #333;}
+ .table-wrap {width:100%; height:calc(100% - 45px); overflow-y:hidden; overflow-x:hidden; border-top: 1px solid #333;}
  .table-wrap .ui-jqgrid{position: relative; height:100%;}
  .table-wrap .ui-jqgrid-view{position: relative; display: block; height: 100% !important;}
  .table-wrap .table-over{overflow:auto;}
