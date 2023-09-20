@@ -60,7 +60,7 @@
 			<div class="search-zone">
 				<div class="search-wrap">
 					<div class="sch-box">
-						<dl class="dl-2n">
+						<dl id="sch-box-left" class="dl-2n">
 							<dt>첨부파일</dt>
 							<dd>
 								<form enctype="multipart/form-data">
@@ -76,9 +76,8 @@
 								<select id="sel01_FILE"></select>
 							</dd>
 						</dl>
-
 					</div>
-					<div class="srch-btn">
+					<div id="srch-btn" class="srch-btn">
 		                <ul>
 							<li><a href="javascript:void(0);" id="btn01_DELETE" class="btn-file">삭제</a></li>
 		                    <li><a href="javascript:void(0);" id="btn01_CONFIRM" class="btn-confirm">저장</a></li>
@@ -114,6 +113,13 @@
 		const txt01_FILE_PATH = document.querySelector('#txt01_FILE_PATH');
 		getAjaxJsonData("/an1300/files", "", "fileListCallBack", "GET")
 
+		const userDept = '${User.DEPT_CD}'
+
+		if (userDept.indexOf("M") < 0) {
+			$("#sch-box-left").remove();
+			$("#srch-btn").remove();
+		}
+		
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 버튼
 		/*첨부 파일*/
 		$("#txt01_FILE").on('change', () => {
