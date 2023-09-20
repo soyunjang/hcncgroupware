@@ -83,6 +83,7 @@ public class AN1300Controller {
             File file = new File(uploadPath + File.separator + "calendar" + File.separator + fileName + ".pdf");
             response.setHeader("Content-Type", "application/pdf");
             response.setHeader("Content-Length", String.valueOf(file.length()));
+            response.setHeader("Content-Disposition", "inline");
             response.setHeader("filename", fileName + ".pdf");
 
             Files.copy(file.toPath(), response.getOutputStream());
