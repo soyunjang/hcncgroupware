@@ -1,43 +1,19 @@
 package com.hs.home.controller;
 
-import java.util.Base64;
-
-import sun.security.provider.MD5;
-
 import java.security.MessageDigest;
+import java.util.Base64;
 
 public class EncryptUtil {
 	
-	/**
-	 * �޼ҵ� ���� :	�����͸� ��ȣȭ�ϴ� ���
-	 * ----------------------------------------
-	 * @param	String data ��ȣȭ�� ������
-	 * @return	String result ��ȣȭ�� ������
-	 * @throws	Exception
-	 */
 	public static byte[] decodeBinary(String data) throws Exception {
 		return Base64.getDecoder().decode(data.getBytes());
 	}
 	
-	/**
-	 * �޼ҵ� ���� :	�����͸� ��ȣȭ�ϴ� ���
-	 * ----------------------------------------
-	 * @param	String data ��ȣȭ�� ������
-	 * @return	String result ��ȣȭ�� ������
-	 * @throws	Exception
-	 */
 	public static String decode(String data) throws Exception {
 		return new String(decodeBinary(data));
 	}
 	
-	/**
-	 * �޼ҵ� ���� :	�����͸� ��ȣȭ�ϴ� ��� SHA-512
-	 * ----------------------------------------
-	 * @param	String data ��ȣȭ�� ��й�ȣ
-	 * @return	String result ��ȣȭ�� ��й�ȣ
-	 * @throws	Exception
-	 */
-	public static String encryptStringtoByteData(String data) throws Exception {
+	public static String encryptStringToByteData(String data) throws Exception {
 		if(data == null)
 			return "";
 
