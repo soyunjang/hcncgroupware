@@ -1,6 +1,9 @@
 package com.hs.an.dto;
 
+import javax.annotation.Nonnull;
+
 public class An1000PrintDto {
+
     private String gradeCd;
     private String gradeNm;
     private float holidayCnt;
