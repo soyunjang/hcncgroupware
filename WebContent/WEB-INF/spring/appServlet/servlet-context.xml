@@ -16,7 +16,7 @@
 
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
 	<mvc:resources mapping="/resources/**" location="/resources/" />
-	
+
 	<!-- Json View -->
 	<bean name="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
 	<!-- for JFile -->
@@ -58,10 +58,6 @@
 	<!-- Scheduler End -->
 
 	<bean id="uploadPath" class="java.lang.String">
-<!--		<constructor-arg value="D:/5.Project/HSFrame_230702/WebContent/resources/file" />-->
-		<constructor-arg value="D:/Tomcat/apache-tomcat-8.5.93/webapps/ROOT/resources/file" />
-		<!-- <beans:constructor-arg value="/usr/src/tomcat9/webapps/Gieok/resources/upload/" /> -->
-		<!-- <beans:constructor-arg value="/data/tomcat/tomcat9/webapps/Gieok/resources/upload/" /> -->
+		<constructor-arg value="D:\gwhcnc\upload\" />
 	</bean>
-
 </beans>
