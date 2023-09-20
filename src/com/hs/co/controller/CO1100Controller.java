@@ -4,6 +4,7 @@ import com.hs.co.service.CO1100Service;
 import com.hs.home.controller.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -18,10 +19,10 @@ import java.util.Map;
 @Controller
 public class CO1100Controller {
 	
-	@Resource(name="co1100Service")
+	@Autowired
 	private CO1100Service co1100Service;
 	
-	private static final Logger logger = LoggerFactory.getLogger(CO1100Controller.class);
+	private final Logger logger = LoggerFactory.getLogger(CO1100Controller.class);
 
 	@ModelAttribute("User")
 	public UserInfo userInfo(HttpSession session) {
@@ -36,7 +37,6 @@ public class CO1100Controller {
 	@RequestMapping(value = "/co1100Project")
 	public String co1100Project(Model model, @RequestParam Map<String, Object> param) {
 		model.addAttribute("param", param);
-
 		return "CO/CO1100Project";
 	}
 

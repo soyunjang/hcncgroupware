@@ -2,10 +2,10 @@ package com.hs.co.service;
 
 import com.hs.home.controller.UserInfo;
 import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.Map;
 @Service("co1100Service")
 public class CO1100Service {
 
-	@Inject
+	@Autowired
 	private SqlSession sqlSession;
 
 	/**

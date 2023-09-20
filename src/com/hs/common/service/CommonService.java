@@ -1,22 +1,20 @@
 package com.hs.common.service;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpSession;
-
+import com.hs.home.controller.UserInfo;
 import org.apache.ibatis.session.SqlSession;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hs.home.controller.UserInfo;
+import javax.servlet.http.HttpSession;
+import java.util.List;
+import java.util.Map;
 
 @Service("commonService")
 public class CommonService {
 	
-	@Inject
+	@Autowired
 	private SqlSession sqlSession;
 	
 	/* 다국어 조회 */
@@ -90,10 +88,6 @@ public class CommonService {
 	/* 시스템코드 목록 */
 	public List<Map<String, Object>> selectLists(Map<String, Object> params) {
 		return sqlSession.selectList("commonMapper.selectLists", params);
-	}
-
-	public List<Map<String, Object>> co1100SelProject(Map<String, Object> param) {
-		return sqlSession.selectList("commonMapper.co1100SelProject", param);
 	}
 
 	public List<Map<String, Object>> selectSalesNum(Map<String, Object> params, HttpSession session) {

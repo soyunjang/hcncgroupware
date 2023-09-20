@@ -4,6 +4,7 @@ import com.hs.co.service.CO1000Service;
 import com.hs.home.controller.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,10 +21,10 @@ import java.util.Map;
 @Controller
 public class CO1000Controller {
 	
-	@Resource(name="co1000Service")
+	@Autowired
 	private CO1000Service co1000Service;
 	
-	private static final Logger logger = LoggerFactory.getLogger(CO1000Controller.class);
+	private final Logger logger = LoggerFactory.getLogger(CO1000Controller.class);
 
 	@ModelAttribute("User")
 	public UserInfo userInfo(HttpSession session) {

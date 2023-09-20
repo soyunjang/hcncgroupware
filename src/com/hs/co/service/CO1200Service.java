@@ -2,16 +2,16 @@ package com.hs.co.service;
 
 import com.hs.home.controller.UserInfo;
 import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.Map;
 
 @Service("co1200Service")
 public class CO1200Service {
 
-	@Inject
+	@Autowired
 	private SqlSession sqlSession;
 
 	/**
