@@ -158,7 +158,7 @@
 				$.ajax({
 					type: "POST",
 					enctype: 'multipart/form-data',
-					url: "/an1300",
+					url: "/an1300/file",
 					data: formDate,
 					processData: false,
 					contentType: false,
@@ -201,7 +201,6 @@
 		 * pdf 파일을 이미지로 변경하여 캔버스로 보여주는 코드
 		 */
 		function pdfToCanvas(data) {
-			console.log(data)
 
 			if (data.isempty) {
 				return false;
@@ -217,9 +216,10 @@
 			pdfJsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
 
 			function pdfToImg() {
-				let filePath = data.FILE_PATH;
-				let fileName = data.FILE_CHANGE_NAME
-				let pdfUrl = filePath.substring(filePath.indexOf("resources") - 1) + "/" + fileName;
+				let filePath = "/an1300/file/";
+				let fileName = data.FILE_CHANGE_NAME.substring(0, data.FILE_CHANGE_NAME.indexOf("."))
+				let pdfUrl = filePath + fileName;
+
 				pdfRender(pdfUrl, PDF_CANVAS);
 			}
 

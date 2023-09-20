@@ -34,7 +34,7 @@ public class AN1300Service {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    public void fileUpload(MultipartFile file, int index, String ext, UserInfo user) {
+    public void fileUpload(MultipartFile file, String ext, UserInfo user) {
         Map<String, Object> param = new HashMap<>();
 
         try {
@@ -43,7 +43,7 @@ public class AN1300Service {
                 path.mkdir();
             }
 
-            File calendarDir = new File(uploadPath + File.separator + "calendar");
+            File calendarDir = new File(uploadPath + "calendar");
             if (!calendarDir.exists()) {
                 calendarDir.mkdir();
             }
@@ -82,7 +82,6 @@ public class AN1300Service {
             return result;
         } catch (Exception e) {
             return new HashMap<>();
-//            throw new RuntimeException("getPdtFileByUse.error", e);
         }
     }
 
