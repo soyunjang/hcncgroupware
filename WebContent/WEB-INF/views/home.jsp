@@ -45,6 +45,7 @@
 								<div class="red">입력하신 정보와 일치하는 정보가 없습니다.</div>
 							</c:if>
 						</div>
+						<div id="msgInfo2" class="msg"></div>
 						<button id="btnLogin" title="로그인" class="btn-login">LOGIN</button>
 						<p class="login-guid">* 사번 또는 비밀번호를 찾을 시 관리자에게 문의</p>
 					</div>
@@ -59,9 +60,12 @@
 	<script>
 		/* Document가 로드되었을 때 실행되는 코드 */
 		$(document).ready(function() {
-			var cook = document.cookie + ";";
-			var index = cook.indexOf("userID", 0);
-			var userId = "";
+			let cook = document.cookie + ";";
+			let index = cook.indexOf("userID", 0);
+			let userId = "";
+
+			let msg = '${msg}'
+
 			
 			if(index != -1){
 				cook = cook.substring(index, cook.length);
@@ -76,58 +80,65 @@
 			}
 		});
 
-		/* iframe에서 해당 창을 열었을 경우 부모창의 주소를 옮긴다. */
-		$(function(){
-			if (window != top){
-				top.location.href = location.href;
+		const userId = document.querySelector("#id");
+		const passwd = document.querySelector("#pwd");
+		const btnLogin = document.querySelector("#btnLogin");
+		const msgInfo = document.querySelector("#msgInfo");
+		const msgInfo2 = document.querySelector("#msgInfo2");
+
+		/* ID 입력후 엔터키 이벤트 */
+		userId.addEventListener("keyup", (e) => {
+			capsLockCheck(e);
+			if (e.key == "Enter") {
+				passwd.focus();
 			}
 		});
-		
-		/* 로그인 버튼 클릭 이벤트 */
-		$("#btnLogin").on({
-			click: function() {
+
+		/* PW 입력후 엔터키 이벤트 */
+		passwd.addEventListener("keyup", (e) => {
+			passwd.value = passwd.value.replaceAll(" ", "");
+			capsLockCheck(e);
+			if (e.key == "Enter") {
 				fnLogin();
 			}
 		});
-		
-		/* ID 입력후 엔터키 이벤트 */
-		$("#id").on({
-			keydown: function() {
-				if(event.keyCode == 13){
-					fnLogin();
-				}
-			}
-		});
-		
-		/* PW 입력후 엔터키 이벤트 */
-		$("#pwd").on({
-			keydown: function() {
-				if(event.keyCode == 13){
-					fnLogin();
-				}
-			}
-		});
-		
-		/* 로그인 확인 */
+
+		/* 로그인 버튼 클릭 이벤트 */
+		btnLogin.addEventListener("click", fnLogin);
+
+		/**
+		 * 로그인 확인
+		 */
 		function fnLogin(){
-			var emplNo = $("#id").val();
-			var passwd = $("#pwd").val();
-			var idSave = $("input[name='idSave']:checked").val();
-			
-			if (emplNo == "") {
-				$("#msgInfo").append("<div class='red'>아이디를 입력하세요</div>");
-				$("#id").focus();
+			let idSave = $("input[name='idSave']:checked").val();
+
+			msgInfo.innerHTML = "";
+
+			if (userId.value == "") {
+				msgInfo.innerHTML = "<div class='red'>아이디를 입력하세요</div>";
+				userId.focus();
 				return;
 			}
 			
-			if (passwd == "") {
-				$("#msgInfo").append("<div class='red'>비밀번호를 입력하세요</div>");
-				$("#pwd").focus();
+			if (passwd.value == "") {
+				msgInfo.innerHTML = "<div class='red'>비밀번호를 입력하세요</div>";
+				passwd.focus();
 				return;
 			}
 			
 			document.flogin.action = "/loginCheck";
 			document.flogin.submit();
+		}
+
+		/**
+		 * CapsLock 키 체크
+		 */
+		function capsLockCheck(e) {
+			if (e.getModifierState("CapsLock")) {
+				msgInfo2.innerHTML = "<div class='red'>Caps Lock이 켜져 있습니다.</div>";
+			} else {
+				msgInfo2.innerHTML = "";
+			}
 		}
 	</script>
 </html>
