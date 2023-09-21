@@ -112,7 +112,6 @@ $(document).ready(function(){
  * @param	String 	fnCallBack	callBack 함수명
  */
 function getAjaxJsonData(url, subParam, fnCallBack, type){
-	console.log('getAjaxJsonData', JSON.stringify(subParam));
 	try{
 		$.ajax({
 			url : url
@@ -140,8 +139,7 @@ function getAjaxJsonData(url, subParam, fnCallBack, type){
 					}
 				}
 				else{
-					alert(XMLHttpRequest.responseText);
-					//alert('Error: ' + XMLHttpRequest.responseText);
+					toast("오류", XMLHttpRequest.responseText, "error");
 				}
 			}
 			, success : function(data, textStatus, XMLHttpRequest) {
