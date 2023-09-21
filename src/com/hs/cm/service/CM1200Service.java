@@ -1,28 +1,28 @@
 package com.hs.cm.service;
 
+import com.hs.home.controller.UserInfo;
+import org.apache.ibatis.session.SqlSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpSession;
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-import javax.servlet.http.HttpSession;
+import static com.hs.home.controller.EncryptUtil.encryptStringToByteData;
 
-import org.apache.ibatis.session.SqlSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.hs.home.controller.UserInfo;
-import com.hs.home.controller.UserInfoEncrypt;
-
+@Transactional
 @Service("cm1200Service")
 public class CM1200Service {
 
-	private static final Logger logger = LoggerFactory.getLogger(CM1200Service.class);
+	private final Logger logger = LoggerFactory.getLogger(CM1200Service.class);
 	
-	@Inject
+	@Autowired
 	private SqlSession sqlSession;
 	
 	/**
@@ -33,10 +33,7 @@ public class CM1200Service {
 	 * @return List 	list 사용자정보 목록
 	 */
 	public List<Map<String, Object>> cm1200Sel(Map<String, Object> param) {
-		
-		List<Map<String, Object>> rList = sqlSession.selectList("cm1200Mapper.cm1200Sel", param);
-		
-		return rList;
+		return sqlSession.selectList("cm1200Mapper.cm1200Sel", param);
 	}
 	
 	/**
@@ -47,9 +44,7 @@ public class CM1200Service {
 	 * @return List 	list 부서 목록
 	 */
 	public List<HashMap<String, Object>> cm1200DeptSel(Map<String, Object> param) {
-		
-		List<HashMap<String, Object>> rList = sqlSession.selectList("cm1200Mapper.cm1200DeptSel", param);
-		return rList;
+		return sqlSession.selectList("cm1200Mapper.cm1200DeptSel", param);
 	}
 
 	/**
@@ -60,9 +55,7 @@ public class CM1200Service {
 	 * @return List 	list 권한그룹 목록
 	 */
 	public List<HashMap<String, Object>> cm1200AuthSel(Map<String, Object> param) {
-		
-		List<HashMap<String, Object>> rList = sqlSession.selectList("cm1200Mapper.cm1200AuthSel", param);
-		return rList;
+		return sqlSession.selectList("cm1200Mapper.cm1200AuthSel", param);
 	}
 
 	/**
@@ -73,7 +66,6 @@ public class CM1200Service {
 	 * @return List 	list 중복 갯수
 	 */
 	public List<Map<String, Object>> cm1200Verification(Map<String, Object> param){
-
 		return sqlSession.selectList("cm1200Mapper.cm1200Verification", param);
 	}
 	
@@ -85,16 +77,19 @@ public class CM1200Service {
 	 * @param HttpSession 	session 로그인한 사용자ID
 	 * @return Map 			rtnMap 추가 성공/실패 확인(0:성공/1:실패)
 	 */
-	@Transactional
+
 	public Map<String, Object> cm1200Save(Map<String, Object> param, HttpSession session) {
-		
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		Map<String, Object> rtnMap = new HashMap<>();
 		UserInfo vo = (UserInfo) session.getAttribute("User");
 
 		try {
 			param.put("REG_USERID", vo.getUSER_ID());
 			param.put("REG_IP", vo.getUSER_IP());
 			param.put("HOST_NM", InetAddress.getLocalHost().getHostName());
+			if (!param.get("BIRTHDAY").equals("")) {
+				param.put("PASSWORD", encryptStringToByteData(param.get("BIRTHDAY").toString().replace("-", "")));
+			}
+
 			logger.debug("CM1200Service > cm1200Save :: {}", param);
 
 			// update

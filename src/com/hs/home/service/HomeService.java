@@ -2,35 +2,36 @@ package com.hs.home.service;
 
 import com.hs.an.dto.HolidayOfficeNotSubmitDto;
 import com.hs.an.dto.UserAndHolidayInfoDto;
+import com.hs.home.controller.UserInfo;
+import com.hs.home.controller.UserInfoEncrypt;
+import com.hs.home.controller.UserPasswordDto;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service("homeService")
 public class HomeService {
 	
-	private static final Logger logger = LoggerFactory.getLogger(HomeService.class);
+	private final Logger log = LoggerFactory.getLogger(HomeService.class);
 	
-	@Inject
+	@Autowired
 	private SqlSession sqlSession; 
 	
 	/* 사용자 정보 조회 */
-	public Map<String,Object> loginCheck(Map<String, Object> param) {
-		
-		Map<String,Object> rMap = sqlSession.selectOne("homeMapper.loginCheck", param);
-		return rMap;
+	public Optional<UserInfo> loginCheck(Map<String, Object> param) {
+		return Optional.ofNullable(sqlSession.selectOne("homeMapper.loginCheck", param));
 	}
 	
 	/* 사용자 권한별 메뉴 조회 */
-	public List<Map<String,Object>> userMenuList(Map<String, Object> param, String id){
-		
-		param.put("USER_ID", id);
-		return sqlSession.selectList("homeMapper.userMenuList", param);
+	public List<Map<String,Object>> userMenuList(UserInfo userInfo){
+		return sqlSession.selectList("homeMapper.userMenuList", userInfo);
 	}
 
 	/* 접속 정보 저장 */
@@ -55,5 +56,18 @@ public class HomeService {
 
 	public void holidayOfficeNotSubmitSave(List<HolidayOfficeNotSubmitDto> dto) {
 		sqlSession.insert("homeMapper.holidayOfficeNotSubmitSave", dto);
+	}
+
+	public void userPasswordModify(UserPasswordDto dto, UserInfo user) {
+		try {
+			Map<String, Object> param = new HashMap<>();
+			param.put("PASSWORD", UserInfoEncrypt.encryptStringData(dto.getPassword1()));
+			param.put("USER_ID", user.getUSER_ID());
+			param.put("USER_NM", user.getUSER_NM());
+
+			sqlSession.update("homeMapper.userPasswordModify", param);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

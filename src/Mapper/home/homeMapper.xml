@@ -5,9 +5,10 @@
 
 <mapper namespace="homeMapper">
     <!-- 사용자 정보 조회 -->
-    <select id="loginCheck" parameterType="map" resultType="map">
+    <select id="loginCheck" parameterType="map" resultType="com.hs.home.controller.UserInfo">
 		SELECT USER_ID,
-			   CASE WHEN #{PASSWORD} = PASSWORD THEN 'O' ELSE 'X' END AS PASSWD,
+			   CASE WHEN PASSWORD = #{PASSWORD} OR PASSWORD IS NULL THEN 'O' ELSE 'X' END AS PASSWD,
+			   CASE WHEN PASSWORD = #{PASSWORD} OR PASSWORD IS NULL THEN 'O' ELSE 'X' END AS USER_PW,
 			   PASSWORD,
 			   USER_NM,
 			   PDEPT_CD,
@@ -25,10 +26,22 @@
 			   (SELECT TOP 1 CONNECT_START_DT FROM CONNECT_INFO WHERE USER_ID = #{USER_ID} ORDER BY CONNECT_START_DT DESC) AS CONNECT_DT
 		  FROM USER_INFO
 		 WHERE USER_ID = #{USER_ID}
+		   <choose>
+			   <when test='PASSWORD == null'>
+				   AND PASSWORD IS NULL
+			   </when>
+			   <otherwise>
+				   AND PASSWORD = #{PASSWORD}
+			   </otherwise>
+		   </choose>
     </select>
 
+	<update id="userPasswordModify" parameterType="map">
+		UPDATE USER_INFO SET PASSWORD = #{PASSWORD} WHERE USER_ID LIKE #{USER_ID} AND USER_NM LIKE #{USER_NM}
+	</update>
+
     <!-- 사용자 권한별 메뉴 조회 -->
-    <select id="userMenuList" parameterType="map" resultType="map">
+    <select id="userMenuList" parameterType="com.hs.home.controller.UserInfo" resultType="map">
 		SELECT A.MENU_ID,
 			   A.MENU_PID,
 			   A.MENU_TYPE,

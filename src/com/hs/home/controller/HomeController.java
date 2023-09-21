@@ -4,12 +4,13 @@ import com.hs.common.service.CommonService;
 import com.hs.home.service.HomeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,17 +19,20 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import static com.hs.home.controller.UserInfoEncrypt.encryptStringData;
 
 @Controller
 public class HomeController {
 
-	@Resource(name = "homeService")
+	@Autowired
 	private HomeService homeService;
 
-	@Resource(name = "commonService")
+	@Autowired
 	private CommonService commonService;
 
-	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
+	private Logger log = LoggerFactory.getLogger(HomeController.class);
 
 	/* 세션에 사용자 정보가 있으면 메인 페이지로 이동, 없으면 로그인 페이지로 이동 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
@@ -43,8 +47,21 @@ public class HomeController {
 		return "home";
 	}
 
+	@ResponseBody
+	@RequestMapping(value = "/loginCheck", method = RequestMethod.PATCH)
+	public ResponseEntity userPasswordModify(@RequestBody UserPasswordDto dto, HttpSession session) {
+		UserInfo user = (UserInfo) session.getAttribute("User");
+
+		if (dto.getPassword1().equals(dto.getPassword2())) {
+			homeService.userPasswordModify(dto, user);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("비밀번호를 확인해 주시기 바랍니다.", HttpStatus.BAD_REQUEST);
+		}
+	}
+
 	/* 사용자 정보 조회 */
-	@RequestMapping(value = "/loginCheck")
+	@RequestMapping(value = "/loginCheck", method = RequestMethod.POST)
 	public String loginCheck(String id, String pwd, HttpSession session, HttpServletRequest request,
 			HttpServletResponse res, RedirectAttributes red) {
 
@@ -52,80 +69,39 @@ public class HomeController {
 		String userPw = "";
 
 		try {
-			userPw = UserInfoEncrypt.encryptStringData(pwd);
+			userPw = encryptStringData(pwd);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 
 		try {
 			map.put("USER_ID", id);
-			map.put("PASSWORD", userPw); // 비밀번호 암호화
+			if (pwd == "" || pwd == null) {
+				map.put("PASSWORD", null);
+			} else {
+				map.put("PASSWORD", userPw); // 비밀번호 암호화
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
  		}
 
 		// 사용자 정보 조회
-		Map<String, Object> loginInfo = homeService.loginCheck(map);
+		Optional<UserInfo> loginInfo = homeService.loginCheck(map);
+		if (loginInfo.isPresent()) {
+			UserInfo userInfo = loginInfo.get();
 
-		if (loginInfo != null) {
-			UserInfo vo = new UserInfo();
-			vo.setUSER_ID(id);
-			vo.setUSER_NM(loginInfo.get("USER_NM") != null ? loginInfo.get("USER_NM").toString() : "");
-			vo.setPDEPT_CD(loginInfo.get("PDEPT_CD") != null ? loginInfo.get("PDEPT_CD").toString() : "");
-			vo.setPDEPT_NM(loginInfo.get("PDEPT_NM") != null ? loginInfo.get("PDEPT_NM").toString() : "");
-			vo.setDEPT_CD(loginInfo.get("DEPT_CD") != null ? loginInfo.get("DEPT_CD").toString() : "");
-			vo.setDEPT_NM(loginInfo.get("DEPT_NM") != null ? loginInfo.get("DEPT_NM").toString() : "");
-			vo.setGRADE_CD(loginInfo.get("GRADE_CD") != null ? loginInfo.get("GRADE_CD").toString() : "");
-			vo.setGRADE_NM(loginInfo.get("GRADE_NM") != null ? loginInfo.get("GRADE_NM").toString() : "");
-			vo.setENTER_DT(loginInfo.get("ENTER_DT") != null ? loginInfo.get("ENTER_DT").toString() : "");
-			vo.setBIRTHDAY(loginInfo.get("BIRTHDAY") != null ? loginInfo.get("BIRTHDAY").toString() : "");
-			vo.setEMAIL(loginInfo.get("EMAIL") != null ? loginInfo.get("EMAIL").toString() : "");
-			vo.setPHONE_NUM(loginInfo.get("PHONE_NUM") != null ? loginInfo.get("PHONE_NUM").toString() : "");
-			vo.setAUTH_TYPE_CD(loginInfo.get("AUTH_TYPE_CD") != null ? loginInfo.get("AUTH_TYPE_CD").toString() : "");
-			vo.setUSER_LNAG(loginInfo.get("LANG") != null ? loginInfo.get("LANG").toString() : "KOR");
-			vo.setCONNECT_DT(loginInfo.get("CONNECT_DT") != null ? loginInfo.get("CONNECT_DT").toString() : "");
-
-			String ip = null;
-			ip = request.getHeader("X-Forwarded-For");
-
-			if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-				ip = request.getHeader("Proxy-Client-IP");
-			}
-			if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-				ip = request.getHeader("WL-Proxy-Client-IP");
-			}
-			if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-				ip = request.getHeader("HTTP_CLIENT_IP");
-			}
-			if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-				ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-			}
-			if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-				ip = request.getHeader("X-Real-IP");
-			}
-			if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-				ip = request.getHeader("X-RealIP");
-			}
-			if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-				ip = request.getHeader("REMOTE_ADDR");
-			}
-			if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-				ip = request.getRemoteAddr();
+			String ip = ipCheck(request);
+			userInfo.setUSER_IP(ip);
+			try {
+				boolean check = userPw.equals(encryptStringData(userInfo.getBIRTHDAY().replace("-", "")));
+					userInfo.setPW_CHECK(check ? true : false);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
 			}
 
-			vo.setUSER_IP(ip);
-
-			if (loginInfo.get("PASSWD").equals("O")) {
+			if (userInfo.getUSER_PW().equals("O")) {
 				// 접속정보 추가 Start
-				HashMap<String, Object> insertLogMap = new HashMap<String, Object>();
-
-				insertLogMap.put("SESSION_ID", session.getId());
-				insertLogMap.put("USER_ID", vo.getUSER_ID());
-				insertLogMap.put("DEPT_CD", vo.getDEPT_CD());
-				insertLogMap.put("USER_NM", vo.getUSER_NM());
-				insertLogMap.put("CONNECT_IP", ip);
-
-				homeService.insertConnectInfo(insertLogMap);
+				homeService.insertConnectInfo(insertLogMapInfo(session.getId(), userInfo, ip));
 				// 접속정보 추가 End
 
 				// 사용자ID 쿠키에 담기
@@ -141,43 +117,75 @@ public class HomeController {
 				}
 
 				// 사용자 권한별 메뉴 조회
-				List<Map<String, Object>> menuList = homeService.userMenuList(loginInfo, id);
+				List<Map<String, Object>> menuList = homeService.userMenuList(userInfo);
 
-				session.setAttribute("User", vo);
+				session.setAttribute("User", userInfo);
 				session.setAttribute("MENU", commonService.covertListToJson(menuList));
 				session.setAttribute("LANG", request.getParameter("language") == null ? "KOR" : request.getParameter("language"));
 				red.addFlashAttribute("LANG", request.getParameter("language") == null ? "KOR" : request.getParameter("language"));
 			} else {
-				Cookie cookie = new Cookie("userID", null); // 삭제할 쿠키에 대한 값을 null로 지정
-				cookie.setMaxAge(0); // 유효시간을 0으로 설정해서 바로 만료시킨다.
-				res.addCookie(cookie); // 응답에 추가해서 없어지도록 함
-
-				Cookie cookiePw = new Cookie("userPW", null);
-				cookiePw.setMaxAge(0);
-				res.addCookie(cookiePw);
-
-				red.addFlashAttribute("USER_ID", id);
-				red.addFlashAttribute("PASSWORD", pwd);
-				red.addFlashAttribute("msg", "pwdFailure");
-
+				cookieSetting(id, pwd, res, red);
 				return "redirect:/";
 			}
 		} else {
-			Cookie cookie = new Cookie("userID", null); // 삭제할 쿠키에 대한 값을 null로 지정
-			cookie.setMaxAge(0); // 유효시간을 0으로 설정해서 바로 만료시킨다.
-			res.addCookie(cookie); // 응답에 추가해서 없어지도록 함
-
-			Cookie cookiePw = new Cookie("userPW", null);
-			cookiePw.setMaxAge(0);
-			res.addCookie(cookiePw);
-
-			red.addFlashAttribute("USER_ID", id);
-			red.addFlashAttribute("PASSWORD", pwd);
-			red.addFlashAttribute("msg", "idFailure");
-
+			cookieSetting(id, pwd, res, red);
 			return "redirect:/";
 		}
 
 		return "tunnel";
+	}
+
+	private Map<String, Object> insertLogMapInfo(String sessionId, UserInfo userInfo, String ip) {
+		HashMap<String, Object> insertLogMap = new HashMap<>();
+		insertLogMap.put("SESSION_ID", sessionId);
+		insertLogMap.put("USER_ID", userInfo.getUSER_ID());
+		insertLogMap.put("DEPT_CD", userInfo.getDEPT_CD());
+		insertLogMap.put("USER_NM", userInfo.getUSER_NM());
+		insertLogMap.put("CONNECT_IP", ip);
+		return insertLogMap;
+	}
+
+	private void cookieSetting(String id, String pwd, HttpServletResponse res, RedirectAttributes red) {
+		Cookie cookie = new Cookie("userID", null); // 삭제할 쿠키에 대한 값을 null로 지정
+		cookie.setMaxAge(0); // 유효시간을 0으로 설정해서 바로 만료시킨다.
+		res.addCookie(cookie); // 응답에 추가해서 없어지도록 함
+
+		Cookie cookiePw = new Cookie("userPW", null);
+		cookiePw.setMaxAge(0);
+		res.addCookie(cookiePw);
+
+		red.addFlashAttribute("USER_ID", id);
+		red.addFlashAttribute("PASSWORD", pwd);
+		red.addFlashAttribute("msg", "idFailure");
+	}
+
+	private String ipCheck(HttpServletRequest request) {
+		String ip = request.getHeader("X-Forwarded-For");
+
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("WL-Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("HTTP_CLIENT_IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("X-Real-IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("X-RealIP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("REMOTE_ADDR");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getRemoteAddr();
+		}
+		return ip;
 	}
 }

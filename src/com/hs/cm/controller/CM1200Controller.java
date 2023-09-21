@@ -29,12 +29,10 @@ public class CM1200Controller {
 	/**
    	 * 메소드 설명 : 사용자관리마스터 페이지로 이동
    	 * -------------------------------------------------------------------
-   	 * @param	Locale	locale 	
-   	 * @param	Model 	model 	
    	 * @return	String 	result	사용자관리마스터 페이지ID
    	 */
 	@RequestMapping(value = "/cm1200")
-	public String cm1200(Locale locale, Model model) {
+	public String cm1200() {
 		return "CM/CM1200";
 	}
 	
@@ -44,11 +42,10 @@ public class CM1200Controller {
    	 * @param	Map		param	검색조건 (사용자ID/사용자명)
    	 * @return	List	list	사용자정보 목록
    	 */
+	@ResponseBody
 	@RequestMapping(value = "/cm1200Sel")
-	public @ResponseBody List<Map<String, Object>> CM1200_SEL(@RequestBody Map<String, Object> param) {
-		
-		List<Map<String, Object>> list = cm1200Service.cm1200Sel(param);
-		return list;
+	public List<Map<String, Object>> CM1200_SEL(@RequestBody Map<String, Object> param) {
+		return cm1200Service.cm1200Sel(param);
 	}
 	
 	/**
@@ -57,11 +54,10 @@ public class CM1200Controller {
    	 * @param	Map		param	검색조건 (법인코드/부서코드)
    	 * @return	List	list	부서-사용자정보 목록
    	 */
+	@ResponseBody
 	@RequestMapping(value = "/cm1200DeptSel")
-	public @ResponseBody List<HashMap<String, Object>> CM1200_DEPT_SEL(@RequestBody Map<String, Object> param) {
-		
-		List<HashMap<String, Object>> list = cm1200Service.cm1200DeptSel(param);
-		return list;
+	public List<HashMap<String, Object>> CM1200_DEPT_SEL(@RequestBody Map<String, Object> param) {
+		return cm1200Service.cm1200DeptSel(param);
 	}
 	
 	/**
@@ -70,11 +66,10 @@ public class CM1200Controller {
    	 * @param	Map		param	검색조건 (권한코드)
    	 * @return	List	list	권한그룹 목록
    	 */
+	@ResponseBody
 	@RequestMapping(value = "/cm1200AuthSel")
-	public @ResponseBody List<HashMap<String, Object>> CM1200_AUTH_SEL(@RequestBody Map<String, Object> param) {
-		
-		List<HashMap<String, Object>> list = cm1200Service.cm1200AuthSel(param);
-		return list;
+	public  List<HashMap<String, Object>> CM1200_AUTH_SEL(@RequestBody Map<String, Object> param) {
+		return cm1200Service.cm1200AuthSel(param);
 	}
 
 	/**
@@ -83,9 +78,9 @@ public class CM1200Controller {
    	 * @param	Map	 param	검색조건 (사용자ID)
    	 * @return	List list	중복 갯수
    	 */
+	@ResponseBody
 	@RequestMapping(value = "/cm1200Verification")
-	public @ResponseBody List<Map<String, Object>> cm1200Varification(@RequestBody Map<String, Object> param){
-
+	public List<Map<String, Object>> cm1200Varification(@RequestBody Map<String, Object> param){
 		return cm1200Service.cm1200Verification(param);
 	}
 	
@@ -96,8 +91,9 @@ public class CM1200Controller {
    	 * @param	HttpSession	session		로그인한 사용자ID
    	 * @return	Map 		rtnMap		추가 성공/실패 확인(0:성공/1:실패)
    	 */
+	@ResponseBody
 	@RequestMapping(value = "/cm1200Save")
-	public @ResponseBody Map<String, Object> CM1200_SAVE(@RequestBody Map<String, Object> param, HttpSession session) {
+	public  Map<String, Object> CM1200_SAVE(@RequestBody Map<String, Object> param, HttpSession session) {
 		
 		Map<String, Object> rtnMap = new HashMap<>();
 

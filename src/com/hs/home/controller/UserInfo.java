@@ -8,7 +8,7 @@ public class UserInfo {
 	private String PDEPT_NM;		// 상위 부서명
 	private String DEPT_CD;			// 부서코드
 	private String DEPT_NM;			// 부서명
-	private String GRADE_CD;			// 직급코드
+	private String GRADE_CD;		// 직급코드
 	private String GRADE_NM;		// 직급명
 	private String ENTER_DT;		// 입사일자
 	private String BIRTHDAY;		// 생일
@@ -18,6 +18,7 @@ public class UserInfo {
 	private String USER_IP;			// 사용자IP
 	private String USER_LNAG;		// 다국어 KOR:한국어, ENG:영어, CHN:중국어
 	private String CONNECT_DT;		// 접속시간
+	private boolean PW_CHECK; 		// 비밀번호 변경대상인지
 
 	public UserInfo() {
 	}
@@ -49,7 +50,7 @@ public class UserInfo {
 	public void setUSER_NM(String uSER_NM) {
 		USER_NM = uSER_NM;
 	}
-	
+
 	public String getPDEPT_CD() {
 		return PDEPT_CD;
 	}
@@ -162,6 +163,14 @@ public class UserInfo {
 		CONNECT_DT = cONNECT_DT;
 	}
 
+	public boolean getPW_CHECK() {
+		return PW_CHECK;
+	}
+
+	public void setPW_CHECK(boolean pW_CHECK) {
+		this.PW_CHECK = pW_CHECK;
+	}
+
 	@Override
 	public String toString() {
 		return "UserInfo [USER_ID=" + USER_ID + ", USER_PW=" + USER_PW + ", USER_NM=" + USER_NM
@@ -169,14 +178,17 @@ public class UserInfo {
 				+ ", DEPT_CD=" + DEPT_CD + ", DEPT_NM=" + DEPT_NM + ", GRADE_CD=" + GRADE_CD + ", GRADE_NM=" + GRADE_NM
 				+ ", ENTER_DT=" + ENTER_DT + ", BIRTHDAY=" + BIRTHDAY + ", EMAIL=" + EMAIL + ", PHONE_NUM=" + PHONE_NUM
 				+ ", AUTH_TYPE_CD=" + AUTH_TYPE_CD + ", USER_IP=" + USER_IP + ", USER_LNAG=" + USER_LNAG + ", CONNECT_DT=" + CONNECT_DT
-				
-				+ ", getUSER_ID()=" + getUSER_ID() + ", getUSER_PW()=" + getUSER_PW() + ", getUSER_NM()=" + getUSER_NM() 
-				+ ", getPDEPT_CD()=" + getPDEPT_CD() + ", getPDEPT_NM()=" + getPDEPT_NM() 
+				+ ", PW_CHECK=" + PW_CHECK
+
+				+ ", getUSER_ID()=" + getUSER_ID() + ", getUSER_PW()=" + getUSER_PW() + ", getUSER_NM()=" + getUSER_NM()
+				+ ", getPDEPT_CD()=" + getPDEPT_CD() + ", getPDEPT_NM()=" + getPDEPT_NM()
 				+ ", getDEPT_CD()=" + getDEPT_CD() + ", getDEPT_NM()=" + getDEPT_NM() + ", getGRADE_CD()=" + getGRADE_CD() + ", getGRADE_NM()=" + getGRADE_NM()
 				+ ", getENTER_DT()=" + getENTER_DT() + ", getBIRTHDAY()=" + getBIRTHDAY() + ", getEMAIL()=" + getEMAIL()
-				+ ", getPHONE_NUM()=" + getPHONE_NUM() + ", getAUTH_TYPE_CD()=" + getAUTH_TYPE_CD() 
-				+ ", getUSER_IP=" + getUSER_IP() + ", getUSER_LNAG=" + getUSER_LNAG() 
-				+ ", getCONNECT_DT=" + getCONNECT_DT() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode() 
+				+ ", getPHONE_NUM()=" + getPHONE_NUM() + ", getAUTH_TYPE_CD()=" + getAUTH_TYPE_CD()
+				+ ", getUSER_IP=" + getUSER_IP() + ", getUSER_LNAG=" + getUSER_LNAG()
+				+ ", getCONNECT_DT=" + getCONNECT_DT() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode()
 				+ ", toString()=" + super.toString() + "]";
 	}
+
+
 }
