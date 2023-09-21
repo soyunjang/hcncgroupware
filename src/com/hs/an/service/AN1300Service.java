@@ -1,5 +1,7 @@
 package com.hs.an.service;
 
+import com.hs.an.dto.FileInfo;
+import com.hs.an.repository.An1300Repository;
 import com.hs.home.controller.UserInfo;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
@@ -17,10 +19,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+import java.util.function.Supplier;
 
 @Service("an1300Service")
 @Transactional
@@ -28,6 +28,9 @@ public class AN1300Service {
 
     @Autowired
     private SqlSession sqlSession;
+
+    @Autowired
+    private An1300Repository an1300Repository;
 
     @Resource(name = "uploadPath")
     private String uploadPath;
@@ -73,15 +76,14 @@ public class AN1300Service {
 
     }
 
-    public Map<String, Object> getPdtFileByUse(Integer num) {
-        Map<String, Object> result;
+    public FileInfo getPdfFileByUse(Integer num) {
         try {
-            result = sqlSession.selectOne("an1300Mapper.getPdtFileByUse", num);
-            String filePath = result.get("FILE_PATH").toString().replace("\\", "/");
-            result.put("FILE_PATH", filePath);
-            return result;
+            FileInfo fileInfo = an1300Repository.getPdtFileByUse(num)
+                    .orElseThrow(() -> new IllegalArgumentException("Not Find File Num"));
+            fileInfo.setFilePath(fileInfo.getFilePath().replace("\\", "/"));
+            return fileInfo;
         } catch (Exception e) {
-            return new HashMap<>();
+            return new FileInfo();
         }
     }
 
@@ -106,5 +108,10 @@ public class AN1300Service {
         } else {
             throw new RuntimeException("getDateAfterUpdate.else");
         }
+    }
+
+    public FileInfo getPdfFileByFileName(String fileName) {
+        return an1300Repository.getPdtFileByFileName(fileName.concat(".pdf"))
+                .orElseThrow(() -> new IllegalArgumentException("Incorrect PDF File Name"));
     }
 }

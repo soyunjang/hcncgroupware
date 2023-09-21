@@ -5,12 +5,23 @@
     
 <mapper namespace="an1300Mapper">
 
+	<resultMap type="com.hs.an.dto.FileInfo" id="fileInfoResultMap" >
+		<id column="FILE_NUM" property="fileNum"/>
+		<result column="FILE_TYPE" property="filetype"/>
+		<result column="FILE_PATH" property="filePath"/>
+		<result column="FILE_CHANGE_NAME" property="fileChangeName"/>
+		<result column="FILE_ORIGINAL_NAME" property="fileOriginalName"/>
+		<result column="USE_YN" property="useYn"/>
+		<result column="REG_ID" property="regId"/>
+		<result column="REG_DT" property="regDt"/>
+	</resultMap>
+
 	<insert id="uploadPathSave" parameterType="map">
 		INSERT INTO FILE_INFO (FILE_TYPE, FILE_PATH, FILE_CHANGE_NAME, FILE_ORIGINAL_NAME, USE_YN, REG_ID, REG_DT)
 		VALUES (#{FILE_TYPE}, #{FILE_PATH}, #{FILE_CHANGE_NAME}, #{FILE_ORIGINAL_NAME}, #{USE_YN}, #{REG_ID}, GETDATE())
 	</insert>
 
-	<select id="getPdtFileByUse" parameterType="Integer" resultType="map">
+	<select id="getPdtFileByUse" resultMap="fileInfoResultMap" parameterType="Integer">
 		SELECT
 		<if test='value == null'>
 			TOP 1
@@ -39,4 +50,19 @@
 		  AND FILE_TYPE LIKE #{FILE_TYPE}
 		  AND USE_YN LIKE 'Y'
 	</update>
+
+	<select id="getPdtFileByFileName" parameterType="String" resultMap="fileInfoResultMap">
+		SELECT FILE_NUM,
+		       FILE_TYPE,
+		       FILE_PATH,
+		       FILE_CHANGE_NAME,
+		       FILE_ORIGINAL_NAME,
+		       USE_YN,
+		       REG_ID,
+		       REG_DT
+		FROM FILE_INFO WHERE FILE_CHANGE_NAME LIKE #{fileName}
+	</select>
+
+
+
 </mapper>

@@ -91,11 +91,7 @@
 			<div class="row row-1">
 				<div class="col col-1 wp100">
 					<section>
-						<div class="title-wrap">
-<%--	                        <div class="title-zone">--%>
-<%--	                            <h2 class="title1">업무캘린더 현황</h2>--%>
-<%--	                        </div>--%>
-	                    </div>
+						<div class="title-wrap"></div>
 						<canvas id="pdfCanvas"></canvas>
 					</section>
 				</div>
@@ -207,7 +203,6 @@
 		 * pdf 파일을 이미지로 변경하여 캔버스로 보여주는 코드
 		 */
 		function pdfToCanvas(data) {
-
 			if (data.isempty) {
 				return false;
 			}
@@ -223,7 +218,7 @@
 
 			function pdfToImg() {
 				let filePath = "/an1300/file/";
-				let fileName = data.FILE_CHANGE_NAME.substring(0, data.FILE_CHANGE_NAME.indexOf("."))
+				let fileName = data.fileChangeName.substring(0, data.fileChangeName.indexOf("."))
 				let pdfUrl = filePath + fileName;
 
 				pdfRender(pdfUrl, PDF_CANVAS);
