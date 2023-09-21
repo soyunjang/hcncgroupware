@@ -59,35 +59,38 @@
 	
 	<script>
 		/* Document가 로드되었을 때 실행되는 코드 */
-		$(document).ready(function() {
-			let cook = document.cookie + ";";
-			let index = cook.indexOf("userID", 0);
-			let userId = "";
-
-			let msg = '${msg}'
-
-			
-			if(index != -1){
-				cook = cook.substring(index, cook.length);
-				begin = cook.indexOf("=", 0) + 1;
-				end = cook.indexOf(";", begin);
-				userId = unescape(cook.substring(begin, end))
-			}
-			
-			if(userId != ""){
-				$("#id").val(userId);
-				$("#idSave").attr("checked", true);
-			}
-		});
-
-		const userId = document.querySelector("#id");
+		const id = document.querySelector("#id");
 		const passwd = document.querySelector("#pwd");
 		const btnLogin = document.querySelector("#btnLogin");
 		const msgInfo = document.querySelector("#msgInfo");
 		const msgInfo2 = document.querySelector("#msgInfo2");
+		const idSave = document.querySelector("#idSave");
+
+		(() => {
+			let cook = document.cookie + ";";
+			let index = cook.indexOf("userID", 0);
+			let userId = "";
+
+			if (index != -1) {
+				cook = cook.substring(index, cook.length);
+				let begin = cook.indexOf("=", 0) + 1;
+				let end = cook.indexOf(";", begin);
+				userId = unescape(cook.substring(begin, end))
+			}
+
+			if (userId != "") {
+				id.value = userId;
+				idSave.setAttribute("checked", "ture");
+			}
+
+			/* iframe에서 해당 창을 열었을 경우 부모창의 주소를 옮긴다. */
+			if (window != top) {
+				top.location.href = location.href;
+			}
+		})();
 
 		/* ID 입력후 엔터키 이벤트 */
-		userId.addEventListener("keyup", (e) => {
+		id.addEventListener("keyup", (e) => {
 			capsLockCheck(e);
 			if (e.key == "Enter") {
 				passwd.focus();
@@ -114,9 +117,9 @@
 
 			msgInfo.innerHTML = "";
 
-			if (userId.value == "") {
+			if (id.value == "") {
 				msgInfo.innerHTML = "<div class='red'>아이디를 입력하세요</div>";
-				userId.focus();
+				id.focus();
 				return;
 			}
 			
