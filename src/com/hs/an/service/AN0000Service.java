@@ -5,7 +5,6 @@ import com.hs.an.dto.HolidayPublicDto;
 import com.hs.an.dto.UserAndHolidayInfoDto;
 import com.hs.home.controller.UserInfo;
 import com.hs.home.service.HomeService;
-import org.jacorb.trading.constraint.StringValue;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -34,15 +33,14 @@ import static java.util.Arrays.stream;
 @Component
 @Transactional
 public class AN0000Service {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final String HOLIDAY_TYPE = "OFFICE01";
     private final String HOLIDAY_CNT = "1";
-
     @Autowired
     private HomeService homeService;
-
     @Autowired
     private AN1000Service an1000Service;
+
 
     /** 회사 휴무 미등록 시 해당 달 마지막 날에 자동 등록 */
     @Scheduled(cron = "0 30 23 28-31 * *")
@@ -63,11 +61,11 @@ public class AN0000Service {
                         an1000Service.holidayInfoUpdate(param, user, AN1000Service.Type.PLUS);
                     }
                 } else {
-                    logger.info("holidayCompanyAutoSubmit.dto.isEmpty()");
+                    log.info("holidayCompanyAutoSubmit.dto.isEmpty()");
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException("회사 휴무 자동 등록 오류", e);
+            log.error(this.getClass().getName() + ".holidayCompanyAutoSubmit : 회사 휴무 자동 등록 오류", e);
         }
     }
 
@@ -91,16 +89,16 @@ public class AN0000Service {
                             byYears(item);
                         });
             } else {
-                logger.info("calculation.dto.isEmpty");
+                log.info("calculation.dto.isEmpty");
             }
         } catch (Exception e) {
-            throw new RuntimeException("연차 계산 오류", e);
+            log.error(this.getClass().getName() + ".calculation : 연차 계산 오류", e);
         }
     }
 
     private void byYears(UserAndHolidayInfoDto item) {
 
-        logger.info("ID={}", item.getUSER_ID());
+        log.info("ID={}", item.getUSER_ID());
 
         Period period = Period.between(LocalDate.parse(item.getENTER_DT()), LocalDate.now());
         int years = period.getYears();
@@ -153,18 +151,24 @@ public class AN0000Service {
     /**
      * 공휴일 조회(12개월) 및 저장
      */
-    @Scheduled(cron = "0 0 6 1 * *")
+//    @Scheduled(cron = "0 0 6 1 * *")
+    @Scheduled(cron = "0 * * * * *")
     public void publicHolidayApi() {
-        int searchCount = 12;
-        int year = LocalDate.now().getYear();
-        int month = LocalDate.now().getMonthValue();
-        String[] yearArray = new String[searchCount];
-        String[] monthArray = new String[searchCount];
+        try {
+            int searchCount = 12;
+            int year = LocalDate.now().getYear();
+            int month = LocalDate.now().getMonthValue();
+            String[] yearArray = new String[searchCount];
+            String[] monthArray = new String[searchCount];
 
-        yearAndMonthArray(year, month, yearArray, monthArray);
-        List<HolidayPublicDto> result = getHolidayList(yearArray, monthArray);
-        logger.info(result.toString());
-        an1000Service.an1000PublicHolidaySave(result);
+            yearAndMonthArray(year, month, yearArray, monthArray);
+            List<HolidayPublicDto> result = getHolidayList(yearArray, monthArray);
+            log.info(result.toString());
+            an1000Service.an1000PublicHolidaySave(result);
+        } catch (Exception e) {
+            log.error(this.getClass().getName() + ".publicHolidayApi", e);
+        }
+
     }
 
     private void yearAndMonthArray(int year, int month, String[] yearArray, String[] monthArray) {

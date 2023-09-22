@@ -574,7 +574,7 @@
 		function searchGridData(){
 			let searchParam = {};
 			
-			getAjaxJsonData("an1000Sel", searchParam, "searchGridDataCallBack");
+			getAjaxJsonData("an1000/list", searchParam, "searchGridDataCallBack");
 		};
 
 		function searchGridDataCallBack(data){
@@ -601,7 +601,7 @@
 				, TYPE : $("#sel01_HOLIDAY_TYPE").val()
 			};
 
-			getAjaxJsonData("an1000Sel", searchParam, "searchGridDataUsersCallBack");
+			getAjaxJsonData("an1000/list", searchParam, "searchGridDataUsersCallBack");
 		};
 
 		function searchGridDataUsersCallBack(data){
@@ -651,7 +651,7 @@
 				USER_NM : $("#pop01_USER_NM").val()
 			};
 
-			getAjaxJsonData("an1000SelUser", searchParam, "searchGridDataUserCallBack");
+			getAjaxJsonData("/an1000/SelUser", searchParam, "searchGridDataUserCallBack");
 			// 	toast("정보", "성명을 입력해 주시기 바랍니다.", "info");
 		};
 

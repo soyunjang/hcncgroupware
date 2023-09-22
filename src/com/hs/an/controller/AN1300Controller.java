@@ -3,6 +3,7 @@ package com.hs.an.controller;
 import com.hs.an.dto.FileInfo;
 import com.hs.an.service.AN1300Service;
 import com.hs.home.controller.UserInfo;
+import com.hs.util.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +14,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -39,53 +38,85 @@ public class AN1300Controller {
 
     @RequestMapping(method = RequestMethod.GET)
     public String an1300(Model model) {
-        model.addAttribute("PDF_FILE", an1300Service.getPdfFileByUse(null));
+        try {
+            model.addAttribute("PDF_FILE", an1300Service.getPdfFileByUse(null));
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
         return "AN/AN1300";
     }
 
     @ResponseBody
     @RequestMapping(value = "/files", method = RequestMethod.GET)
-    public List<Map<String, Object>> an1300FileList() {
-        return an1300Service.getFileList();
+    public ResponseEntity an1300FileList(@ModelAttribute("User") UserInfo user) {
+        try {
+            if (user == null) {
+                return new ResponseEntity<>(Message.BAD_REQUEST_USER, HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity(an1300Service.getFileList(), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return new ResponseEntity<>(Message.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @ResponseBody
     @RequestMapping(value = "/file", method = RequestMethod.GET)
-    public FileInfo an1300File(@RequestParam(required = false) Integer num) {
-        return an1300Service.getPdfFileByUse(num);
+    public ResponseEntity an1300File(@RequestParam(required = false) Integer num, @ModelAttribute("User") UserInfo user) {
+        try {
+            if (user == null) {
+                return new ResponseEntity<>(Message.BAD_REQUEST_USER, HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(an1300Service.getPdfFileByUse(num), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return new ResponseEntity<>(Message.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+        }
     }
     @ResponseBody
     @RequestMapping(value = "/file", method = RequestMethod.PATCH)
     public ResponseEntity an1300FileDelete(@RequestParam(required = false) Integer num, @ModelAttribute("User") UserInfo user) {
         try {
-            return new ResponseEntity<>(an1300Service.getDateAfterUpdate(num, user), HttpStatus.OK ) ;
+            if (user == null) {
+                return new ResponseEntity<>(Message.BAD_REQUEST_USER, HttpStatus.BAD_REQUEST);
+            }
+
+            return new ResponseEntity<>(an1300Service.getDataAfterUpdate(num, user), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
+            log.error(e.getMessage(), e);
+            return new ResponseEntity<>(Message.BAD_REQUEST, HttpStatus.BAD_REQUEST);
         }
     }
-    @RequestMapping(value = "/file", method = RequestMethod.POST)
     @ResponseBody
+    @RequestMapping(value = "/file", method = RequestMethod.POST)
     public ResponseEntity an1300Upload(@RequestParam("file") MultipartFile file, @ModelAttribute("User") UserInfo user) {
+        try {
+            if (user == null) {
+                return new ResponseEntity<>(Message.BAD_REQUEST_USER, HttpStatus.BAD_REQUEST);
+            }
 
-        int index = file.getOriginalFilename().lastIndexOf(".");
-        String ext = file.getOriginalFilename().substring(index).toLowerCase();
+            int index = file.getOriginalFilename().lastIndexOf(".");
+            String ext = file.getOriginalFilename().substring(index).toLowerCase();
+            Map<String, Object> result = new HashMap<>();
 
-        Map<String, Object> result = new HashMap<>();
-
-        if (ext.equals(".pdf")) {
-            an1300Service.fileUpload(file, ext, user);
-            result.put("UPLOAD", "Y");
-        } else {
-            result.put("UPLOAD", "N");
+            if (ext.equals(".pdf")) {
+                an1300Service.fileUpload(file, ext, user);
+                result.put("UPLOAD", "Y");
+            } else {
+                result.put("UPLOAD", "N");
+            }
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return new ResponseEntity<>(Message.BAD_REQUEST, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/file/{fileName}", method = RequestMethod.GET)
     public ResponseEntity findFileByPdf(@PathVariable String fileName, @ModelAttribute("User") UserInfo user,
                                         HttpServletResponse response) {
         if (user == null) {
-            return new ResponseEntity<>("잘못된 사용자입니다.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Message.BAD_REQUEST_USER, HttpStatus.BAD_REQUEST);
         }
         try {
             FileInfo findByFileInfo = an1300Service.getPdfFileByFileName(fileName);
@@ -98,7 +129,8 @@ public class AN1300Controller {
             Files.copy(file.toPath(), response.getOutputStream());
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (IOException e) {
-            return new ResponseEntity<>("PDF 파일 찾기에 실패하였습니다.", HttpStatus.BAD_REQUEST);
+            log.error(e.getMessage(), e);
+            return new ResponseEntity<>(Message.BAD_REQUEST_PDF, HttpStatus.BAD_REQUEST);
         }
     }
 

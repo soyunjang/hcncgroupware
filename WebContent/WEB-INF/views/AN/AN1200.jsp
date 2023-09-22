@@ -223,7 +223,7 @@
 					USER_NM: $("#txt01_USER_NM").val()
 			};
 
-			getAjaxJsonData("an1200Sel", searchParam, "searchGridDataCallBack");
+			getAjaxJsonData("/an1200/list", searchParam, "searchGridDataCallBack");
 		};
 		
 		function searchGridDataCallBack(data){

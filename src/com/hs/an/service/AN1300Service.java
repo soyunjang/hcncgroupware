@@ -3,7 +3,6 @@ package com.hs.an.service;
 import com.hs.an.dto.FileInfo;
 import com.hs.an.repository.An1300Repository;
 import com.hs.home.controller.UserInfo;
-import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +18,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
-import java.util.*;
-import java.util.function.Supplier;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 @Service("an1300Service")
 @Transactional
 public class AN1300Service {
-
-    @Autowired
-    private SqlSession sqlSession;
 
     @Autowired
     private An1300Repository an1300Repository;
@@ -69,9 +67,9 @@ public class AN1300Service {
             param.put("USE_YN", "Y");
 
             Files.copy(file.getInputStream(), copyOfLocation, StandardCopyOption.REPLACE_EXISTING);
-            sqlSession.insert("an1300Mapper.uploadPathSave", param);
+            an1300Repository.fileUpload(param);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(this.getClass().getName() + ".fileUpload", e);
         }
 
     }
@@ -83,28 +81,32 @@ public class AN1300Service {
             fileInfo.setFilePath(fileInfo.getFilePath().replace("\\", "/"));
             return fileInfo;
         } catch (Exception e) {
-            return new FileInfo();
+            throw new RuntimeException(this.getClass().getName() + ".getPdfFileByUse", e);
         }
     }
 
     public List<Map<String, Object>> getFileList() {
-        return sqlSession.selectList("an1300Mapper.getFileList");
+        try {
+            return an1300Repository.getFileList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(this.getClass().getName() + ".getFileList", e);
+        }
     }
 
-    public List<Map<String, Object>> getDateAfterUpdate(Integer num, UserInfo user) {
+    public List<Map<String, Object>> getDataAfterUpdate(Integer num, UserInfo user) {
         if (num != null) {
             Map<String, Object> map = new HashMap<>();
             map.put("NUM", num);
             map.put("USER_ID", user.getUSER_ID());
             map.put("USE_YN", "N");
             map.put("FILE_TYPE", "pdf");
-            int count = sqlSession.update("an1300Mapper.fileInfoUpdate", map);
+            int count = an1300Repository.getDataCount(map);
             if (count == 1) {
                 return getFileList();
             } else {
                 throw new RuntimeException("getDateAfterUpdate.count.else");
             }
-
         } else {
             throw new RuntimeException("getDateAfterUpdate.else");
         }
