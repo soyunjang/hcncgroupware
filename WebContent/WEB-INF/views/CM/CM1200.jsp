@@ -465,12 +465,12 @@
 				colNames: langPop1,
 				colModel: [
 					{ name: 'DEPT_PID'	, align: 'center'	, width: '0%'	, hidden: true  },
-					{ name: 'DEPT_PNM'	, align: 'center'	, width: '4%'	, hidden: false },
+					{ name: 'DEPT_PNM'	, align: 'center'	, width: '25%'	, hidden: false },
 					{ name: 'DEPT_ID'	, align: 'center'	, width: '0%'	, hidden: true  },
-					{ name: 'DEPT_NM'	, align: 'center'	, width: '4%'	, hidden: false },
-					{ name: 'MEMO'		, align: 'left'		, width: '6%'	, hidden: false  }
+					{ name: 'DEPT_NM'	, align: 'center'	, width: '25%'	, hidden: false },
+					{ name: 'MEMO'		, align: 'left'		, width: '10%'	, hidden: false }
 				],
-				autowidth: true,
+				autowidth: false,
 				shrinkToFit: false,
 				rowNum : 5000,
 				ondblClickRow : function(rowid){
