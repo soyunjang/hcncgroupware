@@ -1169,7 +1169,8 @@
 					, {name: 'SALES_CONFIRM'				, align: 'center'	, width: '4%'	, hidden: false}
 					, {name: 'PROJECT_NM'					, align: 'left'		, width: '21%'	, hidden: false}
 					, {name: 'OBTAIN_ACCOUNT'				, align: 'left'		, width: '10%'	, hidden: false}
-					, {name: 'OBTAIN_PRICE'					, align: 'right'	, width: '7%'	, hidden: false	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
+					, {name: 'OBTAIN_PRICE'					, align: 'right'	, width: '7%'	, hidden: false	,
+						formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
 					, {name: 'OBTAIN_SALES_PIC'				, align: 'center' 	, width: '5%'	, hidden: false}
 					, {name: 'OBTAIN_PM'					, align: 'center' 	, width: '5%'	, hidden: false}
 					, {name: 'OBTAIN_REG_DT'				, align: 'center' 	, width: '7%'	, hidden: false}
@@ -2456,12 +2457,12 @@
 				if(selRowData.SALES_CONFIRM == "확정") {
 					$("#pop01_lb01_REASON").text("11. 변경사유");
 					$("#OBTAIN_REASON").removeClass('dis-n');
-					$("#OBTAIN_REASON").val("");
+					$("#OBTAIN_REASON").val(selRowData.OBTAIN_REASON);
 				} else {
 					if(parseInt($("#REVISION").val()) > 0) {
 						$("#pop01_lb01_REASON").text("11. 변경사유");
 						$("#OBTAIN_REASON").removeClass('dis-n');
-						$("#OBTAIN_REASON").val("");
+						$("#OBTAIN_REASON").val(selRowData.OBTAIN_REASON);
 					} else {
 						$("#pop01_lb01_REASON").text("");
 						$("#OBTAIN_REASON").addClass('dis-n');
