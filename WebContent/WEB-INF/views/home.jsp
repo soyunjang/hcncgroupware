@@ -113,8 +113,6 @@
 		 * 로그인 확인
 		 */
 		function fnLogin(){
-			let idSave = $("input[name='idSave']:checked").val();
-
 			msgInfo.innerHTML = "";
 
 			if (id.value == "") {
