@@ -151,8 +151,7 @@ public class AN0000Service {
     /**
      * 공휴일 조회(12개월) 및 저장
      */
-//    @Scheduled(cron = "0 0 6 1 * *")
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 0 6 1 * *")
     public void publicHolidayApi() {
         try {
             int searchCount = 12;
@@ -168,7 +167,6 @@ public class AN0000Service {
         } catch (Exception e) {
             log.error(this.getClass().getName() + ".publicHolidayApi", e);
         }
-
     }
 
     private void yearAndMonthArray(int year, int month, String[] yearArray, String[] monthArray) {
@@ -240,6 +238,4 @@ public class AN0000Service {
         }
         return list;
     }
-
-
 }
