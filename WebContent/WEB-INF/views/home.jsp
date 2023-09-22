@@ -25,9 +25,9 @@
                 		<h2>로그인</h2>
 						<form name="flogin" method="post" accept-charset="utf-8">
 							<div class="login-input">
-								<input type="text" id="id" name= "id" class="mg-b15 user-id" value="${USER_ID}" autocomplete="off">
+								<input type="text" id="id" name= "id" class="mg-b15 user-id" value="${USER_ID}" autocomplete="off" placeholder="아이디">
 								<label for="" class="hide">아이디</label>
-								<input type="password" id="pwd" name="pwd" class="user-pw" value="${PASSWORD}" autocomplete="off">
+								<input type="password" id="pwd" name="pwd" class="user-pw" value="${PASSWORD}" autocomplete="off" placeholder="비밀번호">
 								<label for="" class="hide">패스워드</label>
 								<div class="login-check">
 									<input type="checkbox" id="idSave" name="idSave" class="mg-r5"><label for="idSave">ID 저장</label>
