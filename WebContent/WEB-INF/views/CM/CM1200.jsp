@@ -464,13 +464,13 @@
 				},
 				colNames: langPop1,
 				colModel: [
-					{ name: 'DEPT_PID'	, align: 'center'	, width: '0%'	, hidden: true  },
-					{ name: 'DEPT_PNM'	, align: 'center'	, width: '25%'	, hidden: false },
-					{ name: 'DEPT_ID'	, align: 'center'	, width: '0%'	, hidden: true  },
-					{ name: 'DEPT_NM'	, align: 'center'	, width: '25%'	, hidden: false },
-					{ name: 'MEMO'		, align: 'left'		, width: '10%'	, hidden: false }
+					{ name: 'DEPT_PID'	, align: 'center'	, width: '0px'		, hidden: true  },
+					{ name: 'DEPT_PNM'	, align: 'center'	, width: '100px'	, hidden: false },
+					{ name: 'DEPT_ID'	, align: 'center'	, width: '0px'		, hidden: true  },
+					{ name: 'DEPT_NM'	, align: 'center'	, width: '100px'	, hidden: false },
+					{ name: 'MEMO'		, align: 'left'		, width: '100px'	, hidden: false }
 				],
-				autowidth: false,
+				autowidth: true,
 				shrinkToFit: false,
 				rowNum : 5000,
 				ondblClickRow : function(rowid){
