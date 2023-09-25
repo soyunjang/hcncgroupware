@@ -10,7 +10,6 @@
 		position: relative;
 	}
 	#holiday-info-text1, #holiday-info-text2 {
-		color: red;
 		font-size: 1.3rem;
 		letter-spacing: 2px;
 	}
@@ -20,6 +19,7 @@
 
 	}
 	#holiday-info-text2 {
+		color: red;
 		margin-top: 0;
 		margin-left: 50px;
 	}
@@ -222,8 +222,11 @@
 										</td>
 									</tr>
 									<tr>
-
-										<th class="req" colspan="4">※ 휴가신청서는 서면 결재 받으셔야 합니다.</th>
+										<th class="req" colspan="4">
+											* 휴가신청서는 서면 결재 받으셔야 합니다.
+											<br>
+											* 작성하신 신청서는 삭제가 불가합니다(관리팀 문의)
+										</th>
 									</tr>
 								</tbody>
 							</table>
@@ -304,7 +307,7 @@
 		const userEnterDate = '${Holiday.ENTER_DT}'
 		const userName = '${User.USER_NM}'
 
-		/* 공통코드_콤보박스 */ 
+		/* 공통코드_콤보박스 */
 		commonCodeSelectAdd("pop01_sel01_TYPE", getCommonCode('HOLIDAY'), 'N');
 		commonCodeSelectAdd("sel01_HOLIDAY_TYPE", getCommonCode('HOLIDAY'), 'Y');
 
@@ -391,7 +394,7 @@
 				// }
 			}
 		});
-		
+
 		/* 작성 버튼 */
 		$("#btn01_INSERT").on({
 			click: function(){
@@ -532,7 +535,7 @@
 					}
 				},
 			});
-			
+
 			searchGridData();
 
 			$("#table3").jqGrid({
@@ -568,12 +571,12 @@
 				}
 			});
 		};
-		
+
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: CRUD
 		/* Table 조회 */
 		function searchGridData(){
 			let searchParam = {};
-			
+
 			getAjaxJsonData("an1000/list", searchParam, "searchGridDataCallBack");
 		};
 
@@ -664,7 +667,7 @@
 		};
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 유효성
-		
+
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: Popup
 		/* 사용자 추가/수정 팝업 */
 		function openModalPopup(action){
@@ -673,7 +676,7 @@
 			let titlePop = returnPopup[0];
 			let pop01_btn01_SAVE = returnPopup[1];
 			let pop01_btn01_CLOSE = returnPopup[2];
-			
+
 			$("#viewForm1").dialog({
 				autoOpen: true
 				, title: titlePop
@@ -689,7 +692,7 @@
 						$("#pop01_txt01_GRADE_NM").val('${User.GRADE_NM}');
 					}
 					else if(action == "U"){
-						
+
 					}
 				}
 				, close: function () {
@@ -710,16 +713,16 @@
 								return false;
 							}
 							let idsH = $("#table1").jqGrid('getDataIDs');
-							
+
 							for (let i = 0; i < idsH.length; i++) {
 								let retH = $("#table1").jqGrid('getRowData', idsH[i]);
-								
+
 								if(retH.HOLIDAY_START == $("#pop01_date01_START").val()) {
 									toast("오류", "이미 존재하는 휴가입니다.", "error");
 									return;
 								}
 							}
-							
+
 							confirms("저장 하시겠습니까?", "C");
 						}
 					}
@@ -727,7 +730,7 @@
 						text : pop01_btn01_CLOSE,
 	                    click : function () {
 							$(this).dialog("close");
-						} 
+						}
 					}
 				]
 				, focus: function (event, ui) {}
@@ -1046,7 +1049,6 @@
 				startDate = new Date(userEnterDate.getFullYear() + i, userEnterDate.getMonth() + 1, userEnterDate.getDate());
 				endDate = new Date(userEnterDateNext.getFullYear() + i + 1, userEnterDateNext.getMonth() + 1, userEnterDateNext.getDate());
 				if (startDate <= today && today < endDate) {
-					console.log(startDate, endDate);
 					break;
 				}
 			}
@@ -1054,9 +1056,11 @@
 			const holidayInfoText1 = document.querySelector('#holiday-info-text1');
 			const holidayInfoText2 = document.querySelector('#holiday-info-text2');
 			holidayInfoText1.innerText = "※ " + userName + "님의 미사용 연차는 갱신 시 이월되지 않으니 기한 내에 모두 사용하여 주십시오.";
-			holidayInfoText2.innerText = "(사용 기한: 입사일 기준 갱신되는 날짜 " + startDate.getFullYear() + "." + startDate.getMonth() + "." + startDate.getDate() + "~"
-					+ endDate.getFullYear() + "." + endDate.getMonth() + "." + endDate.getDate() + ")";;
-
+			holidayInfoText2.innerText =
+					"(사용기한: " + startDate.getFullYear() + "." + (startDate.getMonth() < 10 ? "0" + startDate.getMonth() : startDate.getMonth()) + "." +
+					(startDate.getDate() < 10 ? "0" + startDate.getDate() : startDate.getDate()) + "~"
+					+ endDate.getFullYear() + "." + (endDate.getMonth() < 10 ? "0" + endDate.getMonth() : endDate.getMonth())  + "."
+					+ (endDate.getDate() < 10 ? "0" + endDate.getDate() : endDate.getDate()) + ", 입사일 기준으로 갱신)";
 		}
 	</script>
 </html>

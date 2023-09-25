@@ -72,7 +72,7 @@
 	    display: flex;
 	    justify-content: center;
 	    margin: 0;
-	    padding: 0;
+	    padding: 20px;
 	}
 	input:focus, textarea:focus {
 	    outline: none;
@@ -83,7 +83,8 @@
 	    margin: 0;
 	}
 	img {
-	    width: 100px;
+	    width: 125px;
+		padding-left: 10px;
 	}
 	.container {
 	    width: 800px;
@@ -94,6 +95,7 @@
 	.container-top {
 	    display: flex;
 	    justify-content: space-between;
+		margin: 10px 0px;
 	}
 	.container-top h1 {
 		font-size: 3rem;
@@ -147,25 +149,29 @@
 		cursor: pointer;
 	}
 	.column-text {
-	    line-height: 14px;
-	    width: 25px;
-	    letter-spacing: 2.6px;
+		line-height: 14px;
+		width: 30px;
+		letter-spacing: 2.6px;
 		writing-mode: tb;
 		height: 100px !important;
+		font-size: 13px;
 	}
 	.common-sign1 {
-	    height: 20px;
-	    width: 70px;
+	    height: 25px;
+	    width: 90px;
 	    vertical-align: middle;
 	    text-align: center;
+		font-size: 15px;
+		padding: 2px 0px;
 	}
 	.sign-space {
-	    height: 70px;
+	    height: 100px;
 	}
 	.sign-date {
 	    height: 10px;
 	    text-align: center;
 	    vertical-align: middle;
+		font-size: 12px;
 	}
 	.common-sign2 td {
 	    font-size: 0.9rem;
@@ -223,6 +229,9 @@
 		letter-spacing: 6px;
 		margin-left: 6px;
 	}
+	.common-text3 {
+		align-self: end;
+	}
 
 	@media print {
 	    .btn-box {
@@ -274,7 +283,7 @@
 
 	    <table class="sign-table">
 	        <tr>
-	            <td rowspan="3" class="column-text">결재</td>
+	            <td rowspan="2" class="column-text">결재</td>
 	            <td class="common-sign1">팀장</td>
 	            <td class="common-sign1">부서장/PM</td>
 	            <td class="common-sign1">담당중역</td>
@@ -289,14 +298,16 @@
 	            <td class="sign-space"></td>
 	            <td class="sign-space"></td>
 	            <td class="sign-space"></td>
+	            <td class="sign-space"></td>
 	        </tr>
 	        <tr>
+				<td class="sign-date">일자</td>
 	            <td class="common-sign1"></td>
 	            <td class="common-sign1"></td>
 	            <td class="common-sign1"></td>
 	            <td class="common-sign1"></td>
 	            <td class="common-sign1"></td>
-	            <td class="common-sign1"></td>
+				<td class="common-sign1"></td>
 	        </tr>
 	    </table>
 	</section>
@@ -363,7 +374,9 @@
 			</tr>
 	    </table>
 	</section>
+	<p class="common-text3"><i>주식회사 에이치씨엔씨</i></p>
 </div>
+
 
 <script>
 	$(document).ready(function() {
