@@ -63,11 +63,10 @@
     
     <mvc:interceptors>
         <mvc:interceptor>
-            <mvc:mapping path="/*"/>
+            <mvc:mapping path="/**"/>
             <mvc:exclude-mapping path="/"/>
             <mvc:exclude-mapping path="/loginCheck"/>
             <mvc:exclude-mapping path="/sessionExtend"/>
-            <mvc:exclude-mapping path="/home*"/>
             <bean id="loginInterceptor" class="com.hs.common.controller.LoginCheckInterceptor"></bean>
         </mvc:interceptor>
     </mvc:interceptors>
