@@ -5,7 +5,7 @@
     
 <mapper namespace="an1300Mapper">
 
-	<resultMap type="com.hs.an.dto.FileInfo" id="fileInfoResultMap" >
+	<resultMap type="com.hs.an.dto.FileInfoDto" id="fileInfoResultMap" >
 		<id column="FILE_NUM" property="fileNum"/>
 		<result column="FILE_TYPE" property="filetype"/>
 		<result column="FILE_PATH" property="filePath"/>

@@ -23,12 +23,13 @@ public class LoginCheckInterceptor extends HandlerInterceptorAdapter{
 	@Resource(name="commonService")
 	private CommonService commonService;
 	
-	private static final Logger logger = LoggerFactory.getLogger(LoginCheckInterceptor.class);
+	private final Logger log = LoggerFactory.getLogger(LoginCheckInterceptor.class);
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		
 		HttpSession session = request.getSession();
+		String requestUrl = request.getRequestURL().toString();
 
 		if(request.getRequestURI().equals("/logout")) {
 			response.sendError(999);
@@ -40,7 +41,11 @@ public class LoginCheckInterceptor extends HandlerInterceptorAdapter{
 		   request.getRequestURI().equals("/downloadFile.do")) {
 			return true;
 		}
-		
+
+		if(requestUrl.contains("/resources")){
+			return true;
+		}
+
 		if(session.getAttribute("User") == null){
 			if(isAjaxRequest(request)){
 				response.sendError(999);
@@ -71,7 +76,9 @@ public class LoginCheckInterceptor extends HandlerInterceptorAdapter{
 					view = "sa1000";
 				} else if(viewNM.split("/")[1].equals("CO1100Print")) {
 					view = "co1100";
-				} else {
+				} else if(viewNM.split("/")[1].equals("AN1000Print")) {
+					view = "an1000";
+				}else {
 					view = viewNM.split("/")[1];
 				}
 				

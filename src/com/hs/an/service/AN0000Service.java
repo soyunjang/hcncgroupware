@@ -5,11 +5,10 @@ import com.hs.an.dto.HolidayPublicDto;
 import com.hs.an.dto.UserAndHolidayInfoDto;
 import com.hs.home.controller.UserInfo;
 import com.hs.home.service.HomeService;
+import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -30,17 +29,16 @@ import java.util.stream.Collectors;
 import static java.lang.String.valueOf;
 import static java.util.Arrays.stream;
 
+@Slf4j
 @Component
 @Transactional
 public class AN0000Service {
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final String HOLIDAY_TYPE = "OFFICE01";
     private final String HOLIDAY_CNT = "1";
     @Autowired
     private HomeService homeService;
     @Autowired
     private AN1000Service an1000Service;
-
 
     /** 회사 휴무 미등록 시 해당 달 마지막 날에 자동 등록 */
     @Scheduled(cron = "0 30 23 28-31 * *")

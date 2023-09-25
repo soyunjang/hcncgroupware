@@ -24,8 +24,6 @@ public class CM1200Controller {
 	@Resource(name="cm1200Service")
 	private CM1200Service cm1200Service;
 	
-	private static final Logger logger = LoggerFactory.getLogger(CM1200Controller.class);
-
 	/**
    	 * 메소드 설명 : 사용자관리마스터 페이지로 이동
    	 * -------------------------------------------------------------------

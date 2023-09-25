@@ -1,4 +1,4 @@
-package com.hs.home.controller;
+package com.hs.util;
 
 import java.security.MessageDigest;
 import java.util.Base64;

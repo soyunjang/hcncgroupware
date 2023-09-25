@@ -1,6 +1,6 @@
 package com.hs.an.service;
 
-import com.hs.an.dto.FileInfo;
+import com.hs.an.dto.FileInfoDto;
 import com.hs.an.repository.An1300Repository;
 import com.hs.home.controller.UserInfo;
 import org.slf4j.Logger;
@@ -32,8 +32,6 @@ public class AN1300Service {
 
     @Resource(name = "uploadPath")
     private String uploadPath;
-
-    private Logger log = LoggerFactory.getLogger(this.getClass());
 
     public void fileUpload(MultipartFile file, String ext, UserInfo user) {
         Map<String, Object> param = new HashMap<>();
@@ -74,9 +72,9 @@ public class AN1300Service {
 
     }
 
-    public FileInfo getPdfFileByUse(Integer num) {
+    public FileInfoDto getPdfFileByUse(Integer num) {
         try {
-            FileInfo fileInfo = an1300Repository.getPdtFileByUse(num)
+            FileInfoDto fileInfo = an1300Repository.getPdtFileByUse(num)
                     .orElseThrow(() -> new IllegalArgumentException("Not Find File Num"));
             fileInfo.setFilePath(fileInfo.getFilePath().replace("\\", "/"));
             return fileInfo;
@@ -112,7 +110,7 @@ public class AN1300Service {
         }
     }
 
-    public FileInfo getPdfFileByFileName(String fileName) {
+    public FileInfoDto getPdfFileByFileName(String fileName) {
         return an1300Repository.getPdtFileByFileName(fileName.concat(".pdf"))
                 .orElseThrow(() -> new IllegalArgumentException("Incorrect PDF File Name"));
     }

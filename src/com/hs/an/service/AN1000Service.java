@@ -5,6 +5,7 @@ import com.hs.an.dto.HolidayInfoDto;
 import com.hs.an.dto.HolidayPublicDto;
 import com.hs.an.repository.An1000Repository;
 import com.hs.home.controller.UserInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +21,13 @@ import java.util.stream.Collectors;
 import static java.lang.String.valueOf;
 import static java.util.Arrays.asList;
 
+@Slf4j
 @Service("an1000Service")
 @Transactional
 public class AN1000Service {
 
 	@Autowired
 	private An1000Repository an1000Repository;
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final String[] HOLIDAY_CHECK_TYPE = {"ANNUAL", "HALF01", "HALF02", "OFFICE01"};
     protected enum Type {
 		PLUS, MINUS
@@ -177,7 +178,7 @@ public class AN1000Service {
 			if (asList(HOLIDAY_CHECK_TYPE).indexOf(valueOf(param.get("HOLIDAY_TYPE"))) >= 0) {
 				float holidayCnt = Float.valueOf((String) param.get("HOLIDAY_CNT"));
 				HolidayInfoDto dto = an1000Repository.an1000HolidayInfoSel(user.getUSER_ID());
-				logger.info("before: {}", dto);
+				log.info("before: {}", dto);
 
 				if (type.equals(Type.PLUS)) {
 					if (dto.getHoliday_total() > dto.getHoliday_use()) {
@@ -196,7 +197,7 @@ public class AN1000Service {
 						// 연차보유일수 == 사용일수
 						dto.setHoliday_deduct(dto.getHoliday_deduct() + holidayCnt);
 					} else {
-						logger.info("holidayInfoUpdate.(type.equals(Type.PLUS)).else");
+						log.info("holidayInfoUpdate.(type.equals(Type.PLUS)).else");
 					}
 				} else if (type.equals(Type.MINUS)) {
 					if (dto.getHoliday_total() > dto.getHoliday_use()) {
@@ -222,12 +223,12 @@ public class AN1000Service {
 							}
 						}
 					} else {
-						logger.info("holidayInfoUpdate.(type.equals(Type.MINUS)).else");
+						log.info("holidayInfoUpdate.(type.equals(Type.MINUS)).else");
 					}
 				} else {
-					logger.info("holidayInfoUpdate.else");
+					log.info("holidayInfoUpdate.else");
 				}
-				logger.info("after: {}", dto);
+				log.info("after: {}", dto);
 				an1000Repository.an1000HolidayInfoUpdate(dto);
 			}
 		} catch (Exception e) {

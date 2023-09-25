@@ -26,7 +26,7 @@ public class ExceptionHandler extends HandlerExceptionResolverComposite {
 	@Override
 	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
 		
-		Map<String, Object> param = new HashMap<String, Object>();
+		Map<String, Object> param = new HashMap<>();
 		HttpSession session = request.getSession(false);
 		
 		if(session.getAttribute("User") != null) {

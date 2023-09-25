@@ -9,8 +9,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +26,6 @@ public class CO1000Service {
 	@Autowired
 	private SqlSession sqlSession;
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	/**
 	 * 메소드 설명 : 법인카드 사용내역 조회
 	 * -------------------------------------------------------------------

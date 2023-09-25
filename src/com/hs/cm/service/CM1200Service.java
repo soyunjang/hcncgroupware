@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.hs.home.controller.EncryptUtil.encryptStringToByteData;
+import static com.hs.util.EncryptUtil.encryptStringToByteData;
 
 @Transactional
 @Service("cm1200Service")

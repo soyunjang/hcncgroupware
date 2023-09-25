@@ -4,8 +4,7 @@ import com.hs.an.dto.An1000PrintDto;
 import com.hs.an.service.AN1000Service;
 import com.hs.home.controller.UserInfo;
 import com.hs.util.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +15,15 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 
+import static com.hs.util.ResponseHttpHeaders.responseHeader;
+
+@Slf4j
 @Controller
 @RequestMapping("/an1000")
 public class AN1000Controller {
 
 	@Autowired
 	private AN1000Service an1000Service;
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@ModelAttribute("User")
 	public UserInfo userInfo(HttpSession session) {
@@ -50,9 +51,6 @@ public class AN1000Controller {
 	@RequestMapping(value = "/print", method = RequestMethod.POST)
 	public String an1000_print(An1000PrintDto dto, Model model, @ModelAttribute("User") UserInfo user) {
 		try {
-			if (user == null) {
-				return null;
-			}
 			model.addAttribute("HolidayPrintInfo", an1000Service.an1000PrintByUser(dto));
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -69,13 +67,10 @@ public class AN1000Controller {
 	@RequestMapping(value = "/list")
 	public ResponseEntity an1000_SEL(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
 		try {
-			if (user == null) {
-				return new ResponseEntity<>(Message.BAD_REQUEST_USER, HttpStatus.BAD_REQUEST);
-			}
 			return new ResponseEntity<>(an1000Service.an1000Sel(param, user), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			return new ResponseEntity<>(Message.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(Message.BAD_REQUEST, responseHeader(), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -88,14 +83,11 @@ public class AN1000Controller {
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity an1000_save(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
 		try {
-			if (user == null) {
-				return new ResponseEntity<>(Message.BAD_REQUEST_USER, HttpStatus.BAD_REQUEST);
-			}
 			an1000Service.an1000Save(param, user);
 			return new ResponseEntity<>(an1000Service.an1000GetHolidayAfterSave(param), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			return new ResponseEntity<>(Message.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(Message.BAD_REQUEST, responseHeader(), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -108,9 +100,6 @@ public class AN1000Controller {
 	@RequestMapping(method = RequestMethod.PATCH)
 	public void an1000_update(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
 		try {
-			if (user == null) {
-				return;
-			}
 			an1000Service.an1000Update(param, user);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -125,13 +114,10 @@ public class AN1000Controller {
 	@RequestMapping(value = "/holidayInfo", method = RequestMethod.GET)
 	public ResponseEntity an1000_holidayInfoSel(@RequestParam(required = false) String targetId, @ModelAttribute("User") UserInfo user) {
 		try {
-			if (user == null) {
-				return new ResponseEntity<>(Message.BAD_REQUEST_USER, HttpStatus.BAD_REQUEST);
-			}
 			return new ResponseEntity<>(an1000Service.an1000InfoSel(targetId, user), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			return new ResponseEntity(Message.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(Message.BAD_REQUEST, responseHeader(), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -145,13 +131,10 @@ public class AN1000Controller {
 	@RequestMapping(value = "/publicHoliday", method = RequestMethod.GET)
 	public ResponseEntity publicHolidayApi(String startDate, String endDate, @ModelAttribute UserInfo user) {
 		try {
-			if (user == null) {
-				return new ResponseEntity<>(Message.BAD_REQUEST_USER, HttpStatus.BAD_REQUEST);
-			}
 			return new ResponseEntity<>(an1000Service.an1000PublicHolidaySel(startDate, endDate), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			return new ResponseEntity<>(Message.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(Message.BAD_REQUEST, responseHeader(), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -162,13 +145,10 @@ public class AN1000Controller {
 	@RequestMapping(value = "/SelUser")
 	public ResponseEntity AN1000_SEL_USER(@RequestBody Map<String, Object> param, @ModelAttribute UserInfo user) {
 		try {
-			if (user == null) {
-				return new ResponseEntity<>(Message.BAD_REQUEST_USER, HttpStatus.BAD_REQUEST);
-			}
 			return new ResponseEntity<>(an1000Service.an1000SelUser(param), HttpStatus.OK);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			return new ResponseEntity<>(Message.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(Message.BAD_REQUEST, responseHeader(), HttpStatus.BAD_REQUEST);
 		}
 	}
 

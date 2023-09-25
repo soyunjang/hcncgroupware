@@ -2,6 +2,7 @@ package com.hs.co.controller;
 
 import com.hs.co.service.CO1100Service;
 import com.hs.home.controller.UserInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,19 +11,17 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Controller
 public class CO1100Controller {
 	
 	@Autowired
 	private CO1100Service co1100Service;
-	
-	private final Logger logger = LoggerFactory.getLogger(CO1100Controller.class);
 
 	@ModelAttribute("User")
 	public UserInfo userInfo(HttpSession session) {
@@ -40,18 +39,21 @@ public class CO1100Controller {
 		return "CO/CO1100Project";
 	}
 
+	@ResponseBody
 	@RequestMapping(value = "/co1100Sel")
-	public @ResponseBody List<Map<String, Object>> CO1100_SEL(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
+	public List<Map<String, Object>> CO1100_SEL(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
 		return co1100Service.co1100Sel(param, user);
 	}
 
+	@ResponseBody
 	@RequestMapping(value = "/co1100SelProject")
-	public @ResponseBody List<Map<String, Object>> CO1100_SEL_PROJECT(@RequestBody Map<String, Object> param) {
+	public List<Map<String, Object>> CO1100_SEL_PROJECT(@RequestBody Map<String, Object> param) {
 		return co1100Service.co1100SelProject(param);
 	}
 
+	@ResponseBody
 	@RequestMapping(value = "/co1100Save")
-	public @ResponseBody Map<String, Object> CO1100_SAVE(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
+	public Map<String, Object> CO1100_SAVE(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
 
 		Map<String, Object> rtnMap = new HashMap<>();
 
@@ -68,7 +70,7 @@ public class CO1100Controller {
 
 	@RequestMapping(value = "/co1100MergeData")
 	public String CO1100_MERGEDATA(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user, ModelMap model) {
-		logger.debug("CO1100Controller > co1100MergeData :: {}", param);
+		log.debug("CO1100Controller > co1100MergeData :: {}", param);
 		int resultCnt  = co1100Service.co1100MergeData(param, user);
 		model.addAttribute("result", resultCnt);
 		return "jsonView";

@@ -1,40 +1,30 @@
 package com.hs.cm.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.hs.cm.service.CM1300Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.hs.cm.service.CM1300Service;
+import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class CM1300Controller {
-	
-	@Resource(name="cm1300Service")
+
+	@Autowired
 	private CM1300Service cm1300Service;
 	
-	private static final Logger logger = LoggerFactory.getLogger(CM1300Controller.class);
-
 	/**
    	 * 메소드 설명 : 권한그룹관리 페이지로 이동
    	 * -------------------------------------------------------------------
-   	 * @param	Locale	locale 	
-   	 * @param	Model 	model 	
    	 * @return	String 	result	권한그룹관리 페이지ID
    	 */
 	@RequestMapping(value = "/cm1300")
-	public String cm1300(Locale locale, Model model) {
+	public String cm1300() {
 		return "CM/CM1300";
 	}
 	
@@ -44,11 +34,10 @@ public class CM1300Controller {
    	 * @param	Map		param	검색조건 (권한분류명/사용유무)
    	 * @return	List	list	권한분류코드 목록
    	 */
+	@ResponseBody
 	@RequestMapping(value = "/cm1300HeadSel")
-	public @ResponseBody List<Map<String, Object>> cm1300HeadSel(@RequestBody Map<String, Object> param) {
-		
-		List<Map<String, Object>> list = cm1300Service.cm1300HeadSel(param);
-		return list;
+	public List<Map<String, Object>> cm1300HeadSel(@RequestBody Map<String, Object> param) {
+		return cm1300Service.cm1300HeadSel(param);
 	}
 
 	/**
@@ -57,11 +46,10 @@ public class CM1300Controller {
    	 * @param	Map		param	검색조건 (권한분류명/사용유무)
    	 * @return	List	list	세부코드 목록
    	 */
+	@ResponseBody
 	@RequestMapping(value = "/cm1300DetailSel")
-	public @ResponseBody List<Map<String, Object>> cm1300DetailSel(@RequestBody Map<String, Object> param) {
-		
-		List<Map<String, Object>> list = cm1300Service.cm1300DetailSel(param);
-		return list;
+	public List<Map<String, Object>> cm1300DetailSel(@RequestBody Map<String, Object> param) {
+		return cm1300Service.cm1300DetailSel(param);
 	}
 	
 	/**
@@ -70,10 +58,11 @@ public class CM1300Controller {
    	 * @param	Map	param	검색조건 (권한분류코드)
    	 * @return	Map map		중복 갯수
    	 */
+	@ResponseBody
 	@RequestMapping(value = "/cm1300HeadCnt")
-	public @ResponseBody Map<String, Object> cm1300HeadCnt(@RequestBody Map<String, Object> param) {
+	public Map<String, Object> cm1300HeadCnt(@RequestBody Map<String, Object> param) {
 		
-		Map<String, Object> rtnMap = new HashMap<String, Object>(); 
+		Map<String, Object> rtnMap = new HashMap<>();
 		rtnMap.put("cnt", cm1300Service.cm1300HeadCnt(param).get("CNT"));
 		return rtnMap;
 	}
@@ -84,10 +73,11 @@ public class CM1300Controller {
    	 * @param	List	param	검색조건 (권한분류코드/메뉴ID/기능분류코드(버튼코드)
    	 * @return	Map 	map		중복 갯수
    	 */
+	@ResponseBody
 	@RequestMapping(value = "/cm1300DetailCnt")
-	public @ResponseBody Map<String, Object> cm1300DetailCnt(@RequestBody List<Map<String, Object>> param) {
+	public Map<String, Object> cm1300DetailCnt(@RequestBody List<Map<String, Object>> param) {
 		
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		Map<String, Object> rtnMap = new HashMap<>();
 		
 		try {
 			for(int i=0;i<param.size();i++) {
@@ -113,11 +103,10 @@ public class CM1300Controller {
    	 * @param	HttpSession	session	로그인한 사용자ID
    	 * @return	List		list	메뉴 목록
    	 */
+	@ResponseBody
 	@RequestMapping(value = "/cm1300PopMenuSel")
-	public @ResponseBody List<Map<String, Object>> cm1300PopMenuSel(@RequestBody Map<String, Object> param, HttpSession session) {
-		
-		List<Map<String, Object>> list = cm1300Service.cm1300PopMenuSel(param, session);
-		return list;
+	public List<Map<String, Object>> cm1300PopMenuSel(@RequestBody Map<String, Object> param, HttpSession session) {
+		return cm1300Service.cm1300PopMenuSel(param, session);
 	}
 
 	/**
@@ -126,11 +115,10 @@ public class CM1300Controller {
    	 * @param	Map			param	검색조건 (권한분류코드/메뉴ID/사용유무)
    	 * @return	List		list	메뉴 목록
    	 */
+	@ResponseBody
 	@RequestMapping(value = "/cm1300PopButtonSel")
-	public @ResponseBody List<Map<String, Object>> cm1300PopButtonSel(@RequestBody Map<String, Object> param) {
-		
-		List<Map<String, Object>> list = cm1300Service.cm1300PopButtonSel(param);	
-		return list;
+	public List<Map<String, Object>> cm1300PopButtonSel(@RequestBody Map<String, Object> param) {
+		return cm1300Service.cm1300PopButtonSel(param);
 	}	
 
 	/**
@@ -140,10 +128,11 @@ public class CM1300Controller {
    	 * @param	HttpSession	session		로그인한 사용자ID
    	 * @return	Map 		rtnMap		추가 성공/실패 확인(0:성공/1:실패)
    	 */
+	@ResponseBody
 	@RequestMapping(value = "/cm1300HeadSave")
-	public @ResponseBody Map<String, Object> cm1300HeadSave(@RequestBody Map<String, Object> param, HttpSession session) {
+	public Map<String, Object> cm1300HeadSave(@RequestBody Map<String, Object> param, HttpSession session) {
 		
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		Map<String, Object> rtnMap = new HashMap<>();
 		
 		try {
 			rtnMap = cm1300Service.cm1300HeadSave(param, session);
@@ -163,8 +152,9 @@ public class CM1300Controller {
    	 * @param	HttpSession	session		로그인한 사용자ID
    	 * @return	Map 		rtnMap		추가 성공/실패 확인(0:성공/1:실패)
    	 */
+	@ResponseBody
 	@RequestMapping(value = "/cm1300DetailSave")
-	public @ResponseBody Map<String, Object> cm1300DetailSave(@RequestBody List<Map<String, Object>> param, HttpSession session) {
+	public Map<String, Object> cm1300DetailSave(@RequestBody List<Map<String, Object>> param, HttpSession session) {
 		
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
 		

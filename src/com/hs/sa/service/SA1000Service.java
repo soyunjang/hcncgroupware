@@ -3,7 +3,6 @@ package com.hs.sa.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hs.home.controller.UserInfo;
-import com.hs.home.controller.UserInfoEncrypt;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,18 +18,19 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service("sa1000Service")
 public class SA1000Service {
 
-	private static final Logger logger = LoggerFactory.getLogger(SA1000Service.class);
-
-	@Inject
+	@Autowired
 	private SqlSession sqlSession;
 
 	public List<Map<String, Object>> sa1000Sel(Map<String, Object> param) {
@@ -150,7 +150,7 @@ public class SA1000Service {
 
 	@SuppressWarnings("unchecked")
 	public int sa1000MergeData(Map<String, Object> param) {
-		logger.debug("sa1000Service > sa1000MergeData :: {}", param);
+		log.debug("sa1000Service > sa1000MergeData :: {}", param);
 
 		int resultCnt = 0;
 		sa1000Delete(param);
@@ -337,37 +337,37 @@ public class SA1000Service {
 	}
 
 	public Map<String, Object> selectSA1000List(Map<String, Object> param) {
-		logger.debug("sa1000Service > selectSA1000List :: {}", param);
+		log.debug("sa1000Service > selectSA1000List :: {}", param);
 		return sqlSession.selectOne("sa1000Mapper.sa1000SelList", param);
 	}
 
 	public List<Map<String, Object>> selectSA1002List(Map<String, Object> param) {
-		logger.debug("sa1000Service > selectSA1002List :: {}", param);
+		log.debug("sa1000Service > selectSA1002List :: {}", param);
 		return sqlSession.selectList("sa1000Mapper.sa1002SelList", param);
 	}
 
 	public List<Map<String, Object>> selectSA1003List(Map<String, Object> param) {
-		logger.debug("sa1000Service > selectSA1003List :: {}", param);
+		log.debug("sa1000Service > selectSA1003List :: {}", param);
 		return sqlSession.selectList("sa1000Mapper.sa1003SelList", param);
 	}
 	
 	public List<Map<String, Object>> selectSA1004List(Map<String, Object> param) {
-		logger.debug("sa1000Service > selectSA1004List :: {}", param);
+		log.debug("sa1000Service > selectSA1004List :: {}", param);
 		return sqlSession.selectList("sa1000Mapper.sa1004SelList", param);
 	}
 	
 	public List<Map<String, Object>> selectSA1005List(Map<String, Object> param) {
-		logger.debug("sa1000Service > selectSA1005List :: {}", param);
+		log.debug("sa1000Service > selectSA1005List :: {}", param);
 		return sqlSession.selectList("sa1000Mapper.sa1005Sel", param);
 	}
 	
 	public List<Map<String, Object>> selectSA1006List(Map<String, Object> param) {
-		logger.debug("sa1000Service > selectSA1006List :: {}", param);
+		log.debug("sa1000Service > selectSA1006List :: {}", param);
 		return sqlSession.selectList("sa1000Mapper.sa1006Sel", param);
 	}
 	
 	public List<Map<String, Object>> selectSA1007List(Map<String, Object> param) {
-		logger.debug("sa1000Service > selectSA1007List :: {}", param);
+		log.debug("sa1000Service > selectSA1007List :: {}", param);
 		return sqlSession.selectList("sa1000Mapper.sa1007Sel", param);
 	}
 

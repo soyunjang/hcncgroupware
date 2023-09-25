@@ -3,8 +3,7 @@ package com.hs.an.controller;
 import com.hs.an.service.AN1200Service;
 import com.hs.home.controller.UserInfo;
 import com.hs.util.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +14,14 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 
+import static com.hs.util.ResponseHttpHeaders.responseHeader;
+
+@Slf4j
 @Controller
 @RequestMapping("/an1200")
 public class AN1200Controller {
 
 	private final AN1200Service an1200Service;
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	public AN1200Controller(AN1200Service an1200Service) {
@@ -53,13 +54,10 @@ public class AN1200Controller {
 	@RequestMapping(value = "/list")
 	public ResponseEntity AN1200_SEL(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
 		try {
-			if (user == null) {
-				return new ResponseEntity<>(Message.BAD_REQUEST_USER, HttpStatus.BAD_REQUEST);
-			}
 			return new ResponseEntity<>(an1200Service.an1200Sel(param), HttpStatus.OK) ;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			return new ResponseEntity<>(Message.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(Message.BAD_REQUEST, responseHeader(), HttpStatus.BAD_REQUEST);
 		}
 	}
 	

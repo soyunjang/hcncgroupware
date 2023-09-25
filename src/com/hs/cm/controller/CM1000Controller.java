@@ -1,25 +1,18 @@
 package com.hs.cm.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
-
+import com.hs.cm.service.CM1000Service;
 import com.hs.home.controller.UserInfo;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.hs.cm.service.CM1000Service;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class CM1000Controller {
@@ -27,8 +20,6 @@ public class CM1000Controller {
 	@Resource(name="cm1000Service")
 	private CM1000Service cm1000Service;
 	
-	private static final Logger logger = LoggerFactory.getLogger(CM1000Controller.class);
-
 	@ModelAttribute("User")
 	public UserInfo userInfo(HttpSession session) {
 		return (UserInfo) session.getAttribute("User");
@@ -37,8 +28,6 @@ public class CM1000Controller {
 	/**
    	 * 메소드 설명 : 공통코드관리 페이지로 이동
    	 * -------------------------------------------------------------------
-   	 * @param	Locale	locale 	
-   	 * @param	Model 	model 	
    	 * @return	String 	result	공통코드관리 페이지ID
    	 */
 	@RequestMapping(value = "/cm1000")

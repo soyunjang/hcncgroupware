@@ -29,7 +29,7 @@ public class CO1200Service {
 	}
 
 	public int co1200SelExpense(Map<String, Object> param) {
-		int expensePrice =0;
+		int expensePrice = 0;
 
 		if(!param.get("SALES").toString().equals(""))
 			expensePrice = sqlSession.selectOne("co1200Mapper.co1200SelExpense", param);
@@ -38,10 +38,6 @@ public class CO1200Service {
 	}
 
 	public int co1200SelApproval(Map<String, Object> param) {
-		int approval =0;
-
-		approval = sqlSession.selectOne("co1200Mapper.co1200SelApproval", param);
-
-		return approval;
+		return sqlSession.selectOne("co1200Mapper.co1200SelApproval", param);
 	}
 }

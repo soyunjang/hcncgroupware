@@ -4,8 +4,7 @@ import com.hs.an.service.AN1000Service;
 import com.hs.an.service.AN1100Service;
 import com.hs.home.controller.UserInfo;
 import com.hs.util.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 
+@Slf4j
 @Controller
 public class AN1100Controller {
 
@@ -23,7 +23,6 @@ public class AN1100Controller {
 	private AN1000Service an1000Service;
 	@Autowired
 	private AN1100Service an1100Service;
-	private final Logger log = LoggerFactory.getLogger(AN1100Controller.class);
 
 	@ModelAttribute("User")
 	public UserInfo userInfo(HttpSession session) {

@@ -1,4 +1,4 @@
-package com.hs.home.controller;
+package com.hs.util;
 
 public class UserInfoEncrypt {
 	

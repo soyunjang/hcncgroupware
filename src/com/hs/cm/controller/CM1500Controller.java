@@ -24,17 +24,14 @@ public class CM1500Controller {
 	@Resource(name="cm1500Service")
 	private CM1500Service cm1500Service;
 
-	private static final Logger logger = LoggerFactory.getLogger(CM1500Controller.class);
 
 	/**
    	 * 메소드 설명 : 카드관리 페이지로 이동
    	 * -------------------------------------------------------------------
-   	 * @param	Locale	locale 	
-   	 * @param	Model 	model 	
    	 * @return	String 	result	카드관리 페이지ID
    	 */
 	@RequestMapping(value = "/cm1500")
-	public String cm1500(Locale locale, Model model) {
+	public String cm1500() {
 		return "CM/CM1500";
 	}
 
@@ -46,9 +43,7 @@ public class CM1500Controller {
    	 */
 	@RequestMapping(value = "/cm1500Sel")
 	public @ResponseBody List < HashMap<String, Object>> cm1500Sel(@RequestBody Map<String, Object> param){
-		
-		List<HashMap<String, Object>> rList = cm1500Service.cm1500Sel(param);
-		return rList;
+		return cm1500Service.cm1500Sel(param);
 	}
 
 	/**
@@ -59,9 +54,7 @@ public class CM1500Controller {
    	 */
 	@RequestMapping(value = "/cm1500UserSel")
 	public @ResponseBody List < HashMap<String, Object>> cm1500UserSel(@RequestBody Map<String, Object> param){
-		
-		List<HashMap<String, Object>> rList = cm1500Service.cm1500UserSel(param);
-		return rList;
+		return cm1500Service.cm1500UserSel(param);
 	}
 
 	/**
@@ -74,7 +67,7 @@ public class CM1500Controller {
 	@RequestMapping(value = "/cm1500Save")
 	public @ResponseBody Map<String, Object> cm1500Save(@RequestBody Map<String, Object> param, HttpSession session){
 		
-		Map <String, Object> rtnMap = new HashMap<String, Object>();
+		Map <String, Object> rtnMap = new HashMap<>();
 		
 		try {
 			rtnMap = cm1500Service.cm1500Save(param, session);

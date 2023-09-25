@@ -3,11 +3,9 @@ package com.hs.home.service;
 import com.hs.an.dto.HolidayOfficeNotSubmitDto;
 import com.hs.an.dto.UserAndHolidayInfoDto;
 import com.hs.home.controller.UserInfo;
-import com.hs.home.controller.UserInfoEncrypt;
 import com.hs.home.controller.UserPasswordDto;
+import com.hs.util.UserInfoEncrypt;
 import org.apache.ibatis.session.SqlSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +16,6 @@ import java.util.Optional;
 
 @Service("homeService")
 public class HomeService {
-	
-	private final Logger log = LoggerFactory.getLogger(HomeService.class);
 	
 	@Autowired
 	private SqlSession sqlSession; 

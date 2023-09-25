@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class FileInfo {
+public class FileInfoDto {
 
     private int fileNum;
     private String filetype;
@@ -15,5 +15,5 @@ public class FileInfo {
     private String useYn;
     private String regId;
     private LocalDateTime regDt;
-    
+
 }

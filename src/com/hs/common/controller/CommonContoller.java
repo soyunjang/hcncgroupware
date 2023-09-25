@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -22,58 +23,53 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.hs.common.service.CommonService;
 import com.hs.home.controller.UserInfo;
 
+@Slf4j
 @Controller
 public class CommonContoller {
-
-	private static final Logger logger = LoggerFactory.getLogger(CommonContoller.class);
 
 	@Resource(name="commonService")
 	private CommonService commonService;
 	
 	/* 공지사항 테스트 페이지로 이동 */
 	@RequestMapping(value = "/common")
-	public String main(Locale locale, Model model, HttpSession session){
-		
+	public String main(){
 		return "sample/common";
 	}
 	
 	/* 다국어 조회 */
+	@ResponseBody
 	@RequestMapping(value = "/getLangCode")
-	public @ResponseBody List<Map<String, Object>> getLangCode(@RequestBody Map<String, Object> param){
-		
-		List<Map<String, Object>> rtnList = commonService.getLangCode(param);
-		return rtnList;
+	public List<Map<String, Object>> getLangCode(@RequestBody Map<String, Object> param){
+		return commonService.getLangCode(param);
 	}
 	
 	/* 공통코드 조회 */
+	@ResponseBody
 	@RequestMapping(value = "/getCommonCode")
-	public @ResponseBody List<Map<String, Object>> getCommonCode(@RequestBody Map<String, Object> param){
-		
-		List<Map<String, Object>> rtnList = commonService.getCommonCode(param);
-		return rtnList;
+	public List<Map<String, Object>> getCommonCode(@RequestBody Map<String, Object> param){
+		return commonService.getCommonCode(param);
 	}
 
 	/* 공통코드 조회(SORT) */
+	@ResponseBody
 	@RequestMapping(value = "/getCommonCodeEsc")
-	public @ResponseBody List<Map<String, Object>> getCommonCodeEsc(@RequestBody Map<String, Object> param){
-		
-		List<Map<String, Object>> rtnList = commonService.getCommonCodeEsc(param);
-		return rtnList;
+	public List<Map<String, Object>> getCommonCodeEsc(@RequestBody Map<String, Object> param){
+		return commonService.getCommonCodeEsc(param);
 	}
 
 	/* 사용자별 카드정보 조회 */
+	@ResponseBody
 	@RequestMapping(value = "/getCommonCodeCard")
-	public @ResponseBody List<Map<String, Object>> getCommonCodeCard(@RequestBody Map<String, Object> param, HttpSession session){
+	public List<Map<String, Object>> getCommonCodeCard(@RequestBody Map<String, Object> param, HttpSession session){
 		UserInfo user = (UserInfo) session.getAttribute("User");
 		return commonService.getCommonCodeCard(param, user);
 	}
 
 	/* 권한분류 조회 */
+	@ResponseBody
 	@RequestMapping(value = "/getAuthCode")
-	public @ResponseBody List<Map<String, Object>> getAuthCode() {
-		
-		List<Map<String, Object>> list = commonService.getAuthCode();
-		return list;
+	public List<Map<String, Object>> getAuthCode() {
+		return commonService.getAuthCode();
 	}
 
 	@RequestMapping(value = "/insertExceptionLog")
@@ -112,26 +108,24 @@ public class CommonContoller {
 			param.put("USER_IP", vo.getUSER_IP());
 			param.put("HOST_NM", InetAddress.getLocalHost().getHostName());
 			param.put("DEPT_CD", vo.getDEPT_CD());
-			logger.debug("CommonContoller > insertAuthChange :: {}", param);
+			log.debug("CommonContoller > insertAuthChange :: {}", param);
 			
 			commonService.insertAuthChange(param);
 		}
 	}	
 
 	/* 시스템코드 목록 */
+	@ResponseBody
 	@RequestMapping(value = "/selectLists")
-	public @ResponseBody List<Map<String, Object>> selectLists(@RequestParam Map<String, Object> params) {
-		logger.debug("CommonController >> selectLists :: {}", params);
-
-		List<Map<String, Object>> list = commonService.selectLists(params);
-		return list;
+	public List<Map<String, Object>> selectLists(@RequestParam Map<String, Object> params) {
+		log.debug("CommonController >> selectLists :: {}", params);
+		return commonService.selectLists(params);
 	}
 
+	@ResponseBody
 	@RequestMapping(value = "/selectSalesNum")
-	public @ResponseBody List<Map<String, Object>> selectSalesNum(@RequestParam Map<String, Object> params, HttpSession session) {
-		logger.debug("CommonController >> selectSalesNum :: {}", params);
-
-		List<Map<String, Object>> list = commonService.selectSalesNum(params, session);
-		return list;
+	public List<Map<String, Object>> selectSalesNum(@RequestParam Map<String, Object> params, HttpSession session) {
+		log.debug("CommonController >> selectSalesNum :: {}", params);
+		return commonService.selectSalesNum(params, session);
 	}
 }

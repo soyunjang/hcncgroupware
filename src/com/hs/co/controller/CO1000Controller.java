@@ -2,30 +2,32 @@ package com.hs.co.controller;
 
 import com.hs.co.service.CO1000Service;
 import com.hs.home.controller.UserInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.hs.util.Message;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static com.hs.util.ResponseHttpHeaders.responseHeader;
+
+@Slf4j
 @Controller
 public class CO1000Controller {
 	
 	@Autowired
 	private CO1000Service co1000Service;
 	
-	private final Logger logger = LoggerFactory.getLogger(CO1000Controller.class);
-
 	@ModelAttribute("User")
 	public UserInfo userInfo(HttpSession session) {
 		return (UserInfo) session.getAttribute("User");
@@ -34,8 +36,6 @@ public class CO1000Controller {
 	/**
    	 * 메소드 설명 : 판매품의서관리 페이지로 이동
    	 * -------------------------------------------------------------------
-   	 * @param	Locale	locale 	
-   	 * @param	Model 	model 	
    	 * @return	String 	result	판매품의서관리 페이지ID
    	 */
 	@RequestMapping(value = "/co1000", method = RequestMethod.GET)
@@ -107,19 +107,34 @@ public class CO1000Controller {
 
 	@ResponseBody
 	@RequestMapping(value = "/co1000/selects", method = RequestMethod.GET)
-	public List<Map<String, Object>> co1000SelectTagGet(@ModelAttribute("User") UserInfo user) {
-		return co1000Service.co1000SelectTagGet(user);
+	public ResponseEntity co1000SelectTagGet(@ModelAttribute("User") UserInfo user) {
+		try {
+			return new ResponseEntity<>(co1000Service.co1000SelectTagGet(user), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			return new ResponseEntity<>(Message.BAD_REQUEST, responseHeader(), HttpStatus.BAD_REQUEST);
+		}
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/co1000/select", method = RequestMethod.POST)
-	public List<Map<String, Object>> co1000SelectGet(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
-		return co1000Service.co1000SelectGet(param, user);
+	public ResponseEntity co1000SelectGet(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
+		try {
+			return new ResponseEntity<>(co1000Service.co1000SelectGet(param, user), HttpStatus.OK);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			return new ResponseEntity<>(Message.BAD_REQUEST, responseHeader(), HttpStatus.BAD_REQUEST);
+		}
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/co1000/select", method = RequestMethod.DELETE)
-	public Map<String, Object> co1000SelectDelete(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
-		return co1000Service.co1000SelectDelete(param, user);
+	public ResponseEntity co1000SelectDelete(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
+		try {
+			return new ResponseEntity<>(co1000Service.co1000SelectDelete(param, user), HttpStatus.OK) ;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			return new ResponseEntity<>(Message.BAD_REQUEST, responseHeader(), HttpStatus.BAD_REQUEST);
+		}
 	}
 }
