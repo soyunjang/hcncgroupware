@@ -34,7 +34,6 @@
         <property name="mapperLocations">
 			<array>
 				<value>classpath:Mapper/*/*Mapper.xml</value>
-				<value>classpath:Mapper/*/*/*Mapper.xml</value>
 			</array>
 		</property>
 	</bean>
