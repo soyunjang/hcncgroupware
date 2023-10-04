@@ -206,11 +206,12 @@
 				$("#viewForm1").dialog("close");
 			} else if(action === "D"){
 				let data = $("#table1").getRowData($("#table1").getGridParam("selrow"));
+				console.log(data);
 				let param = {
-					number : data.NUMBER,
-					type : data.TYPE == "회사휴무일" ? "office" : "public",
-					date : data.DATE,
-					regDt : data.REG_DT,
+					number : data.number,
+					type : data.type == "회사휴무일" ? "office" : "public",
+					date : data.date,
+					regDt : data.regDt,
 					searchType: $("#sel01_TYPE").val(),
 					searchYear : $("#sel01_YEAR").val()
 				};
@@ -218,10 +219,10 @@
 			} else if (action === "U") {
 				let data = $("#table1").getRowData($("#table1").getGridParam("selrow"));
 				let param = {
-					number : data.NUMBER,
+					number : data.number,
 					type : $("#pop01_sel01_TYPE").val(),
 					date : $("#pop01_date01_DATE").val(),
-					regDt : data.REG_DT,
+					regDt : data.regDt,
 					searchType: $("#sel01_TYPE").val(),
 					searchYear : $("#sel01_YEAR").val()
 				};
@@ -364,11 +365,11 @@
 						let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
 						$("#pop01_sel01_TYPE").attr("disabled",true);
 						document.querySelectorAll("#pop01_sel01_TYPE option").forEach(item => {
-							if (item.innerText == rowData.TYPE) {
+							if (item.innerText == rowData.type) {
 								item.setAttribute("selected", "true");
 							}
 						});
-						$("#pop01_date01_DATE").val(rowData.DATE);
+						$("#pop01_date01_DATE").val(rowData.date);
 					}
 				},
 				close : function() {
