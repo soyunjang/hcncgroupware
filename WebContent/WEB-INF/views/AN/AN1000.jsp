@@ -351,7 +351,8 @@
 			init(); //그리드 리사이징
 
 			const count = ${Count};
-			if (count == 0) {
+			const holidayOffice = $('#holidayOfficeValue').val()
+			if (count == 0 && holidayOffice != "") {
 				autoOpenModalPopup();
 			}
 
