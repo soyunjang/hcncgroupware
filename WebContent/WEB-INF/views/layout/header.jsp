@@ -37,25 +37,10 @@
 					<li>${USER.GRADE_NM}</li>
 				</ul>
 				<ul class="user-logout">
-					<li><a href="javascript:void(0);" id="PUA100ChangeUserPW" data-url="/pua100ChangeUserPW" data-callbackfun="pua100ChangePwCallBack">암호변경</a></li>
+					<li><a href="javascript:void(0);" id="PUA100ChangeUserPW" onclick="openModalPopup();">암호변경</a></li>
 					<li><a href="javascript:void(0);" id="logout" title="로그아웃">로그아웃</a></li>
 				</ul>
 			</div>
 		</div>
 	</body>
-	
-	<script>
-		$(document).ready(function(){
-			$('#PUA100ChangeUserPW').on('click', function(e){
-				e.preventDefault();
-				console.log('PUA100ChangeUserPW > click > e', e, $(this));
-				
-				openPopup($(this));
-			});
-		});
-		
-		function pua100ChangePwCallBack(data){
-			console.log('pua100ChangePwCallBack > data', data);
-		}
-	</script>
 </html>

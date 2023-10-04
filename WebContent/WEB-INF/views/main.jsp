@@ -97,8 +97,8 @@
 	if (userPwCheck === 'true') {
 		openModalPopup();
 	} else {
-		viewForm1.remove();
-		confirmPopUp.remove();
+		// viewForm1.remove();
+		// confirmPopUp.remove();
 	}
 
 	/**
@@ -125,7 +125,11 @@
 				popReset("viewForm1");
 				},
 			close: function () {
-				getAjaxJsonData("logout", {}, "logoutCallBack");
+				if (userPwCheck === 'true') {
+					getAjaxJsonData("logout", {}, "logoutCallBack");
+				} else {
+					$(this).dialog("close");
+				}
 				},
 			buttons: [
 				{
@@ -137,7 +141,11 @@
 				{
 					text : pop01_btn01_CLOSE,
 					click : function () {
-						getAjaxJsonData("logout", {}, "logoutCallBack");
+						if (userPwCheck === 'true') {
+							getAjaxJsonData("logout", {}, "logoutCallBack");
+						} else {
+							$(this).dialog("close");
+						}
 					}
 				}
 			]
