@@ -2,7 +2,6 @@ package com.hs.co.controller;
 
 import com.hs.co.service.CO1000Service;
 import com.hs.home.controller.UserInfo;
-import com.hs.util.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,8 +17,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import static com.hs.util.ResponseHttpHeaders.responseHeader;
 
 @Slf4j
 @Controller
@@ -108,33 +105,18 @@ public class CO1000Controller {
 	@ResponseBody
 	@RequestMapping(value = "/co1000/selects", method = RequestMethod.GET)
 	public ResponseEntity co1000SelectTagGet(@ModelAttribute("User") UserInfo user) {
-		try {
-			return new ResponseEntity<>(co1000Service.co1000SelectTagGet(user), HttpStatus.OK);
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-			return new ResponseEntity<>(Message.BAD_REQUEST, responseHeader(), HttpStatus.BAD_REQUEST);
-		}
+		return new ResponseEntity<>(co1000Service.co1000SelectTagGet(user), HttpStatus.OK);
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/co1000/select", method = RequestMethod.POST)
 	public ResponseEntity co1000SelectGet(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
-		try {
-			return new ResponseEntity<>(co1000Service.co1000SelectGet(param, user), HttpStatus.OK);
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-			return new ResponseEntity<>(Message.BAD_REQUEST, responseHeader(), HttpStatus.BAD_REQUEST);
-		}
+		return new ResponseEntity<>(co1000Service.co1000SelectGet(param, user), HttpStatus.OK);
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/co1000/select", method = RequestMethod.DELETE)
 	public ResponseEntity co1000SelectDelete(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
-		try {
-			return new ResponseEntity<>(co1000Service.co1000SelectDelete(param, user), HttpStatus.OK) ;
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-			return new ResponseEntity<>(Message.BAD_REQUEST, responseHeader(), HttpStatus.BAD_REQUEST);
-		}
+		return new ResponseEntity<>(co1000Service.co1000SelectDelete(param, user), HttpStatus.OK) ;
 	}
 }

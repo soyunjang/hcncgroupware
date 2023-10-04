@@ -168,23 +168,36 @@ public class CO1000Service {
 	}
 
 	public List<Map<String, Object>> co1000SelectTagGet(UserInfo user) {
-		return sqlSession.selectList("co1000Mapper.co1000SelectTagGet", user.getUSER_ID());
+		try {
+			return sqlSession.selectList("co1000Mapper.co1000SelectTagGet", user.getUSER_ID());
+		} catch (Exception e) {
+			throw new RuntimeException("co1000SelectTagGet Error", e);
+		}
 	}
 
 	public List<Map<String, Object>> co1000SelectGet(Map<String, Object> param, UserInfo user) {
-		param.put("REG_ID", user.getUSER_ID());
-		return sqlSession.selectList("co1000Mapper.co1000SelectGet", param);
+		try {
+			param.put("REG_ID", user.getUSER_ID());
+			return sqlSession.selectList("co1000Mapper.co1000SelectGet", param);
+		} catch (Exception e) {
+			throw new RuntimeException("co1000SelectGet Error", e);
+		}
+
 	}
 
 	public Map<String, Object> co1000SelectDelete(Map<String, Object> param, UserInfo user) {
-		param.put("REG_ID", user.getUSER_ID());
-		int count = sqlSession.selectOne("co1000Mapper.co1000SelectCheck", param); // 작성된게 있는지 확인
-		if (count == 0) {
-			sqlSession.delete("co1000Mapper.co1000SelectDelete", param);
-			param.put("DELETE", "Y");
-		} else {
-			param.put("DELETE", "N");
+		try {
+			param.put("REG_ID", user.getUSER_ID());
+			int count = sqlSession.selectOne("co1000Mapper.co1000SelectCheck", param); // 작성된게 있는지 확인
+			if (count == 0) {
+				sqlSession.delete("co1000Mapper.co1000SelectDelete", param);
+				param.put("DELETE", "Y");
+			} else {
+				param.put("DELETE", "N");
+			}
+			return param;
+		} catch (Exception e) {
+			throw new RuntimeException("co1000SelectDelete Error", e);
 		}
-		return param;
 	}
 }

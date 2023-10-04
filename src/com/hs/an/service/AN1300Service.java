@@ -3,8 +3,7 @@ package com.hs.an.service;
 import com.hs.an.dto.FileInfoDto;
 import com.hs.an.repository.An1300Repository;
 import com.hs.home.controller.UserInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+@Slf4j
 @Service("an1300Service")
 @Transactional
 public class AN1300Service {

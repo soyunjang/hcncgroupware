@@ -3,7 +3,6 @@ package com.hs.an.controller;
 import com.hs.an.service.AN1000Service;
 import com.hs.an.service.AN1100Service;
 import com.hs.home.controller.UserInfo;
-import com.hs.util.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,15 +47,7 @@ public class AN1100Controller {
 	@ResponseBody
 	@RequestMapping(value = "/an1100Sel")
 	public ResponseEntity AN1100_SEL(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
-		try {
-			if (user == null) {
-				return new ResponseEntity<>(Message.BAD_REQUEST_USER, HttpStatus.BAD_REQUEST);
-			}
-			return new ResponseEntity<>(an1100Service.an1100Sel(param, user), HttpStatus.OK);
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-			return new ResponseEntity(Message.BAD_REQUEST, HttpStatus.BAD_REQUEST);
-		}
+		return new ResponseEntity<>(an1100Service.an1100Sel(param, user), HttpStatus.OK);
 	}
 	
 }

@@ -15,17 +15,12 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
-//@Service
 @Service("an1400Service")
 @Transactional
 public class AN1400Service {
 
     @Autowired
     private An1400Repository an1400Repository;
-
-//    public AN1400Service(An1400Repository an1400Repository) {
-//        this.an1400Repository = an1400Repository;
-//    }
 
     public List<Map<String, Object>> an1400Years() {
         try {
@@ -34,7 +29,6 @@ public class AN1400Service {
             throw new RuntimeException("공식휴무일, 공휴일 년도 조회 에러", e);
         }
     }
-
 
     public List an1400Dates(String year, String type) {
         try {
