@@ -33,8 +33,7 @@ public class AN1000Controller {
     @RequestMapping(method = RequestMethod.GET)
     public String an1000(Model model, @ModelAttribute("User") UserInfo user) {
         model.addAttribute("Holiday", an1000Service.an1000InfoSel(null, user));
-        model.addAttribute("HolidayOffice", an1000Service.an1000HolidayOfficeSel());
-        model.addAttribute("Count", an1000Service.an1000HolidayOfficeByUser(user));
+        model.addAttribute("HolidayOfficeInfo", an1000Service.an1000HolidayOfficeByUser(user));
         return "AN/AN1000";
     }
 

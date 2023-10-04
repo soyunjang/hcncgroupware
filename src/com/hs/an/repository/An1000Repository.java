@@ -29,8 +29,8 @@ public class An1000Repository {
         return sqlSession.selectList("an1000Mapper.an1000Sel", param);
     }
 
-    public Integer an1000HolidayOfficeByUser(UserInfo user) {
-        return sqlSession.selectOne("an1000HolidayOfficeByUser", user.getUSER_ID());
+    public List<Map<String, Object>> an1000HolidayOfficeByUser(UserInfo user) {
+        return sqlSession.selectList("an1000HolidayOfficeByUser", user.getUSER_ID());
     }
 
     public void an1000Save(Map<String, Object> param) {
@@ -47,10 +47,6 @@ public class An1000Repository {
 
     public Map<String, Object> an1000PrintByUser(An1000PrintDto dto) {
         return sqlSession.selectOne("an1000Mapper.an1000PrintByUser", dto);
-    }
-
-    public List an1000HolidayOfficeSel() {
-        return sqlSession.selectList("an1000Mapper.an1000HolidayOfficeSel");
     }
 
     public List<Map<String, Object>> getHolidayCode(Map<String, Object> holidayCode) {

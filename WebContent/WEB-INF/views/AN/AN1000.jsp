@@ -280,7 +280,6 @@
 		</div>
 		<!-- .modal-cont 팝업영역 END -->
 
-	<input type="hidden" id="holidayOfficeValue" value="${HolidayOffice.get(0)}">
 	<form>
 		<input type="hidden" name="test" value="test">
 	</form>
@@ -306,7 +305,7 @@
 		const userDept = '${User.DEPT_CD}'
 		const userEnterDate = '${Holiday.ENTER_DT}'
 		const userName = '${User.USER_NM}'
-
+		const holidayOfficeInfo = ${HolidayOfficeInfo};
 		/* 공통코드_콤보박스 */
 		commonCodeSelectAdd("pop01_sel01_TYPE", getCommonCode('HOLIDAY'), 'N');
 		commonCodeSelectAdd("sel01_HOLIDAY_TYPE", getCommonCode('HOLIDAY'), 'Y');
@@ -350,11 +349,12 @@
 			setGrid();
 			init(); //그리드 리사이징
 
-			const count = ${Count};
-			const holidayOffice = $('#holidayOfficeValue').val()
-			if (count == 0 && holidayOffice != "") {
-				autoOpenModalPopup();
-			}
+			holidayOfficeInfo.some(item => {
+				if (item.COUNT == 0) {
+					autoOpenModalPopup(item.OFFICE_HOLIDAY);
+					return true;
+				}
+			});
 
 			holidayPeriodGuideWord(userEnterDate);
 
@@ -507,14 +507,14 @@
 		/* jqGrid 셋팅 */
 		function setGrid(){
 			$('#table1').jqGrid({
-				mtype: 'POST'
-				, datatype: 'loacl'
-				, height : 240
-				, jsonReader: {
+				mtype: 'POST',
+				datatype: 'loacl',
+				height : 240,
+				jsonReader: {
 					repeatitems: false
-				}
-				, colNames: langHead
-				, colModel: [
+				},
+				colNames: langHead,
+				colModel: [
 					{name: 'USER_ID'			, align: 'center'	, width: '0%'	, hidden: true},
 					{name: 'USER_NM'			, align: 'center'	, width: '7%'	, hidden: false},
 					{name: 'GRADE_CD'			, align: 'center' 	, width: '0%'	, hidden: true},
@@ -524,12 +524,12 @@
 					{name: 'HOLIDAY_CNT'		, align: 'center' 	, width: '5%'	, hidden: false},
 					{name: 'HOLIDAY_TYPE'		, align: 'center'	, width: '5%'	, hidden: false},
 					{name: 'HOLIDAY_REASON'	, align: 'left'		, width: '15%'	, hidden: false}
-				]
-				, autowidth: false
-				, shrinkToFit: false
-				, rowNum : 500
-				, multiselect: false
-				, onSelectRow: function (index, status) {
+				],
+				autowidth: false,
+				shrinkToFit: false,
+				rowNum : 500,
+				multiselect: false,
+				onSelectRow: function (index, status) {
 					if (index) {
 						let row = $("#table1").jqGrid('getRowData', index);
 						getAjaxJsonData("an1000/holidayInfo?targetId=" + row.USER_ID.toString(), '', "holidayInfoSel", "GET")
@@ -540,27 +540,27 @@
 			searchGridData();
 
 			$("#table3").jqGrid({
-				mtype : 'POST'
-				, datatype : 'local'
-				, jsonReader: {
+				mtype : 'POST',
+				datatype : 'local',
+				jsonReader: {
 					repeatitems: false
-				}
-				, colNames: langPop1
-				, colModel: [
-					{name: 'USER_ID'		, align: 'center'	, width: '0%'	, hidden: true}
-					, {name: 'USER_NM'		, align: 'center'	, width: '6%'	, hidden: false}
-					, {name: 'PDEPT_CD'		, align: 'center'	, width: '0%'	, hidden: true}
-					, {name: 'PDEPT_NM'		, align: 'center'	, width: '4%'	, hidden: false}
-					, {name: 'DEPT_CD'		, align: 'center'	, width: '0%'	, hidden: true}
-					, {name: 'DEPT_NM'		, align: 'center'	, width: '4%'	, hidden: false}
-					, {name: 'GRADE_CD'		, align: 'center'	, width: '0%'	, hidden: true}
-					, {name: 'GRADE_NM'		, align: 'center'	, width: '2%'	, hidden: false}
-					, {name: 'ENTER_DT'		, align: 'center'	, width: '4%'	, hidden: false}
-				]
-				, autowidth: true
-				, shrinkToFit: false
-				, rowNum : 5000
-				, ondblClickRow : function(rowid){
+				},
+				colNames: langPop1,
+				colModel: [
+					{name: 'USER_ID'		, align: 'center'	, width: '0%'	, hidden: true},
+					{name: 'USER_NM'		, align: 'center'	, width: '6%'	, hidden: false},
+					{name: 'PDEPT_CD'		, align: 'center'	, width: '0%'	, hidden: true},
+					{name: 'PDEPT_NM'		, align: 'center'	, width: '4%'	, hidden: false},
+					{name: 'DEPT_CD'		, align: 'center'	, width: '0%'	, hidden: true},
+					{name: 'DEPT_NM'		, align: 'center'	, width: '4%'	, hidden: false},
+					{name: 'GRADE_CD'		, align: 'center'	, width: '0%'	, hidden: true},
+					{name: 'GRADE_NM'		, align: 'center'	, width: '2%'	, hidden: false},
+					{name: 'ENTER_DT'		, align: 'center'	, width: '4%'	, hidden: false}
+				],
+				autowidth: true,
+				shrinkToFit: false,
+				rowNum : 5000,
+				ondblClickRow : function(rowid){
 					let rowdata = $("#table3").getRowData(rowid);
 
 					$("#pop01_txt01_USER_ID").val(rowdata.USER_ID);
@@ -738,7 +738,7 @@
 			}).css("z-index", 1000).prev(".ui-dialog-titlebar").css("background","#266f80").css("color","#fff");
 		};
 
-		function autoOpenModalPopup(action){
+		function autoOpenModalPopup(date){
 			// 화면ID, 화면ID사이즈(ex. 6:CM1000 / 13:CM1000_Detail), 팝업ID, 다국어
 			let returnPopup = getLangCodePopup("AN1000_Pop2", 11, "viewForm2", "${LANG}");
 			let titlePop = returnPopup[0];
@@ -751,8 +751,8 @@
 				, width: 560
 				, modal: true
 				, open: function (event, ui) {
+					const holidayOfficeDay = new Date(date);
 					let weeks = ['일', '월', '화', '수', '목', '금', '토'];
-					const holidayOfficeDay = new Date($("#holidayOfficeValue").val());
 					let year = holidayOfficeDay.getFullYear();
 					let month = holidayOfficeDay.getMonth() + 1;
 					let day = holidayOfficeDay.getDate();
@@ -773,8 +773,8 @@
 							openModalPopup(checkAction);
 							$("#pop01_sel01_TYPE").val("OFFICE01")
 							$("#pop01_txt01_COUNT").val("1")
-							$("#pop01_date01_START").val($("#holidayOfficeValue").val())
-							$("#pop01_date01_END").val($("#holidayOfficeValue").val())
+							$("#pop01_date01_START").val(date)
+							$("#pop01_date01_END").val(date)
 							$("#pop01_txt01_REASON").val("회사 공식 휴무일")
 						}
 					}
@@ -898,14 +898,25 @@
 				$('#pop01_txt01_COUNT').val('0.5');
 			} else if (OFFICE_CHECK) {
 				// 공식 휴무일(연차)
-				$("#pop01_date01_START").val($("#holidayOfficeValue").val())
-				$("#pop01_date01_END").val($("#holidayOfficeValue").val())
-				$('#pop01_txt01_COUNT').val('1');
+				holidayOfficeInfo.some(item => {
+					if (item.COUNT == 0) {
+						console.log(item);
+						$("#pop01_date01_START").val(item.OFFICE_HOLIDAY);
+						$("#pop01_date01_END").val(item.OFFICE_HOLIDAY);
+						$('#pop01_txt01_COUNT').val('1');
+						return true;
+					}
+				});
 			} else if (OFFICE_CHECK2) {
 				// 공식 휴무일(연차 및 출근)
-				$("#pop01_date01_START").val($("#holidayOfficeValue").val())
-				$("#pop01_date01_END").val($("#holidayOfficeValue").val())
-				$('#pop01_txt01_COUNT').val('0');
+				holidayOfficeInfo.some(item => {
+					if (item.COUNT == 0) {
+						$("#pop01_date01_START").val(item.OFFICE_HOLIDAY);
+						$("#pop01_date01_END").val(item.OFFICE_HOLIDAY);
+						$('#pop01_txt01_COUNT').val('0');
+						return true;
+					}
+				});
 			} else if (startDate != '' && endDate != '') {
 				// 반차, 민방위, 공식 휴무일이 아닌 경우
 				if (new Date(startDate) > new Date(endDate)) {

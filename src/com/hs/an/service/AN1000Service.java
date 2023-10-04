@@ -1,13 +1,12 @@
 package com.hs.an.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hs.an.dto.An1000PrintDto;
 import com.hs.an.dto.HolidayInfoDto;
 import com.hs.an.dto.HolidayPublicDto;
 import com.hs.an.repository.An1000Repository;
 import com.hs.home.controller.UserInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,11 +68,10 @@ public class AN1000Service {
 
 	/**
 	 * 해당 월에 회사 휴무일관련 등록 확인 로직
-	 * 결과값 : 0 (미등록), 1('OFFICE01', 'OFFICE02' 둘 중 하나 등록)
 	 */
-	public Integer an1000HolidayOfficeByUser(UserInfo user) {
+	public String an1000HolidayOfficeByUser(UserInfo user) {
 		try {
-			return an1000Repository.an1000HolidayOfficeByUser(user);
+			return new ObjectMapper().writeValueAsString(an1000Repository.an1000HolidayOfficeByUser(user));
 		} catch (Exception e) {
 			throw new RuntimeException(this.getClass().getName() + ".an1000HolidayOfficeByUser", e);
 		}
@@ -142,17 +140,6 @@ public class AN1000Service {
 			return an1000Repository.an1000PrintByUser(dto);
 		} catch (Exception e) {
 			throw new RuntimeException(this.getClass().getName() + ".an1000PrintByUser : 휴가신청서 출력 조회 중 에러 발생", e);
-		}
-	}
-
-	/**
-	 * 회사 휴무일 조회
-	 */
-	public List an1000HolidayOfficeSel() {
-		try {
-			return an1000Repository.an1000HolidayOfficeSel();
-		} catch (Exception e) {
-			throw new RuntimeException(this.getClass().getName() + ".an1000HolidayOfficeSel", e);
 		}
 	}
 
