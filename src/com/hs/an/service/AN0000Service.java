@@ -3,8 +3,10 @@ package com.hs.an.service;
 import com.hs.an.dto.HolidayOfficeNotSubmitDto;
 import com.hs.an.dto.HolidayPublicDto;
 import com.hs.an.dto.UserAndHolidayInfoDto;
+import com.hs.common.service.CommonService;
 import com.hs.home.controller.UserInfo;
 import com.hs.home.service.HomeService;
+import com.hs.util.ExceptionLogDto;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -39,9 +41,11 @@ public class AN0000Service {
     private HomeService homeService;
     @Autowired
     private AN1000Service an1000Service;
+    @Autowired
+    private CommonService commonService;
 
     /** 회사 휴무 미등록 시 해당 달 마지막 날에 자동 등록 */
-    @Scheduled(cron = "0 30 23 28-31 * *")
+//    @Scheduled(cron = "0 30 23 28-31 * *")
     public void holidayCompanyAutoSubmit() {
         try {
             Calendar calendar = Calendar.getInstance();
@@ -64,6 +68,7 @@ public class AN0000Service {
             }
         } catch (Exception e) {
             log.error(this.getClass().getName() + ".holidayCompanyAutoSubmit : 회사 휴무 자동 등록 오류", e);
+            logInsert(e.getCause() == null ? "" : e.getCause().toString(), e.getMessage());
         }
     }
 
@@ -91,6 +96,7 @@ public class AN0000Service {
             }
         } catch (Exception e) {
             log.error(this.getClass().getName() + ".calculation : 연차 계산 오류", e);
+            logInsert(e.getCause() == null ? "" : e.getCause().toString(), e.getMessage());
         }
     }
 
@@ -164,6 +170,7 @@ public class AN0000Service {
             an1000Service.an1000PublicHolidaySave(result);
         } catch (Exception e) {
             log.error(this.getClass().getName() + ".publicHolidayApi", e);
+            logInsert(e.getCause() == null ? "" : e.getCause().toString(), e.getMessage());
         }
     }
 
@@ -235,5 +242,24 @@ public class AN0000Service {
                     });
         }
         return list;
+    }
+
+    /**
+     * 에러 내용 DB 저장
+     */
+    private void logInsert(String eCause, String eMessage) {
+        System.out.println("eCause = " + eCause + ", eMessage = " + eMessage);
+        UserInfo user = new UserInfo("SYSTEM");
+        user.setUSER_IP("127.0.0.1");
+        ExceptionLogDto dto = ExceptionLogDto.builder()
+                .user(user)
+                .eventCd("")
+                .eventNm(eCause)
+                .eventDetail(eMessage)
+                .eventSvry("")
+                .progNm("")
+                .hostNm("SYSTEM")
+                .build();
+        commonService.insertExceptionLog(dto);
     }
 }
