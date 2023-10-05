@@ -1,6 +1,7 @@
 package com.hs.common.service;
 
 import com.hs.home.controller.UserInfo;
+import com.hs.util.ExceptionLogDto;
 import org.apache.ibatis.session.SqlSession;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -54,6 +55,9 @@ public class CommonService {
 	/* 예외사항 저장 */
 	public void insertExceptionLog(Map<String, Object> param){
 		sqlSession.insert("commonMapper.insertExceptionLog", param);
+	}
+	public void insertExceptionLog(ExceptionLogDto dto){
+		sqlSession.insert("commonMapper.insertExceptionLog2", dto);
 	}
 
 	/* 권한부여/변경 사항 저장 */

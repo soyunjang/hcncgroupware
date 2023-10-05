@@ -65,6 +65,13 @@
         VALUES('HCNC', CONVERT(VARCHAR(19), GETDATE(), 121), #{USER_ID}, #{USER_IP}, #{EVNT_CD}, #{EVNT_NM},
                 #{EVNT_DETAIL}, #{EVNT_SVRY}, #{PROG_NM}, #{HOST_NM});
     </insert>
+
+    <insert id="insertExceptionLog2" parameterType="com.hs.util.ExceptionLogDto">
+        INSERT INTO LOG_EXCEPTION(SYS_ID, PROCESS_DT, USER_ID, USER_IP, EVNT_CD, EVNT_NM, EVNT_DETAIL, EVNT_SVRY,
+                                  PROG_NM, HOST_NM)
+        VALUES('HCNC', CONVERT(VARCHAR(19), GETDATE(), 121), #{user.USER_ID}, #{user.USER_IP}, #{eventCd}, #{eventNm},
+               #{eventDetail}, #{eventSvry}, #{progNm}, #{hostNm});
+    </insert>
     
     <!-- 권한부여/변경 사항 저장 -->
     <insert id="insertAuthChange" parameterType="map">
