@@ -892,12 +892,15 @@
 			let startDate = $('#pop01_date01_START').val();
 			let endDate = $('#pop01_date01_END').val();
 
+			let url = '/an1000/publicHoliday?startDate=' + startDate + '&endDate=' + endDate;
+
 			if (HALF_CHECK) {
 				// 반차 및 민방위인 경우
 				$('#pop01_date01_END').val($('#pop01_date01_START').val());
 				$('#pop01_txt01_COUNT').val('0.5');
 			} else if (OFFICE_CHECK) {
 				// 공식 휴무일(연차)
+
 				holidayOfficeInfo.some(item => {
 					if (item.COUNT == 0) {
 						console.log(item);
@@ -907,6 +910,9 @@
 						return true;
 					}
 				});
+				if (holidayOfficeInfo.length == 0) {
+					getAjaxJsonData(url, '', 'holidayDateCount', 'GET');
+				}
 			} else if (OFFICE_CHECK2) {
 				// 공식 휴무일(연차 및 출근)
 				holidayOfficeInfo.some(item => {
@@ -917,13 +923,15 @@
 						return true;
 					}
 				});
+				if (holidayOfficeInfo.length == 0) {
+					getAjaxJsonData(url, '', 'holidayDateCount', 'GET');
+				}
 			} else if (startDate != '' && endDate != '') {
 				// 반차, 민방위, 공식 휴무일이 아닌 경우
 				if (new Date(startDate) > new Date(endDate)) {
 					toast("정보", "휴가기간을 확인해 주세요.", "info");
 					$('#pop01_date01_END').val(startDate);
 				}
-				let url = '/an1000/publicHoliday?startDate=' + startDate + '&endDate=' + endDate;
 				getAjaxJsonData(url, '', 'holidayDateCount', 'GET');
 			}
 		}
