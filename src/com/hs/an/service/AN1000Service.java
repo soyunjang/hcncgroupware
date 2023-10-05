@@ -245,7 +245,14 @@ public class AN1000Service {
 				an1000Repository.an1000PublicHolidaySave(result);
 			} else {
 				List<String> replaceList = list.stream().map(item -> item.replace("-", "")).collect(Collectors.toList());
-				List<HolidayPublicDto> collect = result.stream().filter(res -> replaceList.indexOf(res.getPublicDay()) < 0).collect(Collectors.toList());
+				List<HolidayPublicDto> collect = result.stream()
+						.filter(res -> {
+									boolean check1 = replaceList.indexOf(res.getPublicDay()) < 0;
+									boolean check2 = Integer.valueOf(res.getPublicDay()) >= Integer.valueOf(LocalDate.now().toString().replace("-", ""));
+									return check1 && check2;
+								}
+						)
+						.collect(Collectors.toList());
 				if (!collect.isEmpty()) {
 					an1000Repository.an1000PublicHolidaySave(collect);
 				}
