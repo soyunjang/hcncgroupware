@@ -110,8 +110,16 @@ public class AN1300Service {
         }
     }
 
-    public FileInfoDto getPdfFileByFileName(String fileName) {
-        return an1300Repository.getPdtFileByFileName(fileName.concat(".pdf"))
-                .orElseThrow(() -> new IllegalArgumentException("Incorrect PDF File Name"));
+    public File getPdfFileByFileName(String fileName) {
+        try {
+            FileInfoDto findByFileInfo = an1300Repository.getPdtFileByFileName(fileName.concat(".pdf"))
+                    .orElseThrow(() -> new IllegalArgumentException("Incorrect PDF File Name"));
+            return new File(findByFileInfo.getFilePath() + File.separator + findByFileInfo.getFileChangeName());
+        } catch (IllegalArgumentException iae) {
+            throw new RuntimeException(this.getClass().getName().concat("." + iae.getMessage()), iae);
+        } catch (Exception e) {
+            throw new RuntimeException(this.getClass().getName() + ".getPdfFileByFileName", e);
+        }
+
     }
 }

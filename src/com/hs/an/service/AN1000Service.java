@@ -1,5 +1,6 @@
 package com.hs.an.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hs.an.dto.An1000PrintDto;
 import com.hs.an.dto.HolidayInfoDto;
@@ -72,6 +73,8 @@ public class AN1000Service {
 	public String an1000HolidayOfficeByUser(UserInfo user) {
 		try {
 			return new ObjectMapper().writeValueAsString(an1000Repository.an1000HolidayOfficeByUser(user));
+		} catch (JsonProcessingException jpe) {
+			throw new RuntimeException(this.getClass().getName() + ".an1000HolidayOfficeByUser : JSON Parsing Error", jpe);
 		} catch (Exception e) {
 			throw new RuntimeException(this.getClass().getName() + ".an1000HolidayOfficeByUser", e);
 		}
@@ -248,7 +251,7 @@ public class AN1000Service {
 				}
 			}
 		} catch (Exception e) {
-			new RuntimeException("공휴일 저장 에러 발생", e);
+			throw new RuntimeException("공휴일 저장 에러 발생", e);
 		}
 	}
 

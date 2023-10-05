@@ -73,16 +73,15 @@ public class AN1300Controller {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @ResponseBody
     @RequestMapping(value = "/file/{fileName}", method = RequestMethod.GET)
     public ResponseEntity findFileByPdf(@PathVariable String fileName, @ModelAttribute("User") UserInfo user,
                                         HttpServletResponse response) {
         try {
-            FileInfoDto findByFileInfo = an1300Service.getPdfFileByFileName(fileName);
-            File file = new File(findByFileInfo.getFilePath() + File.separator + findByFileInfo.getFileChangeName());
+            File file = an1300Service.getPdfFileByFileName(fileName);
             response.setHeader("Content-Type", "application/pdf");
             response.setHeader("Content-Length", String.valueOf(file.length()));
             response.setHeader("Content-Disposition", "inline");
-            response.setHeader("fileName", findByFileInfo.getFileChangeName());
 
             Files.copy(file.toPath(), response.getOutputStream());
             return new ResponseEntity<>(HttpStatus.OK);
