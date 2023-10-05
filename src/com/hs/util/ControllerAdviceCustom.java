@@ -28,15 +28,15 @@ public class ControllerAdviceCustom {
             ExceptionLogDto dto = ExceptionLogDto.builder()
                     .user((UserInfo) session.getAttribute("User"))
                     .eventCd("")
-                    .eventNm(e.getCause().toString())
-                    .eventDetail(e.getMessage())
+                    .eventNm(e.getCause() == null ? "" :e.getCause().toString())
+                    .eventDetail(e.getMessage() == null ? "" : e.getMessage())
                     .eventSvry("")
                     .progNm("")
                     .hostNm(InetAddress.getLocalHost().getHostName())
                     .build();
             commonService.insertExceptionLog(dto);
         } catch (UnknownHostException ex) {
-            log.error(e.getMessage(), e);
+            log.error(ex.getMessage(), ex);
         } finally {
             log.error(e.getMessage(), e);
             return new ResponseEntity<>(Message.BAD_REQUEST, responseHeader(), HttpStatus.BAD_REQUEST);
