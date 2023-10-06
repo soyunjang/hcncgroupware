@@ -37,22 +37,22 @@ public class HomeService {
 
 
 	/* 연차 조회 */
-	public List<UserAndHolidayInfoDto> userAndHolidayInfo() {
-		return sqlSession.selectList("homeMapper.userAndHolidayInfo");
-	}
+//	public List<UserAndHolidayInfoDto> userAndHolidayInfo() {
+//		return sqlSession.selectList("homeMapper.userAndHolidayInfo");
+//	}
 
 	/* 연차 업데이트 */
-	public void holidayInfoUpdate(String USER_ID, float HOLIDAY_TOTAL, float HOLIDAY_USE, float HOLIDAY_REMAIN, float HOLIDAY_DEDUCT) {
-		sqlSession.update("homeMapper.userHolidayUpdate", new UserAndHolidayInfoDto(USER_ID, HOLIDAY_TOTAL, HOLIDAY_USE, HOLIDAY_REMAIN, HOLIDAY_DEDUCT));
-	}
+//	public void holidayInfoUpdate(String USER_ID, float HOLIDAY_TOTAL, float HOLIDAY_USE, float HOLIDAY_REMAIN, float HOLIDAY_DEDUCT) {
+//		sqlSession.update("homeMapper.userHolidayUpdate", new UserAndHolidayInfoDto(USER_ID, HOLIDAY_TOTAL, HOLIDAY_USE, HOLIDAY_REMAIN, HOLIDAY_DEDUCT));
+//	}
 
-	public List<HolidayOfficeNotSubmitDto> holidayOfficeNotSubmitSelect() {
-		return sqlSession.selectList("homeMapper.holidayOfficeNotSubmit");
-	}
+//	public List<HolidayOfficeNotSubmitDto> holidayOfficeNotSubmitSelect() {
+//		return sqlSession.selectList("homeMapper.holidayOfficeNotSubmit");
+//	}
 
-	public void holidayOfficeNotSubmitSave(List<HolidayOfficeNotSubmitDto> dto) {
-		sqlSession.insert("homeMapper.holidayOfficeNotSubmitSave", dto);
-	}
+//	public void holidayOfficeNotSubmitSave(List<HolidayOfficeNotSubmitDto> dto) {
+//		sqlSession.insert("homeMapper.holidayOfficeNotSubmitSave", dto);
+//	}
 
 	public void userPasswordModify(UserPasswordDto dto, UserInfo user) {
 		try {

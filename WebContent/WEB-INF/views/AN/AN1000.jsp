@@ -532,7 +532,9 @@
 				onSelectRow: function (index, status) {
 					if (index) {
 						let row = $("#table1").jqGrid('getRowData', index);
-						getAjaxJsonData("an1000/holidayInfo?targetId=" + row.USER_ID.toString(), '', "holidayInfoSel", "GET")
+						console.log(row);
+						let url = "an1000/holidayInfo?targetId=" + row.USER_ID.toString() + "&holidayStart=" + row.HOLIDAY_START + "&holidayEnd=" + row.HOLIDAY_END;
+						getAjaxJsonData(url, '', "holidayInfoSel", "GET")
 					}
 				},
 			});
@@ -919,13 +921,10 @@
 					if (item.COUNT == 0) {
 						$("#pop01_date01_START").val(item.OFFICE_HOLIDAY);
 						$("#pop01_date01_END").val(item.OFFICE_HOLIDAY);
-						$('#pop01_txt01_COUNT').val('0');
 						return true;
 					}
 				});
-				if (holidayOfficeInfo.length == 0) {
-					getAjaxJsonData(url, '', 'holidayDateCount', 'GET');
-				}
+				$('#pop01_txt01_COUNT').val('0');
 			} else if (startDate != '' && endDate != '') {
 				// 반차, 민방위, 공식 휴무일이 아닌 경우
 				if (new Date(startDate) > new Date(endDate)) {

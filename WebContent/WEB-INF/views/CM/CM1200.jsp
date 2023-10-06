@@ -652,7 +652,6 @@
 		};
 
 		function searchVerificationUserIdOrNumCallBack(data) {
-			console.log(data[0]);
 			if(checkAction == "C"){
 				if (!isNaN(data[0].USER_ID)) {
 					let check = parseInt(data[0].USER_ID);

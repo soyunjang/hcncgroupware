@@ -32,7 +32,7 @@ public class AN1000Controller {
      */
     @RequestMapping(method = RequestMethod.GET)
     public String an1000(Model model, @ModelAttribute("User") UserInfo user) {
-        model.addAttribute("Holiday", an1000Service.an1000InfoSel(null, user));
+        model.addAttribute("Holiday", an1000Service.an1000InfoSel(null, user, null, null));
         model.addAttribute("HolidayOfficeInfo", an1000Service.an1000HolidayOfficeByUser(user));
         return "AN/AN1000";
     }
@@ -90,8 +90,11 @@ public class AN1000Controller {
      */
     @ResponseBody
     @RequestMapping(value = "/holidayInfo", method = RequestMethod.GET)
-    public ResponseEntity an1000_holidayInfoSel(@RequestParam(required = false) String targetId, @ModelAttribute("User") UserInfo user) {
-        return new ResponseEntity<>(an1000Service.an1000InfoSel(targetId, user), HttpStatus.OK);
+    public ResponseEntity an1000_holidayInfoSel(@RequestParam(required = false) String targetId,
+                                                @RequestParam(required = false) String holidayStart,
+                                                @RequestParam(required = false) String holidayEnd,
+                                                @ModelAttribute("User") UserInfo user) {
+        return new ResponseEntity<>(an1000Service.an1000InfoSel(targetId, user, holidayStart, holidayEnd), HttpStatus.OK);
     }
 
     /**

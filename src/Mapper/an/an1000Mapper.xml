@@ -14,6 +14,17 @@
 			   U.ENTER_DT
 		FROM HOLIDAY_INFO H LEFT JOIN USER_INFO U ON H.USER_ID = U.USER_ID
 		WHERE H.USER_ID LIKE #{USER_ID}
+		  <choose>
+			  <when test='HOLIDAY_START != Null and !HOLIDAY_START.equals("")'>
+				  AND #{HOLIDAY_START} BETWEEN USE_START AND USE_END
+				  AND #{HOLIDAY_END} BETWEEN USE_START AND USE_END
+			  </when>
+			  <otherwise>
+				  AND USE_END LIKE (SELECT MAX(USE_END) FROM HOLIDAY_INFO WHERE USER_ID LIKE #{USER_ID})
+			  </otherwise>
+		  </choose>
+
+
 	</select>
 
 	<select id="an1000InfoSelUsers" parameterType="map" resultType="map">
@@ -96,14 +107,20 @@
 
 	<resultMap id="holidayInfo" type="com.hs.an.dto.HolidayInfoDto">
 		<result property="user_id" column="USER_ID"/>
+		<result property="use_start" column="USE_START"/>
+		<result property="use_end" column="USE_END"/>
 		<result property="holiday_total" column="HOLIDAY_TOTAL"/>
 		<result property="holiday_use" column="HOLIDAY_USE"/>
 		<result property="holiday_remain" column="HOLIDAY_REMAIN"/>
 		<result property="holiday_deduct" column="HOLIDAY_DEDUCT"/>
 	</resultMap>
 
-	<select id="an1000HolidayInfoSel" parameterType="String" resultMap="holidayInfo">
-		SELECT USER_ID, HOLIDAY_TOTAL, HOLIDAY_USE, HOLIDAY_REMAIN, HOLIDAY_DEDUCT FROM HOLIDAY_INFO WHERE USER_ID = #{USER_ID}
+	<select id="an1000HolidayInfoSel" parameterType="map" resultMap="holidayInfo">
+		SELECT USER_ID, USE_START, USE_END, HOLIDAY_TOTAL, HOLIDAY_USE, HOLIDAY_REMAIN, HOLIDAY_DEDUCT
+		FROM HOLIDAY_INFO
+		WHERE USER_ID = #{USER_ID}
+		  AND #{HOLIDAY_START} BETWEEN USE_START AND USE_END
+		  AND #{HOLIDAY_END} BETWEEN USE_START AND USE_END
 	</select>
 
 	<update id="an1000HolidayInfoUpdate" parameterType="com.hs.an.dto.HolidayInfoDto">
@@ -112,6 +129,8 @@
 		                        HOLIDAY_REMAIN = #{holiday_remain},
 		                        HOLIDAY_DEDUCT = #{holiday_deduct}
 		WHERE USER_ID = #{user_id}
+		  AND #{holiday_start} BETWEEN USE_START AND USE_END
+		  AND #{holiday_end} BETWEEN USE_START AND USE_END
 	</update>
 
 	<select id="an1000PrintByUser" parameterType="com.hs.an.dto.An1000PrintDto" resultType="map">

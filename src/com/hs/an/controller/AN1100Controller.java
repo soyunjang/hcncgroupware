@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -32,12 +31,7 @@ public class AN1100Controller {
    	 * 메소드 설명 : 휴가사용현황 페이지로 이동
    	 */
 	@RequestMapping(value = "/an1100", method = RequestMethod.GET)
-	public String an1100(Model model, @ModelAttribute("User") UserInfo user) {
-		// 사용자 연차정보 조회
-		Map<String,Object> holidayInfo = an1000Service.an1000InfoSel(null, user);
-		
-		model.addAttribute("Holiday", holidayInfo);
-		
+	public String an1100(@ModelAttribute("User") UserInfo user) {
 		return "AN/AN1100";
 	}
 

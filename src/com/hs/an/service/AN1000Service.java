@@ -37,13 +37,17 @@ public class AN1000Service {
 	 * 사용자 연차정보 조회
 	 * @return 사용자 휴가 신청 내역
 	 */
-	public Map<String, Object> an1000InfoSel(String targetId, UserInfo user) {
+	public Map<String, Object> an1000InfoSel(String targetId, UserInfo user, String holidayStart, String holidayEnd) {
 		try {
 			Map<String, Object> param = new HashMap();
 			if (targetId != null) {
 				param.put("USER_ID", targetId);
 			} else {
 				param.put("USER_ID", user.getUSER_ID());
+			}
+			if (holidayStart != null && holidayEnd != null) {
+				param.put("HOLIDAY_START", holidayStart);
+				param.put("HOLIDAY_END", holidayEnd);
 			}
 			return an1000Repository.an1000InfoSel(param);
 		} catch (Exception e) {
@@ -167,63 +171,125 @@ public class AN1000Service {
 		try {
 			if (asList(HOLIDAY_CHECK_TYPE).indexOf(valueOf(param.get("HOLIDAY_TYPE"))) >= 0) {
 				float holidayCnt = Float.valueOf((String) param.get("HOLIDAY_CNT"));
-				HolidayInfoDto dto = an1000Repository.an1000HolidayInfoSel(user.getUSER_ID());
-				log.info("before: {}", dto);
 
-				if (type.equals(Type.PLUS)) {
-					if (dto.getHoliday_total() > dto.getHoliday_use()) {
-						// 연차보유일수 > 사용일수 && 사용일수 > 신청일수
-						if (dto.getHoliday_remain() >= holidayCnt) {
-							// 휴가 잔여 >= 신청일수
-							dto.setHoliday_use(dto.getHoliday_use() + holidayCnt);
-							dto.setHoliday_remain(dto.getHoliday_remain() - holidayCnt);
-						} else {
-							// 휴가 잔여 < 신청일수
-							dto.setHoliday_deduct(holidayCnt - dto.getHoliday_remain());
-							dto.setHoliday_use(dto.getHoliday_total());
-							dto.setHoliday_remain(0);
-						}
-					} else if (dto.getHoliday_total() == dto.getHoliday_use()) {
-						// 연차보유일수 == 사용일수
-						dto.setHoliday_deduct(dto.getHoliday_deduct() + holidayCnt);
-					} else {
-						log.info("holidayInfoUpdate.(type.equals(Type.PLUS)).else");
-					}
-				} else if (type.equals(Type.MINUS)) {
-					if (dto.getHoliday_total() > dto.getHoliday_use()) {
-						// 연차보유일수 > 사용일수
-						dto.setHoliday_use(dto.getHoliday_use() - holidayCnt);
-						dto.setHoliday_remain(dto.getHoliday_remain() + holidayCnt);
-					} else if (dto.getHoliday_total() == dto.getHoliday_use()) {
-						// 연차보유일수 == 사용일수
-						if (dto.getHoliday_deduct() <= 0) {
-							// 공제일수 <= 0
-							dto.setHoliday_use(dto.getHoliday_use() - holidayCnt);
-							dto.setHoliday_remain(dto.getHoliday_remain() + holidayCnt);
-						} else {
-							// 공제일수 > 0
-							if (holidayCnt <= dto.getHoliday_deduct()) {
-								// 휴가일수 <= 공제일수
-								dto.setHoliday_deduct(dto.getHoliday_deduct() - holidayCnt);
-							} else {
-								// 휴가일수 > 공제일수
-								dto.setHoliday_remain(holidayCnt - dto.getHoliday_deduct());
-								dto.setHoliday_use(dto.getHoliday_total() - dto.getHoliday_remain());
-								dto.setHoliday_deduct(0);
-							}
-						}
-					} else {
-						log.info("holidayInfoUpdate.(type.equals(Type.MINUS)).else");
-					}
-				} else {
-					log.info("holidayInfoUpdate.else");
-				}
-				log.info("after: {}", dto);
-				an1000Repository.an1000HolidayInfoUpdate(dto);
+				Map<String, Object> searchParam = new HashMap<>();
+				searchParam.put("USER_ID", user.getUSER_ID());
+				searchParam.put("HOLIDAY_START", param.get("HOLIDAY_START"));
+				searchParam.put("HOLIDAY_END", param.get("HOLIDAY_END"));
+
+				HolidayInfoDto dto = an1000Repository.an1000HolidayInfoSel(searchParam);
+				HolidayInfoDto resultDto = holidayInfoCalculation(type, holidayCnt, dto);
+				resultDto.setHoliday_start(String.valueOf(param.get("HOLIDAY_START")));
+				resultDto.setHoliday_end(String.valueOf(param.get("HOLIDAY_END")));
+				an1000Repository.an1000HolidayInfoUpdate(resultDto);
+
+				holidayInfoCalculation2(user, type, holidayCnt, dto);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(this.getClass().getName() + ".holidayInfoUpdate", e);
 		}
+	}
+
+	/**
+	 * 연차 계산 기준이 현재가 아닐 경우
+	 * 예) 입사기준일(2021-01-01 ~ 2021-12-31)이지만 2021-01-01 이전의 휴가를 등록 및 삭제 되었을때
+	 * 	   공제일이
+	 */
+	private void holidayInfoCalculation2(UserInfo user, Type type, float holidayCnt, HolidayInfoDto dto) {
+		LocalDate useStartDate = LocalDate.parse(dto.getUse_start());
+		LocalDate useEndDate = LocalDate.parse(dto.getUse_end());
+
+		boolean[] check = new boolean[]{
+				(LocalDate.now().isAfter(useStartDate) || LocalDate.now().isEqual(useStartDate)) &&
+						(LocalDate.now().isBefore(useEndDate) || LocalDate.now().isEqual(useEndDate)),
+				dto.getHoliday_deduct() > 0,
+				type.equals(Type.MINUS),
+				dto.getHoliday_deduct() == 0 && dto.getHoliday_total() == dto.getHoliday_use(),
+				(dto.getHoliday_use() + holidayCnt) > dto.getHoliday_total()
+
+		};
+
+		Map<String, Object> map = new HashMap<>();
+		map.put("USER_ID", user.getUSER_ID());
+		map.put("HOLIDAY_START", useStartDate.plusYears(1).toString());
+		map.put("HOLIDAY_END", useStartDate.plusYears(2).minusDays(1).toString());
+
+		HolidayInfoDto holidayInfoDto = an1000Repository.an1000HolidayInfoSel(map);
+		if (!check[0] && check[1]) {
+			HolidayInfoDto resultDto2 = holidayInfoCalculation(type, dto.getHoliday_deduct(), holidayInfoDto);
+			resultDto2.setHoliday_start(String.valueOf(map.get("HOLIDAY_START")));
+			resultDto2.setHoliday_end(String.valueOf(map.get("HOLIDAY_END")));
+			an1000Repository.an1000HolidayInfoUpdate(resultDto2);
+		} else if(!check[0] && check[2] && check[3]) {
+			HolidayInfoDto resultDto2 = holidayInfoCalculation(type, holidayCnt, holidayInfoDto);
+			resultDto2.setHoliday_start(String.valueOf(map.get("HOLIDAY_START")));
+			resultDto2.setHoliday_end(String.valueOf(map.get("HOLIDAY_END")));
+			an1000Repository.an1000HolidayInfoUpdate(resultDto2);
+		} else if (!check[0] && check[2] && check[4]) {
+			float f = (dto.getHoliday_use() + holidayCnt) - dto.getHoliday_total();
+			HolidayInfoDto resultDto2 = holidayInfoCalculation(type, f, holidayInfoDto);
+			resultDto2.setHoliday_start(String.valueOf(map.get("HOLIDAY_START")));
+			resultDto2.setHoliday_end(String.valueOf(map.get("HOLIDAY_END")));
+			an1000Repository.an1000HolidayInfoUpdate(resultDto2);
+		}
+
+	}
+
+	/**
+	 * 해당 조건에 대하여 연차 계산 후 HolidayInfoDto 반환
+	 */
+	private HolidayInfoDto holidayInfoCalculation(Type type, float holidayCnt, HolidayInfoDto dto) {
+		log.info("before: {}", dto);
+		if (type.equals(Type.PLUS)) {
+			if (dto.getHoliday_total() > dto.getHoliday_use()) {
+				// 연차보유일수 > 사용일수 && 사용일수 > 신청일수
+				if (dto.getHoliday_remain() >= holidayCnt) {
+					// 휴가 잔여 >= 신청일수
+					dto.setHoliday_use(dto.getHoliday_use() + holidayCnt);
+					dto.setHoliday_remain(dto.getHoliday_remain() - holidayCnt);
+				} else {
+					// 휴가 잔여 < 신청일수
+					dto.setHoliday_deduct(holidayCnt - dto.getHoliday_remain());
+					dto.setHoliday_use(dto.getHoliday_total());
+					dto.setHoliday_remain(0);
+				}
+			} else if (dto.getHoliday_total() == dto.getHoliday_use()) {
+				// 연차보유일수 == 사용일수
+				dto.setHoliday_deduct(dto.getHoliday_deduct() + holidayCnt);
+			} else {
+				log.info("holidayInfoUpdate.(type.equals(Type.PLUS)).else");
+			}
+		} else if (type.equals(Type.MINUS)) {
+			if (dto.getHoliday_total() > dto.getHoliday_use()) {
+				// 연차보유일수 > 사용일수
+				dto.setHoliday_use(dto.getHoliday_use() - holidayCnt);
+				dto.setHoliday_remain(dto.getHoliday_remain() + holidayCnt);
+			} else if (dto.getHoliday_total() == dto.getHoliday_use()) {
+				// 연차보유일수 == 사용일수
+				if (dto.getHoliday_deduct() <= 0) {
+					// 공제일수 <= 0
+					dto.setHoliday_use(dto.getHoliday_use() - holidayCnt);
+					dto.setHoliday_remain(dto.getHoliday_remain() + holidayCnt);
+				} else {
+					// 공제일수 > 0
+					if (holidayCnt <= dto.getHoliday_deduct()) {
+						// 휴가일수 <= 공제일수
+						dto.setHoliday_deduct(dto.getHoliday_deduct() - holidayCnt);
+					} else {
+						// 휴가일수 > 공제일수
+						dto.setHoliday_remain(holidayCnt - dto.getHoliday_deduct());
+						dto.setHoliday_use(dto.getHoliday_total() - dto.getHoliday_remain());
+						dto.setHoliday_deduct(0);
+					}
+				}
+			} else {
+				log.info("holidayInfoUpdate.(type.equals(Type.MINUS)).else");
+			}
+		} else {
+			log.info("holidayInfoUpdate.else");
+		}
+		log.info("after: {}", dto);
+		return dto;
 	}
 
 	public List<String> an1000PublicHolidaySel(String startDate, String endDate) {

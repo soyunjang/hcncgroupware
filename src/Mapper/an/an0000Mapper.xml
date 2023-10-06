@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="an0000Mapper">
+	<insert id="holidayInfoInsert" parameterType="com.hs.an.dto.HolidayInfoInsertDto">
+		INSERT INTO HOLIDAY_INFO
+		    (USER_ID, USE_START, USE_END, HOLIDAY_TOTAL, HOLIDAY_USE, HOLIDAY_REMAIN, HOLIDAY_DEDUCT, REG_ID, REG_DT)
+		VALUES
+		    (#{userId}, #{useStart}, #{useEnd}, #{holidayTotal}, #{holidayUse}, #{holidayRemain}, #{holidayDeduct}, #{regId}, GETDATE())
+	</insert>
+
+	<!-- 연차 업데이트 -->
+	<update id="userHolidayUpdate" parameterType="com.hs.an.dto.UserAndHolidayInfoDto">
+		UPDATE HOLIDAY_INFO SET HOLIDAY_TOTAL = #{HOLIDAY_TOTAL},
+								HOLIDAY_USE = #{HOLIDAY_USE},
+								HOLIDAY_REMAIN = #{HOLIDAY_REMAIN},
+								HOLIDAY_DEDUCT = #{HOLIDAY_DEDUCT},
+								UPT_ID = #{UPT_ID},
+								UPT_DT = GETDATE()
+		WHERE USER_ID = #{USER_ID}
+	</update>
+
+	<!-- 연차 관련 조회 -->
+	<select id="userAndHolidayInfo" resultType="com.hs.an.dto.UserAndHolidayInfoDto">
+		SELECT U.USER_ID,
+			   U.ENTER_DT,
+			   H.HOLIDAY_TOTAL,
+			   H.HOLIDAY_USE,
+			   H.HOLIDAY_REMAIN,
+			   H.HOLIDAY_DEDUCT
+		FROM USER_INFO U LEFT JOIN HOLIDAY_INFO H ON(U.USER_ID = H.USER_ID)
+		WHERE U.ENTER_DT IS NOT NULL
+		  AND U.USE_YN LIKE 'Y'
+		  AND H.USE_END LIKE (SELECT MAX(USE_END) FROM HOLIDAY_INFO WHERE USER_ID LIKE H.USER_ID)
+	</select>
+
+	<!-- 회사 휴무 미사용자 조회 -->
+	<select id="holidayOfficeNotSubmit" resultType="com.hs.an.dto.HolidayOfficeNotSubmitDto">
+		DECLARE @HOLIDAY VARCHAR(10) = (SELECT MIN(hc.OFFICE_HOLIDAY) AS companyday FROM HOLIDAY_OFFICE hc WHERE DATEPART(MONTH, CONVERT(DATE, hc.OFFICE_HOLIDAY)) = DATEPART(MONTH, CONVERT(DATE, getdate())))
+
+		SELECT U.USER_ID, U.DEPT_CD, @HOLIDAY as HOLIDAY_DATE, count(H.HOLIDAY_TYPE) AS STATUS
+		FROM USER_INFO U LEFT JOIN HOLIDAY_PERSON H ON (U.USER_ID = H.USER_ID AND H.HOLIDAY_TYPE IN ('OFFICE01', 'OFFICE02')
+			AND H.HOLIDAY_START = @HOLIDAY AND H.HOLIDAY_END = @HOLIDAY)
+		WHERE U.USE_YN = 'Y' AND U.PDEPT_CD != ''
+		GROUP BY U.USER_ID, U.DEPT_CD HAVING COUNT(H.HOLIDAY_TYPE) &lt; 1
+	</select>
+
+	<!-- 회사 휴무 미사용자 휴가 등록 -->
+	<insert id="holidayOfficeNotSubmitSave" parameterType="java.util.List">
+		INSERT INTO HOLIDAY_PERSON (USER_ID, HOLIDAY_TYPE, HOLIDAY_CNT, HOLIDAY_START, HOLIDAY_END, HOLIDAY_REASON, REG_ID, REG_DT) VALUES
+		<foreach collection="list" item="item" separator=", ">
+			(#{item.USER_ID}, 'OFFICE01', '1', #{item.HOLIDAY_DATE}, #{item.HOLIDAY_DATE}, '회사 휴무', 'SYSTEM', GETDATE())
+		</foreach>
+	</insert>
+
+</mapper>

@@ -1,11 +1,12 @@
 package com.hs.an.service;
 
+import com.hs.an.dto.HolidayInfoInsertDto;
 import com.hs.an.dto.HolidayOfficeNotSubmitDto;
 import com.hs.an.dto.HolidayPublicDto;
 import com.hs.an.dto.UserAndHolidayInfoDto;
+import com.hs.an.repository.An0000Repository;
 import com.hs.common.service.CommonService;
 import com.hs.home.controller.UserInfo;
-import com.hs.home.service.HomeService;
 import com.hs.util.ExceptionLogDto;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
@@ -22,10 +23,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.String.valueOf;
@@ -38,11 +36,11 @@ public class AN0000Service {
     private final String HOLIDAY_TYPE = "OFFICE01";
     private final String HOLIDAY_CNT = "1";
     @Autowired
-    private HomeService homeService;
-    @Autowired
     private AN1000Service an1000Service;
     @Autowired
     private CommonService commonService;
+    @Autowired
+    private An0000Repository an0000Repository;
 
     /** 회사 휴무 미등록 시 해당 달 마지막 날에 자동 등록 */
 //    @Scheduled(cron = "0 30 23 28-31 * *")
@@ -50,9 +48,9 @@ public class AN0000Service {
         try {
             Calendar calendar = Calendar.getInstance();
             if (calendar.get(Calendar.DATE) == calendar.getActualMaximum(Calendar.DATE)) {
-                List<HolidayOfficeNotSubmitDto> dtos = homeService.holidayOfficeNotSubmitSelect();
+                List<HolidayOfficeNotSubmitDto> dtos = an0000Repository.holidayOfficeNotSubmitSelect();
                 if (!dtos.isEmpty()) {
-                    homeService.holidayOfficeNotSubmitSave(dtos);
+                    an0000Repository.holidayOfficeNotSubmitSave(dtos);
                     for (HolidayOfficeNotSubmitDto dto : dtos) {
                         HashMap<String, Object> param = new HashMap<>();
                         param.put("USER_ID", dto.getUSER_ID());
@@ -76,7 +74,7 @@ public class AN0000Service {
     @Scheduled(cron = "0 30 0 * * *")
     public void calculation() {
         try {
-            List<UserAndHolidayInfoDto> dto = homeService.userAndHolidayInfo();
+            List<UserAndHolidayInfoDto> dto = an0000Repository.userAndHolidayInfo();
             if (!dto.isEmpty()) {
                 dto.stream().filter(item -> {
                             //check1 = 근속 1년 미만 및 년월일 중 일이 같은 대상자
@@ -122,7 +120,8 @@ public class AN0000Service {
             holidayTotal = defaultHoliday + (years / 2);
         } else if (years >= standardYears && years % 2 == 0) {
             // 근속 3년 이상이면서 연차 미 증가 대상자
-            holidayTotal = item.getHOLIDAY_TOTAL();
+//            holidayTotal = item.getHOLIDAY_TOTAL();
+            holidayTotal = defaultHoliday + (years / 2) - 1;
         } else {
             throw new RuntimeException("byYears.else");
         }
@@ -137,19 +136,64 @@ public class AN0000Service {
             if (check) {
                 float increaseDay = holidayTotal - (item.getHOLIDAY_USE() + item.getHOLIDAY_REMAIN());
                 float holidayRemainder = item.getHOLIDAY_REMAIN() + increaseDay;
-                homeService.holidayInfoUpdate(item.getUSER_ID(), holidayTotal, item.getHOLIDAY_USE(), holidayRemainder, (float) 0);
+                an0000Repository.holidayInfoUpdate(item.getUSER_ID(), holidayTotal, item.getHOLIDAY_USE(), holidayRemainder, (float) 0);
+
             } else {
                 float useDeduct = item.getHOLIDAY_USE() + item.getHOLIDAY_DEDUCT();
-                homeService.holidayInfoUpdate(item.getUSER_ID(), holidayTotal, holidayTotal, item.getHOLIDAY_REMAIN(), useDeduct - holidayTotal);
+                an0000Repository.holidayInfoUpdate(item.getUSER_ID(), holidayTotal, holidayTotal, item.getHOLIDAY_REMAIN(), useDeduct - holidayTotal);
             }
         } else { // 근속연수 1년 이상
+
+            Map<String, Object> useStartAndEnd = getUseStartAndEnd(item);
+
             if (check) {
-                homeService.holidayInfoUpdate(item.getUSER_ID(), holidayTotal, (float) 0, holidayTotal, (float) 0);
+                an0000Repository.holidayInfoInsert(
+                        HolidayInfoInsertDto.builder()
+                                .userId(item.getUSER_ID())
+                                .useStart(String.valueOf(useStartAndEnd.get("useStart")))
+                                .useEnd(String.valueOf(useStartAndEnd.get("useEnd")))
+                                .holidayTotal(holidayTotal)
+                                .holidayUse((float) 0)
+                                .holidayRemain(holidayTotal)
+                                .holidayDeduct((float) 0)
+                                .build()
+                );
             } else {
                 float holidayDeduct = item.getHOLIDAY_DEDUCT();
-                homeService.holidayInfoUpdate(item.getUSER_ID(), holidayTotal, holidayDeduct, holidayTotal - holidayDeduct, (float) 0);
+                an0000Repository.holidayInfoInsert(
+                        HolidayInfoInsertDto.builder()
+                                .userId(item.getUSER_ID())
+                                .useStart(String.valueOf(useStartAndEnd.get("useStart")))
+                                .useEnd(String.valueOf(useStartAndEnd.get("useEnd")))
+                                .holidayTotal(holidayTotal)
+                                .holidayUse(holidayDeduct)
+                                .holidayRemain(holidayTotal - holidayDeduct)
+                                .holidayDeduct((float) 0)
+                                .build()
+                );
             }
         }
+    }
+
+    /**
+     * 연차 적용 날짜 찾기
+     */
+    private Map<String, Object> getUseStartAndEnd(UserAndHolidayInfoDto item) {
+        Map<String, Object> param = new HashMap<>();
+        LocalDate enterDate = LocalDate.parse(item.getENTER_DT());
+        for (int i = 0; i < 100; i++) {
+            LocalDate useStart = enterDate.plusYears(i);
+            LocalDate useEnd = enterDate.plusYears(1 + i).minusDays(1);
+            boolean useStartCheck = LocalDate.now().isAfter(useStart) || LocalDate.now().isEqual(useStart);
+            boolean useEndCheck = LocalDate.now().isBefore(useEnd) || LocalDate.now().isEqual(useEnd);
+            if (useStartCheck && useEndCheck) {
+                param.put("useStart", useStart);
+                param.put("useEnd", useEnd);
+                param.put("userId", item.getUSER_ID());
+                break;
+            }
+        }
+        return param;
     }
 
     /**
@@ -248,18 +292,18 @@ public class AN0000Service {
      * 에러 내용 DB 저장
      */
     private void logInsert(String eCause, String eMessage) {
-        System.out.println("eCause = " + eCause + ", eMessage = " + eMessage);
         UserInfo user = new UserInfo("SYSTEM");
         user.setUSER_IP("127.0.0.1");
-        ExceptionLogDto dto = ExceptionLogDto.builder()
-                .user(user)
-                .eventCd("")
-                .eventNm(eCause)
-                .eventDetail(eMessage)
-                .eventSvry("")
-                .progNm("")
-                .hostNm("SYSTEM")
-                .build();
-        commonService.insertExceptionLog(dto);
+        commonService.insertExceptionLog(
+                ExceptionLogDto.builder()
+                        .user(user)
+                        .eventCd("")
+                        .eventNm(eCause)
+                        .eventDetail(eMessage)
+                        .eventSvry("")
+                        .progNm("")
+                        .hostNm("SYSTEM")
+                        .build()
+        );
     }
 }

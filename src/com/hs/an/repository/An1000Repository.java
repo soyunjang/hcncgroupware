@@ -65,8 +65,8 @@ public class An1000Repository {
         return sqlSession.selectList("an1000Mapper.an1000SelUser", param);
     }
 
-    public HolidayInfoDto an1000HolidayInfoSel(String userId) {
-        return sqlSession.selectOne("an1000Mapper.an1000HolidayInfoSel", userId);
+    public HolidayInfoDto an1000HolidayInfoSel(Map<String, Object> searchParam) {
+        return sqlSession.selectOne("an1000Mapper.an1000HolidayInfoSel", searchParam);
     }
 
     public void an1000HolidayInfoUpdate(HolidayInfoDto dto) {

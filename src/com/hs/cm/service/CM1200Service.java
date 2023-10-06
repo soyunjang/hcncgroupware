@@ -1,5 +1,6 @@
 package com.hs.cm.service;
 
+import com.hs.an.dto.UserAndHolidayInfoDto;
 import com.hs.home.controller.UserInfo;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
 import java.net.InetAddress;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,8 +110,9 @@ public class CM1200Service {
 			}
 
 			if (param.get("ACTION").equals("C")) {
+				param.putAll(getUseStartAndEnd(String.valueOf(param.get("ENTER_DT"))));
 				sqlSession.insert("cm1200Mapper.cm1200Save", param);
-				sqlSession.insert("cm1200SaveHolidayInfo", param);
+				sqlSession.insert("cm1200Mapper.cm1200SaveHolidayInfo", param);
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -118,5 +121,22 @@ public class CM1200Service {
 		}
 		
 		return rtnMap;
+	}
+
+	private Map<String, Object> getUseStartAndEnd(String enterDt) {
+		Map<String, Object> resultMap = new HashMap<>();
+		LocalDate enterDate = LocalDate.parse(enterDt);
+		for (int i = 0; i < 100; i++) {
+			LocalDate useStart = enterDate.plusYears(i);
+			LocalDate useEnd = enterDate.plusYears(1 + i).minusDays(1);
+			boolean useStartCheck = LocalDate.now().isAfter(useStart) || LocalDate.now().isEqual(useStart);
+			boolean useEndCheck = LocalDate.now().isBefore(useEnd) || LocalDate.now().isEqual(useEnd);
+			if (useStartCheck && useEndCheck) {
+				resultMap.put("USE_START", useStart);
+				resultMap.put("USE_END", useEnd);
+				break;
+			}
+		}
+		return resultMap;
 	}
 }
