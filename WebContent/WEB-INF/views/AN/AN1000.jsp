@@ -23,6 +23,23 @@
 		margin-top: 0;
 		margin-left: 50px;
 	}
+
+	input[type="date"] {
+		position: relative;
+		width: 100%;
+		border-radius: 0;
+	}
+	input[type="date"]::-webkit-calendar-picker-indicator {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: transparent;
+		color: transparent;
+		cursor: pointer;
+		z-index: 1;
+	}
 </style>
 	<body>
 		<!-- .contents-wrap 컨텐츠영역 START -->
