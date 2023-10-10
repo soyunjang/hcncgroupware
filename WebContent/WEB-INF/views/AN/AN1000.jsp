@@ -532,14 +532,14 @@
 				},
 				colNames: langHead,
 				colModel: [
-					{name: 'USER_ID'			, align: 'center'	, width: '0%'	, hidden: true},
-					{name: 'USER_NM'			, align: 'center'	, width: '7%'	, hidden: false},
-					{name: 'GRADE_CD'			, align: 'center' 	, width: '0%'	, hidden: true},
-					{name: 'GRADE_NM'			, align: 'center' 	, width: '8%'	, hidden: false},
+					{name: 'USER_ID'		, align: 'center'	, width: '0%'	, hidden: true},
+					{name: 'USER_NM'		, align: 'center'	, width: '7%'	, hidden: false},
+					{name: 'GRADE_CD'		, align: 'center' 	, width: '0%'	, hidden: true},
+					{name: 'GRADE_NM'		, align: 'center' 	, width: '8%'	, hidden: false},
 					{name: 'HOLIDAY_START'	, align: 'center'	, width: '10%'	, hidden: false},
-					{name: 'HOLIDAY_END'		, align: 'center'	, width: '10%'	, hidden: false},
-					{name: 'HOLIDAY_CNT'		, align: 'center' 	, width: '5%'	, hidden: false},
-					{name: 'HOLIDAY_TYPE'		, align: 'center'	, width: '5%'	, hidden: false},
+					{name: 'HOLIDAY_END'	, align: 'center'	, width: '10%'	, hidden: false},
+					{name: 'HOLIDAY_CNT'	, align: 'center' 	, width: '5%'	, hidden: false},
+					{name: 'HOLIDAY_TYPE'	, align: 'center'	, width: '5%'	, hidden: false},
 					{name: 'HOLIDAY_REASON'	, align: 'left'		, width: '15%'	, hidden: false}
 				],
 				autowidth: false,
@@ -566,15 +566,15 @@
 				},
 				colNames: langPop1,
 				colModel: [
-					{name: 'USER_ID'		, align: 'center'	, width: '0%'	, hidden: true},
-					{name: 'USER_NM'		, align: 'center'	, width: '6%'	, hidden: false},
-					{name: 'PDEPT_CD'		, align: 'center'	, width: '0%'	, hidden: true},
-					{name: 'PDEPT_NM'		, align: 'center'	, width: '4%'	, hidden: false},
-					{name: 'DEPT_CD'		, align: 'center'	, width: '0%'	, hidden: true},
-					{name: 'DEPT_NM'		, align: 'center'	, width: '4%'	, hidden: false},
-					{name: 'GRADE_CD'		, align: 'center'	, width: '0%'	, hidden: true},
-					{name: 'GRADE_NM'		, align: 'center'	, width: '2%'	, hidden: false},
-					{name: 'ENTER_DT'		, align: 'center'	, width: '4%'	, hidden: false}
+					{name: 'USER_ID'	, align: 'center'	, width: '0%'	, hidden: true},
+					{name: 'USER_NM'	, align: 'center'	, width: '6%'	, hidden: false},
+					{name: 'PDEPT_CD'	, align: 'center'	, width: '0%'	, hidden: true},
+					{name: 'PDEPT_NM'	, align: 'center'	, width: '4%'	, hidden: false},
+					{name: 'DEPT_CD'	, align: 'center'	, width: '0%'	, hidden: true},
+					{name: 'DEPT_NM'	, align: 'center'	, width: '4%'	, hidden: false},
+					{name: 'GRADE_CD'	, align: 'center'	, width: '0%'	, hidden: true},
+					{name: 'GRADE_NM'	, align: 'center'	, width: '2%'	, hidden: false},
+					{name: 'ENTER_DT'	, align: 'center'	, width: '4%'	, hidden: false}
 				],
 				autowidth: true,
 				shrinkToFit: false,
@@ -618,10 +618,10 @@
 
 		function searchGridDataUsers(){
 			let searchParam = {
-				USER_NM : $("#txt01_USER_NM").val()
-				, START : $("#date01_START").val()
-				, END : $("#date01_END").val()
-				, TYPE : $("#sel01_HOLIDAY_TYPE").val()
+				USER_NM : $("#txt01_USER_NM").val(),
+				START : $("#date01_START").val(),
+				END : $("#date01_END").val(),
+				TYPE : $("#sel01_HOLIDAY_TYPE").val()
 			};
 
 			getAjaxJsonData("an1000/list", searchParam, "searchGridDataUsersCallBack");
@@ -630,8 +630,8 @@
 		function searchGridDataUsersCallBack(data){
 			$("#table1").clearGridData();
 			$("#table1").jqGrid('setGridParam', {
-				datatype: 'local'
-				, data: data
+				datatype: 'local',
+				data: data
 			}).trigger("reloadGrid");
 
 			let count;
@@ -698,11 +698,11 @@
 			let pop01_btn01_CLOSE = returnPopup[2];
 
 			$("#viewForm1").dialog({
-				autoOpen: true
-				, title: titlePop
-				, width: 900
-				, modal: true
-				, open: function () {
+				autoOpen: true,
+				title: titlePop,
+				width: 900,
+				modal: true,
+				open: function () {
 					if(action == "C"){
 						popReset("viewForm1");
 						document.getElementById('pop01_date01_REG').valueAsDate = new Date();
@@ -714,11 +714,11 @@
 					else if(action == "U"){
 
 					}
-				}
-				, close: function () {
+				},
+				close: function () {
 					$(this).dialog("close");
-				}
-				, buttons: [
+				},
+				buttons: [
 					{
 						text : pop01_btn01_SAVE,
 	                    click : function(){
@@ -733,11 +733,11 @@
 								return false;
 							}
 							let idsH = $("#table1").jqGrid('getDataIDs');
-
+							const checkId = $('#pop01_txt01_USER_ID').val();
 							for (let i = 0; i < idsH.length; i++) {
 								let retH = $("#table1").jqGrid('getRowData', idsH[i]);
-
-								if(retH.HOLIDAY_START == $("#pop01_date01_START").val()) {
+								let idCheck = (checkId == retH.USER_ID);
+								if(retH.HOLIDAY_START == $("#pop01_date01_START").val() && idCheck) {
 									toast("오류", "이미 존재하는 휴가입니다.", "error");
 									return;
 								}
@@ -745,15 +745,15 @@
 
 							confirms("저장 하시겠습니까?", "C");
 						}
-					}
-					, {
+					},
+					{
 						text : pop01_btn01_CLOSE,
 	                    click : function () {
 							$(this).dialog("close");
 						}
 					}
-				]
-				, focus: function (event, ui) {}
+				],
+				focus: function (event, ui) {}
 			}).css("z-index", 1000).prev(".ui-dialog-titlebar").css("background","#266f80").css("color","#fff");
 		};
 
@@ -765,11 +765,11 @@
 			let pop02_btn01_CLOSE = returnPopup[2];
 
 			$("#viewForm2").dialog({
-				autoOpen: true
-				, title: titlePop
-				, width: 560
-				, modal: true
-				, open: function (event, ui) {
+				autoOpen: true,
+				title: titlePop,
+				width: 560,
+				modal: true,
+				open: function (event, ui) {
 					const holidayOfficeDay = new Date(date);
 					let weeks = ['일', '월', '화', '수', '목', '금', '토'];
 					let year = holidayOfficeDay.getFullYear();
@@ -779,11 +779,11 @@
 					let message = '<strong style="color: red">' + year + '년 ' + month + '월 ' + day + '일(' + week + ') </strong> ' + '은 회사 공식 휴무일입니다.' +
 							'<br> 출근 하시는 분들께서도 \'공식 휴무일/출근\' 으로 사유를 작성 후 필히 등록해주세요.';
 					$("#viewForm2Content").html(message);
-				}
-				, close: function () {
+				},
+				close: function () {
 					$(this).dialog("close");
-				}
-				, buttons: [
+				},
+				buttons: [
 					{
 						text : pop02_btn01_SAVE,
 						click : function(){
@@ -796,15 +796,15 @@
 							$("#pop01_date01_END").val(date)
 							$("#pop01_txt01_REASON").val("회사 공식 휴무일")
 						}
-					}
-					, {
+					},
+					{
 						text : pop02_btn01_CLOSE,
 						click : function () {
 							$(this).dialog("close");
 						}
 					}
-				]
-				, focus: function (event, ui) {}
+				],
+				focus: function (event, ui) {}
 			}).css("z-index", 1000).prev(".ui-dialog-titlebar").css("background","#266f80").css("color","#fff");
 		};
 
@@ -816,17 +816,17 @@
 			let pop03_btn01_CLOSE = returnPopup[2];
 
 			$("#viewForm3").dialog({
-				autoOpen: true
-				, title: titlePop
-				, width: 750
-				, modal: true
-				, open: function (event, ui) {
+				autoOpen: true,
+				title: titlePop,
+				width: 750,
+				modal: true,
+				open: function (event, ui) {
 					searchGridDataUser();
-				}
-				, close: function () {
+				},
+				close: function () {
 					$(this).dialog("close");
-				}
-				, buttons: [
+				},
+				buttons: [
 					{
 						text : pop03_btn01_FINISH,
 						click : function(){
@@ -845,15 +845,15 @@
 
 							$(this).dialog("close");
 						}
-					}
-					, {
+					},
+					{
 						text : pop03_btn01_CLOSE,
 						click : function () {
 							$(this).dialog("close");
 						}
 					}
-				]
-				, focus: function (event, ui) {}
+				],
+				focus: function (event, ui) {}
 			}).css("z-index", 1000).prev(".ui-dialog-titlebar").css("background","#266f80").css("color","#fff");
 		};
 
@@ -878,17 +878,20 @@
 
 			const checkStart = new Date($('#pop01_date01_START').val());
 			const checkEnd = new Date($('#pop01_date01_END').val());
+			const checkId = $('#pop01_txt01_USER_ID').val();
 
 			if (checkStart != '' && checkEnd != '') {
 				ids.forEach(item => {
+					console.log(item)
 					let itemStart = new Date(item.HOLIDAY_START);
 					let itemEnd = new Date(item.HOLIDAY_END);
+					let idCheck = (checkId == item.USER_ID);
 					let check = [
-						itemStart <= checkStart && checkEnd <= itemEnd,
-						itemStart <= checkStart && (checkStart <= itemEnd && itemEnd <= checkEnd),
-						checkStart <= itemStart && (itemStart <= checkEnd && checkEnd <= itemEnd),
-						(checkStart <= itemStart && checkStart <=checkEnd) && itemEnd <= checkEnd
-					]
+						idCheck && itemStart <= checkStart && checkEnd <= itemEnd,
+						idCheck && itemStart <= checkStart && (checkStart <= itemEnd && itemEnd <= checkEnd),
+						idCheck && checkStart <= itemStart && (itemStart <= checkEnd && checkEnd <= itemEnd),
+						idCheck && (checkStart <= itemStart && checkStart <= checkEnd) && itemEnd <= checkEnd,
+					];
 					if (check.indexOf(true) >= 0) {
 						console.log(check.indexOf(true));
 						toast("정보", "휴가기간 중복으로 확인해 주세요.(" + $('#pop01_date01_START').val() + "~" + $('#pop01_date01_END').val()+")", "info");
