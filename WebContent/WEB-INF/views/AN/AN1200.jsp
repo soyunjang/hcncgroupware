@@ -1,6 +1,35 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
+	<style>
+		input[type="date"] {
+			position: relative;
+			border-radius: 0;
+		}
+		input[type="date"]::-webkit-calendar-picker-indicator {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: transparent;
+			color: transparent;
+			cursor: pointer;
+			z-index: 1;
+		}
+		.search-wrap .sch-box {
+			flex-flow: nowrap;
+		}
+		.period-box {
+			display: flex;
+		}
+		.period-box span {
+			width: 40px;
+			line-height: 25px;
+			text-align: center;
+			display: inline-block;
+		}
+	</style>
 	<body>
 		<!-- .contents-wrap 컨텐츠영역 START -->
 		<div class="contents-wrap an1100-page">
@@ -24,10 +53,12 @@
 			<div class="search-zone">
 				<div class="search-wrap">
 					<div class="sch-box">
-						<dl>
+						<dl class="w500">
 							<dt>조회날짜</dt>
-							<dd>
+							<dd class="period-box">
 								<input type="date" id="txt01_DATE">
+								<span>~</span>
+								<input type="date" id="txt02_DATE">
 							</dd>
 						</dl>
 						<dl>
@@ -137,7 +168,8 @@
 			langHead = getLangCode("AN1200", 6, "${LANG}");
 			
 			document.getElementById('txt01_DATE').valueAsDate = new Date();
-			
+			document.getElementById('txt02_DATE').valueAsDate = new Date();
+
 			setGrid();
 			init(); //그리드 리사이징
 		});
@@ -160,18 +192,25 @@
 			}, 100);
 		}
 
-		window.onload = () => {
-			// holidayUseCount();
-		};
-
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 버튼
 		/* 검색 버튼 */
 		$("#btn01_SEARCH").on({
 			click: function(){
 				searchGridData();
-				// holidayUseCount();
 			}
 		});
+
+		$("#txt01_DATE").on("change", () => dateCheck());
+		$("#txt02_DATE").on("change", () => dateCheck());
+
+		function dateCheck() {
+			let startDate = new Date($("#txt01_DATE").val());
+			let endDate = new Date($("#txt02_DATE").val());
+
+			if (startDate > endDate) {
+				$("#txt02_DATE").val($("#txt01_DATE").val());
+			}
+		}
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: confirm
 		
@@ -179,32 +218,32 @@
 		/* jqGrid 셋팅 */
 		function setGrid(){
 			$('#table1').jqGrid({
-				mtype: 'POST'
-				, datatype: 'loacl'
-				, height : 240
-				, jsonReader: {
+				mtype: 'POST',
+				datatype: 'loacl',
+				height : 240,
+				jsonReader: {
 					repeatitems: false
-				}
-				, colNames: langHead
-				, colModel: [
-					{name: 'USER_NM'			, align: 'center'	, width: '8%'	, hidden: false}				
-					, {name: 'GRADE_CD'			, align: 'center' 	, width: '0%'	, hidden: true}									
-					, {name: 'GRADE_NM'			, align: 'center' 	, width: '5%'	, hidden: false}									
-					, {name: 'DEPT_CD'			, align: 'left'		, width: '0%'	, hidden: true}				
-					, {name: 'DEPT_NM'			, align: 'left'		, width: '8%'	, hidden: false}				
-					, {name: 'HOLIDAY_TYPE'		, align: 'center'	, width: '5%'	, hidden: false}				
-					, {name: 'HOLIDAY_CNT'		, align: 'center'	, width: '5%'	, hidden: false}				
-					, {name: 'HOLIDAY_START'	, align: 'center' 	, width: '8%'	, hidden: false}				
-					, {name: 'HOLIDAY_END'		, align: 'center'	, width: '8%'	, hidden: false}					
-					, {name: 'HOLIDAY_REASON'	, align: 'left'		, width: '15%'	, hidden: false}
-				]
-				, autowidth: false
-				, shrinkToFit: false
-				, rowNum : 1000
+				},
+				colNames: langHead,
+				colModel: [
+					{name: 'USER_NM'		, align: 'center'	, width: '8%'	, hidden: false},
+					{name: 'GRADE_CD'		, align: 'center' 	, width: '0%'	, hidden: true },
+					{name: 'GRADE_NM'		, align: 'center' 	, width: '5%'	, hidden: false},
+					{name: 'DEPT_CD'		, align: 'left'		, width: '0%'	, hidden: true },
+					{name: 'DEPT_NM'		, align: 'left'		, width: '8%'	, hidden: false},
+					{name: 'HOLIDAY_TYPE'	, align: 'center'	, width: '5%'	, hidden: false},
+					{name: 'HOLIDAY_CNT'	, align: 'center'	, width: '5%'	, hidden: false},
+					{name: 'HOLIDAY_START'	, align: 'center' 	, width: '8%'	, hidden: false},
+					{name: 'HOLIDAY_END'	, align: 'center'	, width: '8%'	, hidden: false},
+					{name: 'HOLIDAY_REASON'	, align: 'left'		, width: '15%'	, hidden: false},
+					{name: 'USER_ID'		, align: 'center'	, width: '8%'	, hidden: true }
+				],
+				autowidth: false,
+				shrinkToFit: false,
+				rowNum : 5000
 			});
 			
 			searchGridData();
-			// holidayUseCount();
 		};
 
 		$("#txt01_USER_NM").keypress((e) => {
@@ -217,50 +256,55 @@
 		/* Table 조회 */
 		function searchGridData(){
 			let searchParam = {
-					DATE: $("#txt01_DATE").val(),
+					DATE_START: $("#txt01_DATE").val(),
+					DATE_END: $("#txt02_DATE").val(),
 					DEPT: $("#sel01_DEPT").val(),
 					USE: $("#sel01_USE").val(),
 					USER_NM: $("#txt01_USER_NM").val()
 			};
 
-			getAjaxJsonData("/an1200/list", searchParam, "searchGridDataCallBack");
+			let url = "/an1200/list?"
+					.concat("dateStart=" + searchParam.DATE_START)
+					.concat("&dateEnd=" + searchParam.DATE_END)
+					.concat("&dept=" + searchParam.DEPT)
+					.concat("&use=" + searchParam.USE)
+					.concat("&userNm=" + searchParam.USER_NM)
+
+			getAjaxJsonData(url, "", "searchGridDataCallBack", "GET");
 		};
 		
 		function searchGridDataCallBack(data){
 			$("#table1").clearGridData();
 			$("#table1").jqGrid('setGridParam', {
-				datatype: 'local'
-				, data: data
+				datatype: 'local',
+				data: data
 			}).trigger("reloadGrid");
 
 			$("#table1_cnt").text(data.length);
 
-			let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
-			let total = parseInt($("#txt01_TOTAL").val())
-			let use = 0;
-			let unUse = 0;
-			rowData.forEach(data => {
-				if (data.HOLIDAY_CNT == "" || data.HOLIDAY_CNT == "0") {
-					unUse++;
-				} else {
-					use++;
+			let rowData = $("#table1").getRowData();
+			let setArray = new Set();
+			rowData.forEach(item => {
+				if (item.HOLIDAY_CNT != "") {
+					setArray.add(item.USER_ID);
 				}
 			});
-			console.log('searchGridDataCallBack rowData.length : ', rowData.length);
-			console.log('searchGridDataCallBack total : ', total);
-			console.log('searchGridDataCallBack use : ', use);
-			console.log('searchGridDataCallBack unUse : ', unUse);
 
-			if (use > 0 && unUse == 0) {
-				$("#txt01_USE").val(use);
-				$("#txt01_UNUSE").val(rowData.length - use);
-			} else if (use == 0 && unUse > 0) {
-				$("#txt01_USE").val(rowData.length - unUse);
-				$("#txt01_UNUSE").val(unUse);
+			const useYn = $("#sel01_USE").val();
+			let total = parseInt($("#txt01_TOTAL").val())
+			let use;
+			let unUse;
+			if (useYn === 'N') {
+				unUse = rowData.length
+				use = total - unUse
 			} else {
-				$("#txt01_USE").val(use);
-				$("#txt01_UNUSE").val(unUse);
+				use = setArray.size;
+				unUse = total - use
 			}
+
+			$("#txt01_USE").val(use);
+			$("#txt01_UNUSE").val(unUse);
+
 		};
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 유효성
