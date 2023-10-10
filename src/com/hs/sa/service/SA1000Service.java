@@ -3,7 +3,13 @@ package com.hs.sa.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hs.home.controller.UserInfo;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,19 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-import javax.servlet.http.HttpSession;
-
-import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.session.SqlSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 @Slf4j
 @Service("sa1000Service")
+@Transactional
 public class SA1000Service {
 
 	@Autowired
@@ -222,7 +218,6 @@ public class SA1000Service {
 	 * @param	HttpSession	session		로그인한 사용자ID
 	 * @return	Map 		rtnMap		추가 성공/실패 확인(0:성공/1:실패)
 	 */
-	@Transactional
 	public Map<String, Object> sa1000Update(Map<String, Object> param, HttpSession session) {
 
 		Map<String, Object> rtnMap = new HashMap<>();

@@ -1458,15 +1458,38 @@
 				}
 				, colNames: langDetail3
 				, colModel: [
-					{name: 'rowStatus'				, align:'center'	, width: '3%'	, editable: false}
-					, {name:'MANHOUR_ITEM'			, align: 'center'	, width: '8%'	, editable: false	, formatter: 'select' , edittype: 'select' , editoptions: {value: MANHOUR_ITEMSelect}}
-					, {name: 'MANHOUR_CNT'			, align: 'center'	, width: '5%'	, editable: true	, editrules: {number : true}}
-					, {name: 'MANHOUR_UNIT'			, align: 'center'	, width: '7%'	, editable: true	, formatter: 'select' , edittype: 'select' , editoptions: {value: MANHOUR_UNITSelect}}
-					, {name: 'MANHOUR_UNIT_PRICE'	, align: 'right'	, width: '10%'	, editable: true	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
-					, {name: 'MANHOUR_PRICE'		, align: 'right'	, width: '10%'	, editable: true	, formatter : "integer", formatoptions : {defaultValue : "", thousandsSeparator : ","}}
-					, {name: 'MANHOUR_MEMO'			, align: 'left'		, width: '20%'	, editable: true}
-					, {name: 'SALES_NUM'			, align: 'center'	, width: '0%'	, hidden: true}
-					, {name: 'REVISION'				, align: 'center'	, width: '0%'	, hidden: true}
+					{
+						name: 'rowStatus', align:'center', width: '3%', editable: false
+					},
+					{
+						name:'MANHOUR_ITEM', align: 'center', width: '8%', editable: false,
+						formatter: 'select' , edittype: 'select' , editoptions: {value: MANHOUR_ITEMSelect}
+					},
+					{
+						name: 'MANHOUR_CNT'			, align: 'center'	, width: '5%'	, editable: true,
+						formatter : "number", formatoptions: {decimalPlaces: 2}, editrules: {number : true}
+					},
+					{
+						name: 'MANHOUR_UNIT', align: 'center', width: '7%', editable: true,
+						formatter: 'select' , edittype: 'select' , editoptions: {value: MANHOUR_UNITSelect}
+					},
+					{
+						name: 'MANHOUR_UNIT_PRICE', align: 'right', width: '10%', editable: true,
+						formatter : "number", formatoptions : {decimalPlaces:0, defaultValue : "", thousandsSeparator : ","}
+					},
+					{
+						name: 'MANHOUR_PRICE', align: 'right', width: '10%', editable: true,
+						formatter : "number", formatoptions : {decimalPlaces:0, defaultValue : "", thousandsSeparator : ","}
+					},
+					{
+						name: 'MANHOUR_MEMO', align: 'left', width: '20%', editable: true
+					},
+					{
+						name: 'SALES_NUM', align: 'center', width: '0%', hidden: true
+					},
+					{
+						name: 'REVISION', align: 'center', width: '0%', hidden: true
+					}
 				]
 				, autowidth: true
 				, shrinkToFit: false
