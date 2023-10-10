@@ -87,6 +87,8 @@
 			if (window != top) {
 				top.location.href = location.href;
 			}
+
+			id.focus();
 		})();
 
 		/* ID 입력후 엔터키 이벤트 */
