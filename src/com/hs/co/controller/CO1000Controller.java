@@ -30,11 +30,6 @@ public class CO1000Controller {
 		return (UserInfo) session.getAttribute("User");
 	}
 
-	/**
-   	 * 메소드 설명 : 판매품의서관리 페이지로 이동
-   	 * -------------------------------------------------------------------
-   	 * @return	String 	result	판매품의서관리 페이지ID
-   	 */
 	@RequestMapping(value = "/co1000", method = RequestMethod.GET)
 	public String co1000() {
 		return "CO/CO1000";
