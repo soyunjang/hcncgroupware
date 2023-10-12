@@ -61,6 +61,11 @@
 	                            <h2 class="title1">연차현황 목록</h2>
 								<span id="table1_cnt">0</span>
 	                        </div>
+							<div class="btn-right-box">
+								<ul>
+									<li><a href="javascript:void(0);" id="btn01_EXCEL">엑셀</a></li>
+								</ul>
+							</div>
 	                    </div> 
 						<div class="table-wrap">
 							<table id="table1"></table>
@@ -110,18 +115,9 @@
 			
 			setGrid();
 			init(); //그리드 리사이징
-
-            console.log(langHead);
 		});
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 버튼
-		/* 초기화 버튼 */
-		$("#btn01_RESET").on({
-			click: function() {
-				reset();
-			}
-		});
-
 		/* 검색 버튼 */
 		$("#btn01_SEARCH").on({
 			click: function(){
@@ -133,6 +129,13 @@
 
 		$("#txt01_USER_NM").keypress((e) => {
 			if(e.key === "Enter") searchGridData();
+		});
+
+		/* 엑셀 버튼 */
+		$("#btn01_EXCEL").on({
+			click: function(){
+				exportExcel("table1", "당해연도 연차현황");
+			}
 		});
 		
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: confirm
@@ -200,9 +203,9 @@
 		/* Table 조회 */
 		function searchGridData(){
 			let searchParam = {
-					YEAR: $("#txt01_YEAR").val()
-					, DEPT: $("#sel01_DEPT").val()
-					, USER_NM: $("#txt01_USER_NM").val()
+				YEAR: $("#txt01_YEAR").val(),
+				DEPT: $("#sel01_DEPT").val(),
+				USER_NM: $("#txt01_USER_NM").val()
 			};
 			
 			getAjaxJsonData("an1100Sel", searchParam, "searchGridDataCallBack");

@@ -122,6 +122,11 @@
 	                            <h2 class="title1">휴가현황 목록</h2>
 								<span id="table1_cnt">0</span>
 	                        </div>
+							<div class="btn-right-box">
+								<ul>
+									<li><a href="javascript:void(0);" id="btn01_EXCEL">엑셀</a></li>
+								</ul>
+							</div>
 	                    </div> 
 						<div class="table-wrap">
 							<table id="table1"></table>
@@ -177,16 +182,13 @@
 		function holidayUseCount() {
 			setTimeout(() => {
 				let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
-				console.log('holidayUseCount rowData : ', rowData);
 				let total = parseInt($("#txt01_TOTAL").val())
 				let count = 0;
 				rowData.forEach(data => {
-					console.log(data);
 					if (data.HOLIDAY_CNT != "") {
 						count++;
 					}
 				});
-				console.log('holidayUseCount count : ', count);
 				$("#txt01_USE").val(count);
 				$("#txt01_UNUSE").val(total - count);
 			}, 100);
@@ -197,6 +199,13 @@
 		$("#btn01_SEARCH").on({
 			click: function(){
 				searchGridData();
+			}
+		});
+
+		/* 엑셀 버튼 */
+		$("#btn01_EXCEL").on({
+			click: function(){
+				exportExcel("table1", "날짜별 휴가현황");
 			}
 		});
 
