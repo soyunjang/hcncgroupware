@@ -99,9 +99,12 @@
 			<div class="row row-1">
 				<div class="col col-1 wp100">
 					<section>
-						<div class="title-wrap"></div>
+						<div class="title-wrap">
+							<div class="title-zone">
+								<h2 class="title1"></h2>
+							</div>
+						</div>
 						<iframe id="pdfIframe"></iframe>
-<%--						<iframe id="pdfIframe" src="/an1300/file/2023-09-20-360782#toolbar=0&navpanes=0&scrollbar=0"></iframe>--%>
 					</section>
 				</div>
 			</div>
@@ -109,7 +112,6 @@
 		</div>
 		<!-- .contents-wrap 컨텐츠영역 END -->
 	</body>
-	<script src="//mozilla.github.io/pdf.js/build/pdf.js"></script>
 	<script type="text/javascript">
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 공통코드
 		/* 공통코드_다국어 */
@@ -117,6 +119,7 @@
 		const txt01_FILE = document.querySelector('#txt01_FILE');
 		const txt01_FILE_PATH = document.querySelector('#txt01_FILE_PATH');
 		const pdfIframe = document.querySelector("#pdfIframe");
+		const titleWrap = document.querySelector(".title1")
 		getAjaxJsonData("/an1300/files", "", "fileListCallBack", "GET")
 
 		const userDept = '${User.DEPT_CD}'
@@ -213,10 +216,13 @@
 			if (data.isempty) {
 				return false;
 			}
+
 			let src = "an1300/file/"
 					.concat(data.fileChangeName)
 					.concat("#toolbar=0&navpanes=0&scrollbar=0");
 			pdfIframe.setAttribute("src", src);
+
+			titleWrap.innerText = data.fileOriginalName
 		}
 	</script>
 </html>
