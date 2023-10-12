@@ -36,6 +36,14 @@
 	#txt01_FILE_PATH {
 		cursor: pointer;
 	}
+	#pdfIframe {
+		width: 100%;
+		height: 100vh;
+	}
+	.pdfObjectTag {
+		width: 100%;
+		height: 100vh;
+	}
 </style>
 	<body>
 		<!-- .contents-wrap 컨텐츠영역 START -->
@@ -92,7 +100,8 @@
 				<div class="col col-1 wp100">
 					<section>
 						<div class="title-wrap"></div>
-						<canvas id="pdfCanvas"></canvas>
+						<iframe id="pdfIframe"></iframe>
+<%--						<iframe id="pdfIframe" src="/an1300/file/2023-09-20-360782#toolbar=0&navpanes=0&scrollbar=0"></iframe>--%>
 					</section>
 				</div>
 			</div>
@@ -107,6 +116,7 @@
 		let langHead;
 		const txt01_FILE = document.querySelector('#txt01_FILE');
 		const txt01_FILE_PATH = document.querySelector('#txt01_FILE_PATH');
+		const pdfIframe = document.querySelector("#pdfIframe");
 		getAjaxJsonData("/an1300/files", "", "fileListCallBack", "GET")
 
 		const userDept = '${User.DEPT_CD}'
@@ -131,7 +141,7 @@
 		$("#sel01_FILE").on('change', () => {
 			let num = $("#sel01_FILE").val();
 			if (num > 0) {
-				getAjaxJsonData("/an1300/file?num="+num, "", "pdfToCanvas", "GET");
+				getAjaxJsonData("/an1300/file?num="+num, "", "pdfFileToIframe", "GET");
 			}
 		});
 
@@ -195,72 +205,18 @@
 			});
 
 			if (datas.length > 0) {
-				getAjaxJsonData("/an1300/file", "", "pdfToCanvas", "GET");
+				getAjaxJsonData("/an1300/file", "", "pdfFileToIframe", "GET");
 			}
 		}
 
-		/**
-		 * pdf 파일을 이미지로 변경하여 캔버스로 보여주는 코드
-		 */
-		function pdfToCanvas(data) {
+		function pdfFileToIframe(data) {
 			if (data.isempty) {
 				return false;
 			}
-
-			// PDF -> CANVAS START
-			const PDF_CANVAS = document.getElementById("pdfCanvas");
-			const CMAP_URL = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.5.207/cmaps/';
-
-			// PDF.JS (pdf to image convertor)
-			let pdfJsLib = window['pdfjs-dist/build/pdf'];
-
-			pdfJsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
-
-			function pdfToImg() {
-				let filePath = "/an1300/file/";
-				let fileName = data.fileChangeName.substring(0, data.fileChangeName.indexOf("."))
-				let pdfUrl = filePath + fileName;
-
-				pdfRender(pdfUrl, PDF_CANVAS);
-			}
-
-			function pdfRender(url, canvas) {
-				let loadingTask = pdfJsLib.getDocument({
-					cMapPacked: true,
-					disableFontFace: true,
-					cMapUrl: CMAP_URL,
-					url: url
-				});
-
-				loadingTask.promise.then(function (pdf) {
-					// Fetch the first page
-					let pageNumber = 1;
-					pdf.getPage(pageNumber).then(function (page) {
-
-						let scale = 3;
-						let viewport = page.getViewport({scale: scale});
-
-						// Prepare canvas using PDF page dimensions
-						let context = canvas.getContext('2d');
-						canvas.width = viewport.width;
-						canvas.height = viewport.height;
-
-						// Render PDF page into canvas context
-						let renderContext = {
-							canvasContext: context,
-							viewport: viewport
-						};
-						let renderTask = page.render(renderContext);
-						renderTask.promise.then(function () {
-						});
-					});
-				}, function (reason) {
-					console.error(reason);
-				});
-			}
-
-			pdfToImg();
-			// PDF -> CANVAS END
+			let src = "an1300/file/"
+					.concat(data.fileChangeName)
+					.concat("#toolbar=0&navpanes=0&scrollbar=0");
+			pdfIframe.setAttribute("src", src);
 		}
 	</script>
 </html>
