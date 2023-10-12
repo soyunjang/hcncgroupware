@@ -110,6 +110,8 @@
 			
 			setGrid();
 			init(); //그리드 리사이징
+
+            console.log(langHead);
 		});
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 버튼
@@ -139,39 +141,41 @@
 		/* jqGrid 셋팅 */
 		function setGrid(){
 			$('#table1').jqGrid({
-				mtype: 'POST'
-				, datatype: 'loacl'
-				, height : 240
-				, jsonReader: {
+				mtype: 'POST',
+				datatype: 'loacl',
+				height : 240,
+				jsonReader: {
 					repeatitems: false
-				}
-				, colNames: langHead
-				, colModel: [
-					{name: 'USER_NM'			, align: 'center'	, width: '10%'	, hidden: false}				
-					, {name: 'GRADE_CD'			, align: 'center' 	, width: '10%'	, hidden: true}									
-					, {name: 'GRADE_NM'			, align: 'center' 	, width: '10%'	, hidden: false}									
-					, {name: 'ENTER_DT'			, align: 'center'	, width: '10%'	, hidden: false}				
-					, {name: 'HOLIDAY_TOTAL'	, align: 'center'	, width: '10%'	, hidden: false}				
-					, {name: 'HOLIDAY_USE'		, align: 'center'	, width: '10%'	, hidden: false}				
-					, {name: 'HOLIDAY_REMAIN'	, align: 'center' 	, width: '10%'	, hidden: false}				
-					, {name: 'HOLIDAY_DEDUCT'	, align: 'center'	, width: '10%'	, hidden: false}					
-					, {name: 'JANUARY'			, align: 'center'	, width: '5%'	, hidden: false}
-					, {name: 'FEBRUARY'			, align: 'center'	, width: '5%'	, hidden: false}
-					, {name: 'MARCH'			, align: 'center'	, width: '5%'	, hidden: false}
-					, {name: 'APRIL'			, align: 'center'	, width: '5%'	, hidden: false}
-					, {name: 'MAY'				, align: 'center'	, width: '5%'	, hidden: false}
-					, {name: 'JUNE'				, align: 'center'	, width: '5%'	, hidden: false , formatter : "integer"}
-					, {name: 'JULY'				, align: 'center'	, width: '5%'	, hidden: false}
-					, {name: 'AUGUST'			, align: 'center'	, width: '5%'	, hidden: false}
-					, {name: 'SEPTEMBER'		, align: 'center'	, width: '5%'	, hidden: false}
-					, {name: 'OCTOBER'			, align: 'center'	, width: '5%'	, hidden: false}
-					, {name: 'NOVEMBER'			, align: 'center'	, width: '5%'	, hidden: false}
-					, {name: 'DECEMBER'			, align: 'center'	, width: '5%'	, hidden: false}
-				]
-				, autowidth: false
-				, shrinkToFit: false
-				, rowNum : 1000
-				, loadComplete : function() {
+				},
+                colNames: langHead,
+				colModel: [
+					{name: 'USER_NM'		, align: 'center'	, width: '10%'	, hidden: false},
+					{name: 'GRADE_CD'		, align: 'center' 	, width: '0%'	, hidden: true },
+					{name: 'GRADE_NM'		, align: 'center' 	, width: '5%'	, hidden: false},
+					{name: 'ENTER_DT'		, align: 'center'	, width: '10%'	, hidden: false},
+                    {name: 'USE_START'   	, align: 'center'	, width: '10%'	, hidden: false},
+                    {name: 'USE_END'       	, align: 'center'	, width: '10%'	, hidden: false},
+					{name: 'HOLIDAY_TOTAL'	, align: 'center'	, width: '5%'	, hidden: false},
+					{name: 'HOLIDAY_USE'	, align: 'center'	, width: '5%'	, hidden: false},
+					{name: 'HOLIDAY_REMAIN'	, align: 'center' 	, width: '5%'	, hidden: false},
+					{name: 'HOLIDAY_DEDUCT'	, align: 'center'	, width: '5%'	, hidden: false},
+					{name: 'JANUARY'		, align: 'center'	, width: '5%'	, hidden: false},
+					{name: 'FEBRUARY'		, align: 'center'	, width: '5%'	, hidden: false},
+					{name: 'MARCH'			, align: 'center'	, width: '5%'	, hidden: false},
+					{name: 'APRIL'			, align: 'center'	, width: '5%'	, hidden: false},
+					{name: 'MAY'			, align: 'center'	, width: '5%'	, hidden: false},
+					{name: 'JUNE'			, align: 'center'	, width: '5%'	, hidden: false},
+					{name: 'JULY'			, align: 'center'	, width: '5%'	, hidden: false},
+					{name: 'AUGUST'			, align: 'center'	, width: '5%'	, hidden: false},
+					{name: 'SEPTEMBER'		, align: 'center'	, width: '5%'	, hidden: false},
+					{name: 'OCTOBER'		, align: 'center'	, width: '5%'	, hidden: false},
+					{name: 'NOVEMBER'		, align: 'center'	, width: '5%'	, hidden: false},
+					{name: 'DECEMBER'		, align: 'center'	, width: '5%'	, hidden: false}
+				],
+				autowidth: false,
+                shrinkToFit: false,
+                rowNum : 1000,
+                loadComplete : function() {
 					// 그리드 데이터의 ID 가져오기
 					let ids = $('#table1').jqGrid('getDataIDs');
 					     
