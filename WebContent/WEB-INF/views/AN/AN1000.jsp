@@ -1094,12 +1094,20 @@
 
 			const holidayInfoText1 = document.querySelector('#holiday-info-text1');
 			const holidayInfoText2 = document.querySelector('#holiday-info-text2');
-			holidayInfoText1.innerText = "※ " + userName + "님의 미사용 연차는 갱신 시 이월되지 않으니 기한 내에 모두 사용하여 주십시오.";
-			holidayInfoText2.innerText =
-					"(사용기한: " + startDate.getFullYear() + "." + (startDate.getMonth() < 10 ? "0" + startDate.getMonth() : startDate.getMonth()) + "." +
-					(startDate.getDate() < 10 ? "0" + startDate.getDate() : startDate.getDate()) + "~"
-					+ endDate.getFullYear() + "." + (endDate.getMonth() < 10 ? "0" + endDate.getMonth() : endDate.getMonth())  + "."
-					+ (endDate.getDate() < 10 ? "0" + endDate.getDate() : endDate.getDate()) + ", 입사일 기준으로 갱신)";
+			holidayInfoText1.innerText = ""
+					.concat(" ※ ")
+					.concat(userName)
+					.concat("님의 미사용 연차는 갱신 시 이월되지 않으니 기한 내에 모두 사용하여 주십시오.");
+			holidayInfoText2.innerText = ""
+					.concat("(사용기한: ")
+					.concat(startDate.getFullYear())
+					.concat(".").concat(startDate.getMonth() < 10 ? "0" + startDate.getMonth() : startDate.getMonth())
+					.concat(".").concat((startDate.getDate() < 10 ? "0" + startDate.getDate() : startDate.getDate()))
+					.concat("~")
+					.concat(endDate.getFullYear())
+					.concat(".").concat(endDate.getMonth() < 10 ? "0" + endDate.getMonth() : endDate.getMonth())
+					.concat(".").concat((endDate.getDate() < 10 ? "0" + endDate.getDate() : endDate.getDate()))
+					.concat(", 입사일 기준으로 갱신)");
 		}
 	</script>
 </html>
