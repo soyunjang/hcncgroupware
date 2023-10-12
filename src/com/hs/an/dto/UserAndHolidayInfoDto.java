@@ -14,7 +14,7 @@ public class UserAndHolidayInfoDto {
     private float HOLIDAY_USE;
     private float HOLIDAY_REMAIN;
     private Float HOLIDAY_DEDUCT;
-    private final String UPT_ID = "admin";
+    private final String UPT_ID = "SYSTEM";
 
     public UserAndHolidayInfoDto(String USER_ID, float HOLIDAY_TOTAL, float HOLIDAY_USE, float HOLIDAY_REMAIN, float HOLIDAY_DEDUCT) {
         this.USER_ID = USER_ID;
