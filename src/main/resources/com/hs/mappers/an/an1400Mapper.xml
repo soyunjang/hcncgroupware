@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="an1400Mapper">
+
+	<insert id="an1400Save" parameterType="publicOfficeRequestDto">
+		INSERT INTO
+		<choose>
+			<when test='type.equals("public")'>
+				HOLIDAY_PUBLIC (PUBLIC_DAY, REG_ID, REG_DT)
+			</when>
+			<otherwise>
+				HOLIDAY_OFFICE (OFFICE_HOLIDAY, REG_ID, REG_DT)
+			</otherwise>
+		</choose>
+		VALUES (#{date}, #{user.USER_ID}, GETDATE())
+	</insert>
+
+	<delete id="an1400Delete" parameterType="publicOfficeRequestDto">
+		DELETE FROM
+		<choose>
+			<when test='type.equals("public")'>
+				HOLIDAY_PUBLIC WHERE PUBLIC_DAY LIKE #{date} AND PUBLIC_NUM LIKE #{number}
+			</when>
+			<otherwise>
+				HOLIDAY_OFFICE WHERE OFFICE_HOLIDAY LIKE #{date} AND OFFICE_NUM LIKE #{number}
+			</otherwise>
+		</choose>
+	</delete>
+
+	<update id="an1400Update" parameterType="publicOfficeRequestDto">
+		UPDATE
+		<choose>
+			<when test='type.equals("public")'>
+				HOLIDAY_PUBLIC SET PUBLIC_DAY = #{date},
+			</when>
+			<otherwise>
+				HOLIDAY_OFFICE SET OFFICE_HOLIDAY = #{date},
+			</otherwise>
+		</choose>
+		UPT_ID = #{user.USER_ID}, UPT_DT = GETDATE()
+		<choose>
+			<when test='type.equals("public")'>
+				WHERE PUBLIC_NUM LIKE #{number}
+			</when>
+			<otherwise>
+				WHERE OFFICE_NUM LIKE #{number}
+			</otherwise>
+		</choose>
+	</update>
+
+	<select id="an1400years" resultType="map">
+		SELECT YEAR(PUBLIC_DAY) AS YEAR FROM HOLIDAY_PUBLIC HP GROUP BY PUBLIC_DAY
+		UNION
+		SELECT YEAR(OFFICE_HOLIDAY) AS YEAR FROM HOLIDAY_OFFICE HP GROUP BY OFFICE_HOLIDAY
+	</select>
+
+	<resultMap id="publicOfficeResponse" type="publicOfficeResponseDto">
+		<id column="NUMBER" property="number"/>
+		<result column="YEAR" property="year"/>
+		<result column="TYPE" property="type"/>
+		<result column="DATE" property="date"/>
+		<result column="WEEKDAY" property="weekday"/>
+		<result column="REG_DT" property="regDt"/>
+	</resultMap>
+
+	<select id="an1400Dates" parameterType="map" resultMap="publicOfficeResponse">
+		SELECT * FROM
+			(SELECT HP.PUBLIC_NUM AS NUMBER,
+			     	YEAR(HP.PUBLIC_DAY)  AS YEAR,
+			        'public' AS TYPE,
+				    HP.PUBLIC_DAY AS DATE,
+  				    DATENAME(WEEKDAY, HP.PUBLIC_DAY) AS WEEKDAY,
+				    CONVERT(CHAR(10), HP.REG_DT, 23) AS REG_DT
+			 FROM HOLIDAY_PUBLIC HP
+			 UNION
+			 SELECT HO.OFFICE_NUM AS NUMBER,
+			     	YEAR(HO.OFFICE_HOLIDAY) AS YEAR,
+			    	'office' AS TYPE,
+					HO.OFFICE_HOLIDAY AS DATE,
+					DATENAME(WEEKDAY, HO.OFFICE_HOLIDAY) AS WEEKDAY,
+					CONVERT(CHAR(10), HO.REG_DT, 23) AS REG_DT
+			 FROM HOLIDAY_OFFICE HO) UN
+		<where>
+			<if test='year != null and !year.equals("") and !year.equals("All")'>
+				AND YEAR(UN.DATE) LIKE #{year}
+			</if>
+			<if test='type != null and !type.equals("") and !type.equals("All")'>
+				AND type LIKE #{type}
+			</if>
+		</where>
+		ORDER BY DATE ASC;
+	</select>
+
+</mapper>

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="an1000Mapper">
+	<select id="an1000InfoSel" parameterType="map" resultType="map">
+		SELECT H.USER_ID,
+			   H.HOLIDAY_TOTAL,
+			   H.HOLIDAY_USE,
+			   H.HOLIDAY_REMAIN,
+			   H.HOLIDAY_DEDUCT,
+			   H.REG_DT,
+			   U.ENTER_DT
+		FROM HOLIDAY_INFO H LEFT JOIN USER_INFO U ON H.USER_ID = U.USER_ID
+		WHERE H.USER_ID LIKE #{USER_ID}
+		  <choose>
+			  <when test='HOLIDAY_START != Null and !HOLIDAY_START.equals("")'>
+				  AND #{HOLIDAY_START} BETWEEN USE_START AND USE_END
+				  AND #{HOLIDAY_END} BETWEEN USE_START AND USE_END
+			  </when>
+			  <otherwise>
+				  AND USE_END LIKE (SELECT MAX(USE_END) FROM HOLIDAY_INFO WHERE USER_ID LIKE #{USER_ID})
+			  </otherwise>
+		  </choose>
+
+
+	</select>
+
+	<select id="an1000InfoSelUsers" parameterType="map" resultType="map">
+		SELECT A.USER_ID,
+			   A.HOLIDAY_TOTAL,
+			   A.HOLIDAY_USE,
+			   A.HOLIDAY_REMAIN,
+			   A.HOLIDAY_DEDUCT,
+			   A.REG_DT
+		  FROM HOLIDAY_INFO A
+			   LEFT OUTER JOIN USER_INFO B ON A.USER_ID = B.USER_ID
+		 WHERE B.USER_NM LIKE '%' + #{USER_NM} + '%'
+	</select>
+
+	<select id="an1000Sel" parameterType="map" resultType="map">
+		SELECT H.USER_ID,
+			   U.USER_NM,
+			   U.GRADE_CD,
+			   (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD LIKE 'ROLE' AND SYS_ITEM_CD LIKE U.GRADE_CD) AS GRADE_NM,
+			   (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD LIKE 'HOLIDAY' AND SYS_ITEM_CD LIKE H.HOLIDAY_TYPE) AS HOLIDAY_TYPE,
+			   H.HOLIDAY_CNT,
+			   H.HOLIDAY_START,
+			   H.HOLIDAY_END,
+			   H.HOLIDAY_REASON,
+			   H.TASK,
+			   H.ACQUIRER,
+			   H.EMERGENCY
+		FROM HOLIDAY_PERSON H
+				 LEFT OUTER JOIN USER_INFO U ON H.USER_ID = U.USER_ID
+		WHERE H.USE_YN = 'Y'
+		    <choose>
+				<when test='USER_ID != Null and !USER_ID.equals("")'>
+					AND H.USER_ID = #{USER_ID}
+				</when>
+		    	<otherwise>
+					AND U.USER_NM LIKE '%' + #{USER_NM} + '%'
+					AND CONVERT(DATE, H.HOLIDAY_START) BETWEEN #{START} AND #{END}
+		  			<if test='TYPE != Null and !TYPE.equals("")'>
+						AND H.HOLIDAY_TYPE LIKE #{TYPE}
+					</if>
+				</otherwise>
+			</choose>
+		ORDER BY H.HOLIDAY_START DESC
+	</select>
+
+	<insert id="an1000Save" parameterType="map">
+		INSERT INTO HOLIDAY_PERSON (USER_ID, HOLIDAY_TYPE, HOLIDAY_CNT,
+		                            HOLIDAY_START, HOLIDAY_END, HOLIDAY_REASON,
+		                            TASK, ACQUIRER, EMERGENCY,
+		                            REG_ID, REG_DT,USE_YN
+		                            )
+							VALUES (#{USER_ID}, #{HOLIDAY_TYPE}, #{HOLIDAY_CNT},
+							        #{HOLIDAY_START}, #{HOLIDAY_END}, #{HOLIDAY_REASON},
+							        #{TASK}, #{ACQUIRER}, #{EMERGENCY},
+							        #{REG_ID}, GETDATE(), 'Y')
+	</insert>
+
+	<update id="an1000Update" parameterType="map">
+		UPDATE HOLIDAY_PERSON SET UPT_DT = GETDATE(), UPT_ID = #{UPT_ID}, USE_YN = 'N'
+		                      WHERE	USER_ID = #{USER_ID} AND
+		                          	HOLIDAY_START = #{HOLIDAY_START} AND
+		                          	HOLIDAY_END = #{HOLIDAY_END} AND
+		                          	HOLIDAY_CNT = #{HOLIDAY_CNT} AND
+		                          	HOLIDAY_REASON = #{HOLIDAY_REASON} AND
+		                          	HOLIDAY_TYPE = #{HOLIDAY_TYPE} AND
+									USE_YN = 'Y'
+	</update>
+
+	<select id="an1000HolidayOfficeByUser" parameterType="String" resultType="map">
+		SELECT HO.OFFICE_HOLIDAY, COUNT(HP.HOLIDAY_START) AS COUNT
+		FROM HOLIDAY_OFFICE HO LEFT JOIN HOLIDAY_PERSON HP
+		ON(HO.OFFICE_HOLIDAY = HP.HOLIDAY_START
+		    AND HO.OFFICE_HOLIDAY = HP.HOLIDAY_END
+		    AND HP.USE_YN LIKE 'Y'
+		    AND HP.USER_ID LIKE #{USER_ID}
+		    AND HP.HOLIDAY_TYPE IN ('OFFICE01', 'OFFICE02'))
+		WHERE DATEPART(MONTH, CONVERT(DATE, HO.OFFICE_HOLIDAY)) = DATEPART(MONTH, CONVERT(DATE, GETDATE()))
+		GROUP BY HO.OFFICE_HOLIDAY
+	</select>
+
+	<resultMap id="holidayInfo" type="holidayInfoDto">
+		<result property="user_id" column="USER_ID"/>
+		<result property="use_start" column="USE_START"/>
+		<result property="use_end" column="USE_END"/>
+		<result property="holiday_total" column="HOLIDAY_TOTAL"/>
+		<result property="holiday_use" column="HOLIDAY_USE"/>
+		<result property="holiday_remain" column="HOLIDAY_REMAIN"/>
+		<result property="holiday_deduct" column="HOLIDAY_DEDUCT"/>
+	</resultMap>
+
+	<select id="an1000HolidayInfoSel" parameterType="map" resultMap="holidayInfo">
+		SELECT USER_ID, USE_START, USE_END, HOLIDAY_TOTAL, HOLIDAY_USE, HOLIDAY_REMAIN, HOLIDAY_DEDUCT
+		FROM HOLIDAY_INFO
+		WHERE USER_ID = #{USER_ID}
+		  AND #{HOLIDAY_START} BETWEEN USE_START AND USE_END
+		  AND #{HOLIDAY_END} BETWEEN USE_START AND USE_END
+	</select>
+
+	<update id="an1000HolidayInfoUpdate" parameterType="holidayInfoDto">
+		UPDATE HOLIDAY_INFO SET HOLIDAY_TOTAL = #{holiday_total},
+		                        HOLIDAY_USE = #{holiday_use},
+		                        HOLIDAY_REMAIN = #{holiday_remain},
+		                        HOLIDAY_DEDUCT = #{holiday_deduct}
+		WHERE USER_ID = #{user_id}
+		  AND #{holiday_start} BETWEEN USE_START AND USE_END
+		  AND #{holiday_end} BETWEEN USE_START AND USE_END
+	</update>
+
+	<select id="an1000PrintByUser" parameterType="an1000PrintDto" resultType="map">
+		SELECT U.USER_ID,
+			   U.USER_NUM,
+			   U.USER_NM,
+			   (SELECT D1.DEPT_NAME FROM DEPT_INFO D1 WHERE DEPT_ID = (SELECT D.DEPT_PID FROM DEPT_INFO D WHERE D.DEPT_ID = U.DEPT_CD)) AS DEPT_NM,
+			   (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD LIKE 'ROLE' AND SYS_ITEM_CD LIKE U.GRADE_CD) AS GRADE_NM,
+			   H.TASK,
+			   H.ACQUIRER,
+			   (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD = 'HOLIDAY' AND SYS_ITEM_NAME LIKE #{holidayType}) AS HOLIDAY_TYPE,
+			   H.HOLIDAY_START,
+			   H.HOLIDAY_END,
+			   H.HOLIDAY_CNT,
+			   H.HOLIDAY_REASON,
+			   H.ACQUIRER,
+			   H.EMERGENCY,
+			   H.REG_DT
+		FROM USER_INFO U INNER JOIN HOLIDAY_PERSON H ON U.USER_ID = H.USER_ID
+		WHERE U.USER_ID = #{userId}
+		  AND H.USE_YN = 'Y'
+		  AND (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_CLASS_CD = 'HOLIDAY' AND SYS_ITEM_CD LIKE H.HOLIDAY_TYPE) LIKE #{holidayType}
+		  AND H.HOLIDAY_START = #{holidayStart}
+		  AND H.HOLIDAY_END = #{holidayEnd}
+		  AND H.HOLIDAY_CNT = #{holidayCnt}
+		  AND H.HOLIDAY_REASON = #{holidayReason}
+	</select>
+
+	<select id="an1000PublicHolidaySel" parameterType="map" resultType="string">
+		SELECT PUBLIC_DAY FROM HOLIDAY_PUBLIC WHERE PUBLIC_DAY &gt;= #{startDate}
+		<if test='endDate != Null and !endDate.equals("")'>
+		AND PUBLIC_DAY &lt;= #{endDate}
+		</if>
+		ORDER BY PUBLIC_DAY
+	</select>
+
+	<insert id="an1000PublicHolidaySave" parameterType="java.util.List">
+		INSERT INTO HOLIDAY_PUBLIC (PUBLIC_NAME, PUBLIC_DAY, REG_ID, REG_DT) VALUES
+		<foreach collection="list" item="item" separator=", ">
+			(#{item.publicName}, #{item.publicDay}, 'SYSTEM', GETDATE())
+		</foreach>
+	</insert>
+
+	<select id="an1000SelUser" parameterType="map" resultType="map">
+		SELECT A.USER_ID,
+			   A.USER_NM,
+			   A.PDEPT_CD,
+			   (SELECT dbo.FN_COMMON_NM('DEPT', A.PDEPT_CD)) AS PDEPT_NM,
+			   A.DEPT_CD,
+			   (SELECT dbo.FN_COMMON_NM('DEPT', A.DEPT_CD)) AS DEPT_NM,
+			   A.GRADE_CD,
+			   (SELECT dbo.FN_COMMON_NM('ROLE', A.GRADE_CD)) AS GRADE_NM,
+			   A.ENTER_DT
+		  FROM USER_INFO A
+		 WHERE A.USER_NM LIKE '%' + #{USER_NM} + '%'
+		 ORDER BY A.USER_NM;
+	</select>
+
+	<select id ="an1000GetHolidayAfterSave" parameterType="map" resultType="map">
+		SELECT U.GRADE_CD,
+			   (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_ITEM_CD LIKE U.GRADE_CD) AS GRADE_NM,
+			   H.HOLIDAY_CNT,
+			   H.HOLIDAY_START,
+			   H.HOLIDAY_END,
+			   H.HOLIDAY_REASON,
+			   (SELECT SYS_ITEM_NAME FROM SYSCODE_DETAIL WHERE SYS_ITEM_CD LIKE H.HOLIDAY_TYPE) AS HOLIDAY_TYPE,
+			   U.USER_NM,
+			   H.USER_ID
+		FROM HOLIDAY_PERSON H LEFT JOIN USER_INFO U ON H.USER_ID = U.USER_ID
+		WHERE H.USER_ID LIKE #{USER_ID}
+		  AND H.HOLIDAY_TYPE LIKE #{HOLIDAY_TYPE}
+		  AND H.HOLIDAY_START LIKE #{HOLIDAY_START}
+		  AND H.HOLIDAY_END LIKE #{HOLIDAY_END}
+		  AND H.HOLIDAY_REASON LIKE #{HOLIDAY_REASON}
+		  AND H.USE_YN LIKE 'Y'
+	</select>
+
+</mapper>

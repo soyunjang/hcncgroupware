@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="oneTimeMapper">
+	<select id="testSelect" resultType="map">
+		SELECT * FROM HOLIDAY_PERSON WHERE HOLIDAY_START LIKE '2023-09-27' AND REG_ID LIKE 'SYSTEM' AND USE_YN IS NULL
+	</select>
+
+	<update id="testUpdate" parameterType="String">
+		UPDATE HOLIDAY_PERSON
+		SET UPT_DT = GETDATE(), UPT_ID = 'admin', USE_YN = 'N'
+		WHERE USER_ID = #{USER_ID}
+		  AND HOLIDAY_START = '2023-09-27'
+		  AND HOLIDAY_END = '2023-09-27'
+		  AND HOLIDAY_CNT ='1'
+		  AND HOLIDAY_REASON = '회사 휴무'
+		  AND HOLIDAY_TYPE = 'OFFICE01'
+		  AND USE_YN IS NULL
+	</update>
+
+	<select id="testUser" resultType="userInfo">
+		SELECT U.USER_ID, U.ENTER_DT
+		FROM USER_INFO U LEFT JOIN HOLIDAY_INFO H ON U.USER_ID = H.USER_ID
+		WHERE U.USE_YN LIKE 'Y' AND H.USE_START IS NULL
+	</select>
+
+	<update id="holidayInfoStartEndUpdate" parameterType="map">
+		UPDATE HOLIDAY_INFO
+		SET USE_START = #{USE_START},
+			USE_END   = #{USE_END}
+		WHERE USER_ID LIKE #{USER_ID};
+	</update>
+
+</mapper>

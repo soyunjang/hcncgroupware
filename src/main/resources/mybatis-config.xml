@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <typeAliases>
+
+        <typeAlias type="com.hs.home.controller.UserInfo" alias="userInfo"/>
+        <typeAlias type="com.hs.an.dto.HolidayInfoInsertDto" alias="holidayInfoInsertDto"/>
+        <typeAlias type="com.hs.an.dto.UserAndHolidayInfoDto" alias="userAndHolidayInfoDto"/>
+        <typeAlias type="com.hs.an.dto.HolidayOfficeNotSubmitDto" alias="holidayOfficeNotSubmitDto"/>
+        <typeAlias type="com.hs.an.dto.HolidayInfoDto" alias="holidayInfoDto"/>
+        <typeAlias type="com.hs.an.dto.An1000PrintDto" alias="an1000PrintDto"/>
+        <typeAlias type="com.hs.an.dto.An1200Dto" alias="an1200Dto"/>
+        <typeAlias type="com.hs.an.dto.FileInfoDto" alias="fileInfoDto"/>
+        <typeAlias type="com.hs.an.dto.PublicOfficeRequestDto" alias="publicOfficeRequestDto"/>
+        <typeAlias type="com.hs.an.dto.PublicOfficeResponseDto" alias="publicOfficeResponseDto"/>
+
+    </typeAliases>
+</configuration>
