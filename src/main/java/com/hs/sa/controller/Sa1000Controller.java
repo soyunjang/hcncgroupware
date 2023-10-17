@@ -248,7 +248,7 @@ public class Sa1000Controller {
 		model.addAttribute("sa1006List", sa1000Service.selectSA1006List(param));
 		model.addAttribute("sa1007List", sa1000Service.selectSA1007List(param));
 
-		return "SA/SA1000Print";
+		return "SA1000Print";
 	}
 
 	@ResponseBody
