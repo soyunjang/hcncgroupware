@@ -35,7 +35,7 @@ public class An1300Controller {
     @RequestMapping(method = RequestMethod.GET)
     public String an1300(Model model) {
         model.addAttribute("PDF_FILE", an1300Service.getPdfFileByUse(null));
-        return "AN/AN1300";
+        return "AN/an1300";
     }
 
     @ResponseBody

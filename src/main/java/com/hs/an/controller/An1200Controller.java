@@ -31,7 +31,7 @@ public class An1200Controller {
     @RequestMapping(method = RequestMethod.GET)
     public String an1200(Model model) {
         model.addAttribute("UsersCount", an1200Service.an1200Count());
-        return "AN/AN1200";
+        return "AN/an1200";
     }
 
     /**

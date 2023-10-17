@@ -33,7 +33,7 @@ public class An1400Controller {
 
     @RequestMapping(method = RequestMethod.GET)
     public String an1400(@ModelAttribute("User") UserInfo user) {
-        return "AN/AN1400";
+        return "AN/an1400";
     }
 
     @ResponseBody

@@ -43,7 +43,7 @@ public class An1000Controller {
     @RequestMapping(value = "/print", method = RequestMethod.POST)
     public String an1000_print(An1000PrintDto dto, Model model, @ModelAttribute("User") UserInfo user) {
         model.addAttribute("HolidayPrintInfo", an1000Service.an1000PrintByUser(dto));
-        return "AN/AN1000Print";
+        return "AN/an1000Print";
     }
 
     /**

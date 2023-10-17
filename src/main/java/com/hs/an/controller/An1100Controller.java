@@ -33,7 +33,7 @@ public class An1100Controller {
    	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public String an1100(@ModelAttribute("User") UserInfo user) {
-		return "AN/AN1100";
+		return "AN/an1100";
 	}
 
 	/**

@@ -76,12 +76,11 @@ public class LoginCheckInterceptor extends HandlerInterceptorAdapter{
 					view = "sa1000";
 				} else if(viewNM.split("/")[1].equals("CO1100Print")) {
 					view = "co1100";
-				} else if(viewNM.split("/")[1].equals("AN1000Print")) {
+				} else if(viewNM.split("/")[1].equals("an1000Print")) {
 					view = "an1000";
 				}else {
 					view = viewNM.split("/")[1];
 				}
-				
 				UserInfo vo = (UserInfo) request.getSession(false).getAttribute("User");
 				param.put("SYS_ID", "HCNC");
 				param.put("USER_ID", vo.getUSER_ID());
