@@ -366,6 +366,10 @@ public class Sa1000Service {
 	}
 
 	public void sa1000DeleteByConfirmN(Map<String, Object> param) {
-		sqlSession.delete("sa1000Mapper.sa100DeleteByConfirmN", param);
+		try {
+			sqlSession.delete("sa1000Mapper.sa100DeleteByConfirmN", param);
+		} catch (Exception e) {
+			throw new RuntimeException("미확정 판매품의서 삭제 에러", e);
+		}
 	}
 }

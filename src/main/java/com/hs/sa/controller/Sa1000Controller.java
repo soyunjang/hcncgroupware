@@ -3,6 +3,8 @@ package com.hs.sa.controller;
 import com.hs.sa.service.Sa1000Service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -251,11 +253,14 @@ public class Sa1000Controller {
 		return "SA1000Print";
 	}
 
+	/**
+	 * 미확정 판매품의서 삭제
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/sa1000", method = RequestMethod.DELETE)
-	public Map<String, Object> sa1000Delete(@RequestBody Map<String, Object> param) {
+	public ResponseEntity sa1000Delete(@RequestBody Map<String, Object> param) {
 		sa1000Service.sa1000DeleteByConfirmN(param);
-		return null;
+		return new ResponseEntity(HttpStatus.OK);
 	}
 
 }
