@@ -355,11 +355,11 @@
 				$('#btn01_UPDATE').removeClass('dis-n');
 				$('#searchZone').removeClass('dis-n');
 				$('#rowWrap').removeClass('row-wrap-src');
-				$('#rowWrap').addClass('row-wrap-204');
+				$('#rowWrap').addClass('row-wrap-262');
 			} else {
 				$('#trUserInfo').addClass('dis-n');
 				$('#btn01_UPDATE').addClass('dis-n');
-				$('#rowWrap').removeClass('row-wrap-204');
+				$('#rowWrap').removeClass('row-wrap-262');
 				$('#rowWrap').addClass('row-wrap-src');
 			}
 
@@ -1049,13 +1049,13 @@
 
 			let windowWidth = window.outerWidth;
 			let windowHeight = window.outerHeight;
-			let openWidth = 1025;
-			let openHeight = 1000;
+			let openWidth = 880;
+			let openHeight = 1075;
 			let top = (windowHeight - openHeight) / 2;
 			let left = (windowWidth - openWidth) / 2;
 			const url = '/an1000/print';
 			const target = 'an1000Print';
-			const option = 'width=' + openWidth + 'px , height=' + openWidth + 'px , top=' + top + 'px , left=' + left + 'px , toolbar=no, menubar=no, lacation=no, scrollbars=no, status=no';
+			const option = 'width=' + openWidth + 'px , height=' + openHeight + 'px , top=' + top + 'px , left=' + left + 'px , toolbar=no, menubar=no, lacation=no, scrollbars=no, status=no';
 
 			const form = document.querySelector('form');
 			form.action = url;

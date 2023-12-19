@@ -23,8 +23,6 @@
 				  AND USE_END LIKE (SELECT MAX(USE_END) FROM HOLIDAY_INFO WHERE USER_ID LIKE #{USER_ID})
 			  </otherwise>
 		  </choose>
-
-
 	</select>
 
 	<select id="an1000InfoSelUsers" parameterType="map" resultType="map">
@@ -207,5 +205,4 @@
 		  AND H.HOLIDAY_REASON LIKE #{HOLIDAY_REASON}
 		  AND H.USE_YN LIKE 'Y'
 	</select>
-
 </mapper>

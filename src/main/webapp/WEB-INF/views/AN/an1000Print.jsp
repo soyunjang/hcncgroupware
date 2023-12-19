@@ -84,7 +84,6 @@
 	}
 	img {
 	    width: 125px;
-		padding-left: 10px;
 	}
 	.container {
 	    width: 800px;
@@ -374,7 +373,14 @@
 			</tr>
 	    </table>
 	</section>
-	<p class="common-text3"><i>주식회사 에이치씨엔씨</i></p>
+	<div style="display: flex;justify-content: space-between;">
+		<div>
+			<p><i>그룹웨어</i></p>
+		</div>
+		<div>
+			<p class="common-text3"><i>주식회사 에이치씨엔씨</i></p>
+		</div>
+	</div>
 </div>
 
 
