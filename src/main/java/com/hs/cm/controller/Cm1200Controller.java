@@ -106,4 +106,28 @@ public class Cm1200Controller {
 		
 		return rtnMap;
 	}
+
+	/**
+	 * 메소드 설명 : 사용자정보 삭제
+	 * -------------------------------------------------------------------
+	 * @param	Map			param		추가할 정보(법인코드/사번/사용자ID/비밀번호/부서코드/권한적용일/권한만료일/권한코드/사용유무/비고)
+	 * @param	HttpSession	session		로그인한 사용자ID
+	 * @return	Map 		rtnMap		추가 성공/실패 확인(0:성공/1:실패)
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/cm1200Delete")
+	public  Map<String, Object> CM1200_DELETE(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
+
+		Map<String, Object> rtnMap = new HashMap<>();
+
+		try {
+			rtnMap = cm1200Service.cm1200Delete(param, user);
+		}catch(Exception e) {
+			e.printStackTrace();
+			rtnMap.put("Errmsg", "오류가 발생하였습니다.");
+			rtnMap.put("Errstate", -1);
+		}
+
+		return rtnMap;
+	}
 }

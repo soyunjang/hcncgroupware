@@ -58,6 +58,7 @@
 									<li><a href="javascript:void(0);" id="btn01_EXCEL">엑셀</a></li>
 	                            	<li><a href="javascript:void(0);" id="btn01_INSERT">추가</a></li>
 									<li><a href="javascript:void(0);" id="btn01_UPDATE">수정</a></li>
+									<li><a href="javascript:void(0);" id="btn01_DELETE">삭제</a></li>
 	                            </ul>
 	                        </div>
 	                    </div> 
@@ -332,6 +333,20 @@
 			}
 		});
 
+		/* 삭제 버튼 */
+		$("#btn01_DELETE").on({
+			click: function(){
+				let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
+				if(rowData != null){
+					checkAction = "D";
+					confirms("삭제 하시겠습니까?", checkAction);
+				}else {
+					toast("정보", "선택된 사용자가 없습니다.", "info");
+					return false;
+				}
+			}
+		});
+
 		/* 사용자 추가/수정 팝업의 부서팝업 버튼 */
 		$("#pop01_btn01_DEPT").on({
 			click: function(e){
@@ -384,13 +399,22 @@
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: confirm
 		/* confirm 확인버튼 클릭시 */
 		function confirmYes(action){
-			let checkAuth = "";
+			if(action == "D") {
+				let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
+				let params = {
+					USER_ID : rowData.USER_ID,
+					ACTION : action
+				}
 
-			if($("#table1").getRowData($("#table1").getGridParam("selrow")).AUTH_TYPE_CD != $('#pop01_txt01_AUTH_TYPE_CD').val()){
-				checkAuth = "CHANGEAHTU";
-			}
+				getAjaxJsonData("cm1200Delete", params, "reLoadCallback");
+			} else {
+				let checkAuth = "";
 
-			let params = {
+				if($("#table1").getRowData($("#table1").getGridParam("selrow")).AUTH_TYPE_CD != $('#pop01_txt01_AUTH_TYPE_CD').val()){
+					checkAuth = "CHANGEAHTU";
+				}
+
+				let params = {
 					USER_ID : $("#pop01_txt01_USER_ID").val(),
 					USER_NM : $("#pop01_txt01_USER_NM").val(),
 					USER_NUM : $("#pop01_txt01_USER_NUM").val(),
@@ -406,11 +430,12 @@
 					MEMO : $("#pop01_txt01_MEMO").val(),
 					CHANGE : checkAuth,
 					ACTION : action
-			}
+				}
 
-			getAjaxJsonData("cm1200Save", params, "reLoadCallback");
-			$("#pop02_txt01_DEPT").val("");
-			$("#viewForm1").dialog("close");
+				getAjaxJsonData("cm1200Save", params, "reLoadCallback");
+				$("#pop02_txt01_DEPT").val("");
+				$("#viewForm1").dialog("close");
+			}
 		}
 		
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 그리드

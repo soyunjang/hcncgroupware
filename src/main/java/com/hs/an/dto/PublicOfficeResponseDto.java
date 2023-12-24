@@ -8,6 +8,7 @@ public class PublicOfficeResponseDto {
     private int number;
     private String year;
     private String type;
+    private String name;
     private String date;
     private String weekday;
     private String regDt;

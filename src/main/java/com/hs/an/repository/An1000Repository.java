@@ -37,6 +37,10 @@ public class An1000Repository {
         sqlSession.insert("an1000Mapper.an1000Save", param);
     }
 
+    public void an1000UpdateHolidayInfo(Map<String, Object> param) {
+        sqlSession.update("an1000Mapper.an1000UpdateHolidayInfo", param);
+    }
+
     public void an1000Update(Map<String, Object> param) {
         sqlSession.update("an1000Mapper.an1000Update", param);
     }

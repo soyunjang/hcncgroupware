@@ -7,6 +7,7 @@ import lombok.Data;
 public class PublicOfficeRequestDto {
     private int number;
     private String type;
+    private String name;
     private String date;
     private String regDt;
     private UserInfo user;

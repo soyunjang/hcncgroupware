@@ -101,9 +101,7 @@ public class Cm1200Service {
 					sqlSession.insert("commonMapper.insertAuthChange", param);
 				}
 				sqlSession.update("cm1200Mapper.cm1200Update", param);
-			}
-
-			if (param.get("ACTION").equals("C")) {
+			} else if (param.get("ACTION").equals("C")) {
 				param.putAll(getUseStartAndEnd(String.valueOf(param.get("ENTER_DT"))));
 				sqlSession.insert("cm1200Mapper.cm1200Save", param);
 				sqlSession.insert("cm1200Mapper.cm1200SaveHolidayInfo", param);
@@ -114,6 +112,31 @@ public class Cm1200Service {
 			rtnMap.put("Errstate", -1);
 		}
 		
+		return rtnMap;
+	}
+
+	/**
+	 * 메소드 설명 : 사용자정보 저장 및 수정
+	 * -------------------------------------------------------------------
+	 *
+	 * @param Map 			param 추가할 정보(사용자ID/비밀번호/부서코드/권한코드/사용유무/비고)
+	 * @return Map 			rtnMap 추가 성공/실패 확인(0:성공/1:실패)
+	 */
+
+	public Map<String, Object> cm1200Delete(Map<String, Object> param, UserInfo user) {
+		Map<String, Object> rtnMap = new HashMap<>();
+
+		try {
+			param.put("UPT_ID", user.getUSER_ID());
+
+			log.debug("CM1200Service > cm1200Delete :: {}", param);
+			sqlSession.update("cm1200Mapper.cm1200Delete", param);
+		}catch(Exception e) {
+			e.printStackTrace();
+			rtnMap.put("Errmsg", "오류가 발생하였습니다.");
+			rtnMap.put("Errstate", -1);
+		}
+
 		return rtnMap;
 	}
 

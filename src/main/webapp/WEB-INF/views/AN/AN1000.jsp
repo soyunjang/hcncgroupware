@@ -64,7 +64,7 @@
 						<dl>
 							<dt>성명</dt>
 							<dd>
-								<input type="text" id="txt01_USER_NM">
+								<input type="text" id="txt01_USER_NM" value="${User.USER_NM}">
 							</dd>
 						</dl>
 						<dl class="dl-2n">
@@ -144,7 +144,8 @@
 	                            <ul>
 									<li><a href="javascript:void(0);" id="btn01_PRINT">출력</a></li>
 	                            	<li><a href="javascript:void(0);" id="btn01_INSERT">작성</a></li>
-									<li><a href="javascript:void(0);" id="btn01_UPDATE" class="dis-n">신청취소</a></li>
+	                            	<li><a href="javascript:void(0);" id="btn01_UPDATE">수정</a></li>
+									<li><a href="javascript:void(0);" id="btn01_DELETE" class="dis-n">신청취소</a></li>
 	                            </ul>
 	                        </div>
 	                    </div> 
@@ -240,8 +241,7 @@
 									</tr>
 									<tr>
 										<th class="req" colspan="4">
-											* 휴가신청서는 서면 결재 받으셔야 합니다.
-											<br>
+											* 휴가신청서는 서면 결재 받으셔야 합니다.<br>
 											* 작성하신 신청서는 삭제가 불가합니다(관리팀 문의)
 										</th>
 									</tr>
@@ -323,11 +323,10 @@
 		const userEnterDate = '${Holiday.ENTER_DT}'
 		const userName = '${User.USER_NM}'
 		const holidayOfficeInfo = ${HolidayOfficeInfo};
+
 		/* 공통코드_콤보박스 */
 		commonCodeSelectAdd("pop01_sel01_TYPE", getCommonCode('HOLIDAY'), 'N');
 		commonCodeSelectAdd("sel01_HOLIDAY_TYPE", getCommonCode('HOLIDAY'), 'Y');
-
-
 
 		/* Document가 로드되었을 때 실행되는 코드 */
 		$(document).ready(function() {
@@ -340,7 +339,8 @@
 			});
 
 			// 화면ID, 화면ID사이즈(6:CM1000/13:CM1000_Detail), 다국어
-			langHead = getLangCode("AN1000", 6, "${LANG}");
+			langHead = ["사용자ID", "성명", "직급", "직위", "시작일자", "종료일자", "휴가일자", "휴가종류", "사유", "담당업무", "인수인계자", "비상연락망", "등록일"];
+			<%--langHead = getLangCode("AN1000", 6, "${LANG}");--%>
 			langPop1 = getLangCodeDetail("AN1000_Pop3", 11, "${LANG}");
 
 			let today = new Date();
@@ -352,13 +352,13 @@
 
 			if(userDept.indexOf("M") > -1) {
 				$('#trUserInfo').removeClass('dis-n');
-				$('#btn01_UPDATE').removeClass('dis-n');
+				$('#btn01_DELETE').removeClass('dis-n');
 				$('#searchZone').removeClass('dis-n');
 				$('#rowWrap').removeClass('row-wrap-src');
 				$('#rowWrap').addClass('row-wrap-262');
 			} else {
 				$('#trUserInfo').addClass('dis-n');
-				$('#btn01_UPDATE').addClass('dis-n');
+				$('#btn01_DELETE').addClass('dis-n');
 				$('#rowWrap').removeClass('row-wrap-262');
 				$('#rowWrap').addClass('row-wrap-src');
 			}
@@ -374,7 +374,6 @@
 			});
 
 			holidayPeriodGuideWord(userEnterDate);
-
 		});
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 버튼
@@ -421,8 +420,16 @@
 			}
 		});
 
-		/* 휴가취소 버튼 */
+		/* 수정 버튼 */
 		$("#btn01_UPDATE").on({
+			click: function(){
+				checkAction = "U";
+				openModalPopup(checkAction);
+			}
+		});
+
+		/* 휴가취소 버튼 */
+		$("#btn01_DELETE").on({
 			click: function(){
 				let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
 
@@ -500,7 +507,7 @@
 				holidayInfoSel(null);
 
 				$("#viewForm1").dialog("close");
-			}else if (action == "D") {
+			} else if (action == "D") {
 				const param = $("#table1").getRowData($("#table1").getGridParam("selrow"));
 
 				new Promise(function(resolve, reject) {
@@ -517,6 +524,23 @@
 				});
 
 				holidayInfoSel(null);
+			} else if(action == "U") {
+				let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
+				let param = {
+					HOLIDAY_TYPE : $("#pop01_sel01_TYPE").val(),
+					HOLIDAY_CNT : $("#pop01_txt01_COUNT").val(),
+					HOLIDAY_START : $("#pop01_date01_START").val(),
+					HOLIDAY_END : $("#pop01_date01_END").val(),
+					HOLIDAY_REASON : $("#pop01_txt01_REASON").val(),
+					TASK: $("#pop01_txt01_TASK").val(),
+					ACQUIRER: $("#pop01_txt01_ACQUIRER").val(),
+					EMERGENCY: $("#pop01_txt01_EMERGENCY").val(),
+					USER_ID: rowData.USER_ID,
+					START : rowData.HOLIDAY_START,
+					END : rowData.HOLIDAY_END
+				};
+				getAjaxJsonData('an1000/updateHolidayInfo', param, 'searchGridDataCallBack');
+				$("#viewForm1").dialog("close");
 			}
 		}
 
@@ -533,14 +557,18 @@
 				colNames: langHead,
 				colModel: [
 					{name: 'USER_ID'		, align: 'center'	, width: '0%'	, hidden: true},
-					{name: 'USER_NM'		, align: 'center'	, width: '7%'	, hidden: false},
+					{name: 'USER_NM'		, align: 'center'	, width: '6%'	, hidden: false},
 					{name: 'GRADE_CD'		, align: 'center' 	, width: '0%'	, hidden: true},
-					{name: 'GRADE_NM'		, align: 'center' 	, width: '8%'	, hidden: false},
-					{name: 'HOLIDAY_START'	, align: 'center'	, width: '10%'	, hidden: false},
-					{name: 'HOLIDAY_END'	, align: 'center'	, width: '10%'	, hidden: false},
+					{name: 'GRADE_NM'		, align: 'center' 	, width: '6%'	, hidden: false},
+					{name: 'HOLIDAY_START'	, align: 'center'	, width: '9%'	, hidden: false},
+					{name: 'HOLIDAY_END'	, align: 'center'	, width: '9%'	, hidden: false},
 					{name: 'HOLIDAY_CNT'	, align: 'center' 	, width: '5%'	, hidden: false},
-					{name: 'HOLIDAY_TYPE'	, align: 'center'	, width: '5%'	, hidden: false},
-					{name: 'HOLIDAY_REASON'	, align: 'left'		, width: '15%'	, hidden: false}
+					{name: 'HOLIDAY_TYPE'	, align: 'center'	, width: '8%'	, hidden: false},
+					{name: 'HOLIDAY_REASON'	, align: 'left'		, width: '15%'	, hidden: false},
+					{name: 'TASK'			, align: 'left'		, width: '10%'	, hidden: false},
+					{name: 'ACQUIRER'		, align: 'left'		, width: '10%'	, hidden: false},
+					{name: 'EMERGENCY'		, align: 'left'		, width: '10%'	, hidden: false},
+					{name: 'REG_DT'			, align: 'center'	, width: '9%'	, hidden: false}
 				],
 				autowidth: false,
 				shrinkToFit: false,
@@ -689,7 +717,7 @@
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 유효성
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: Popup
-		/* 사용자 추가/수정 팝업 */
+		/* 휴가 추가/수정 팝업 */
 		function openModalPopup(action){
 			// 화면ID, 화면ID사이즈(ex. 6:CM1000 / 13:CM1000_Detail), 팝업ID, 다국어
 			let returnPopup = getLangCodePopup("AN1000_Pop1", 11, "viewForm1", "${LANG}");
@@ -712,7 +740,20 @@
 						$("#pop01_txt01_GRADE_NM").val('${User.GRADE_NM}');
 					}
 					else if(action == "U"){
-
+						let rowData = $("#table1").getRowData($("#table1").getGridParam("selrow"));
+						$("#pop01_txt01_USER_ID").val(rowData.USER_ID);
+						$("#pop01_txt01_USER_NM").val(rowData.USER_NM);
+						$("#pop01_txt01_GRADE_CD").val(rowData.GRADE_CD);
+						$("#pop01_txt01_GRADE_NM").val(rowData.GRADE_NM);
+						$("select[id='pop01_sel01_TYPE'] option:contains(" + rowData.HOLIDAY_TYPE + ")").attr("selected", "selected");
+						$("#pop01_txt01_COUNT").val(rowData.HOLIDAY_CNT);
+						$("#pop01_date01_START").val(rowData.HOLIDAY_START);
+						$("#pop01_date01_END").val(rowData.HOLIDAY_END);
+						$("#pop01_date01_REG").val(rowData.REG_DT);
+						$("#pop01_txt01_EMERGENCY").val(rowData.EMERGENCY);
+						$("#pop01_txt01_TASK").val(rowData.TASK);
+						$("#pop01_txt01_ACQUIRER").val(rowData.ACQUIRER);
+						$("#pop01_txt01_REASON").val(rowData.HOLIDAY_REASON);
 					}
 				},
 				close: function () {
@@ -732,18 +773,25 @@
 								toast("정보", "사유을 입력해주세요.", "info");
 								return false;
 							}
-							let idsH = $("#table1").jqGrid('getDataIDs');
-							const checkId = $('#pop01_txt01_USER_ID').val();
-							for (let i = 0; i < idsH.length; i++) {
-								let retH = $("#table1").jqGrid('getRowData', idsH[i]);
-								let idCheck = (checkId == retH.USER_ID);
-								if(retH.HOLIDAY_START == $("#pop01_date01_START").val() && idCheck) {
-									toast("오류", "이미 존재하는 휴가입니다.", "error");
-									return;
-								}
-							}
 
-							confirms("저장 하시겠습니까?", "C");
+							if(action == "C") {
+								let idsH = $("#table1").jqGrid('getDataIDs');
+								const checkId = $('#pop01_txt01_USER_ID').val();
+
+								for (let i = 0; i < idsH.length; i++) {
+									let retH = $("#table1").jqGrid('getRowData', idsH[i]);
+									let idCheck = (checkId == retH.USER_ID);
+
+									if (retH.HOLIDAY_START == $("#pop01_date01_START").val() && idCheck) {
+										toast("오류", "이미 존재하는 휴가입니다.", "error");
+										return;
+									}
+								}
+
+								confirms("저장 하시겠습니까?", "C");
+							} else if(action == "U"){
+								confirms("저장 하시겠습니까?", "U");
+							}
 						}
 					},
 					{
@@ -790,11 +838,11 @@
 							$(this).dialog("close");
 							checkAction = "C";
 							openModalPopup(checkAction);
-							$("#pop01_sel01_TYPE").val("OFFICE01")
-							$("#pop01_txt01_COUNT").val("1")
-							$("#pop01_date01_START").val(date)
-							$("#pop01_date01_END").val(date)
-							$("#pop01_txt01_REASON").val("회사 공식 휴무일")
+							$("#pop01_sel01_TYPE").val("OFFICE01");
+							$("#pop01_txt01_COUNT").val("1");
+							$("#pop01_date01_START").val(date);
+							$("#pop01_date01_END").val(date);
+							$("#pop01_txt01_REASON").val("회사 공식 휴무일");
 						}
 					},
 					{
@@ -922,7 +970,6 @@
 				$('#pop01_txt01_COUNT').val('0.5');
 			} else if (OFFICE_CHECK) {
 				// 공식 휴무일(연차)
-
 				holidayOfficeInfo.some(item => {
 					if (item.COUNT == 0) {
 						console.log(item);
@@ -1038,7 +1085,6 @@
 		 * 휴가 출력
 		 */
 		function holidayPrint(valueArr) {
-
 			let nameArr = [
 				"gradeCd", "gradeNm",
 				"holidayCnt", "holidayStart",

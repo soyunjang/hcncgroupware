@@ -8,7 +8,7 @@
 </style>
 	<body>
 		<!-- .contents-wrap 컨텐츠영역 START -->
-		<div class="contents-wrap an1300-page">
+		<div class="contents-wrap an1400-page">
 			<!-- .page-title-wrap 타이블영역 START -->
 			<div class="page-title-wrap">
 				<div class="page-title">
@@ -81,7 +81,7 @@
 					<div class="col col-1 wp100">
 						<section>
 							<table class="table-write2">
-								<caption>시스템코드</caption>
+								<caption>공휴일 및 공식휴무일 내역</caption>
 								<colgroup>
 									<col class="wp20">
 									<col class="wp30">
@@ -90,11 +90,17 @@
 									<tr>
 										<th class="req">1.종류</th>
 										<td>
-											<select id="pop01_sel01_TYPE" class="wp100"></select>
+											<select id="pop01_sel01_TYPE" class="wp100" />
 										</td>
 									</tr>
 									<tr>
-										<th class="req">2.날짜</th>
+										<th class="req">2.휴무명</th>
+										<td>
+											<input type="text" id="pop01_txt01_NAME" class="wp100" />
+										</td>
+									</tr>
+									<tr>
+										<th class="req">3.날짜</th>
 										<td>
 											<input type="date" id="pop01_date01_DATE" class="wp100">
 										</td>
@@ -109,10 +115,9 @@
 		<!-- .modal-cont 팝업영역 END -->
 	</body>
 
-	
 	<script type="text/javascript">
 		/**
-		 * AN1400	공통코드관리
+		 * AN1400	공휴일 및 공식휴무일 관리
 		 * -------------------------------------------------------------------
 		 * 01. 공통코드
 		 * 02. 버튼
@@ -127,9 +132,6 @@
 		/* 공통코드_다국어 */
 		let langHead;
 		
-		/* 공통코드_콤보박스 */ 
-		// commonCodeSelectAdd("pop01_sel01_USE_YN", getCommonCode('USE'), 'N');
-
 		/* Document가 로드되었을 때 실행되는 코드 */
 		$(document).ready(function() {			
 			function init() {
@@ -142,11 +144,8 @@
 			
 			$("#sel01_USE_YN").find("option:eq(1)").prop("selected", "selected");
 			
-			// 화면ID, 화면ID사이즈(6:CM1000/13:CM1000_Detail), 다국어
-			<%--langHead = getLangCode("AN1400", 6, "${LANG}");--%>
-			langHead = ["구분", "시퀀스", "연도", "종류", "날짜", "요일", "등록일자"];
-			<%--langDetail = getLangCodeDetail("CM1000_Detail", 13, "${LANG}");--%>
-			
+			langHead = ["구분", "시퀀스", "연도", "종류", "휴무명", "날짜", "요일", "등록일"];
+
 			setGrid();
 			init(); //그리드 리사이징
 			getAjaxJsonData("/an1400/years", "", "getYearCallback", "GET");
@@ -159,6 +158,14 @@
 		 */
 		$("#btn01_DATE_INSERT").on("click", () => {
 			openPopup("C");
+		});
+
+		// 버튼 및 Select Tag Start
+		/**
+		 * 수정 버튼 클릭 시
+		 */
+		$("#btn01_DATE_UPDATE").on("click", () => {
+			openPopup("U");
 		});
 
 		/**
@@ -198,6 +205,7 @@
 			if(action === "C"){
 				let param = {
 						type : $("#pop01_sel01_TYPE").val(),
+						name : $("#pop01_txt01_NAME").val(),
 						date : $("#pop01_date01_DATE").val(),
 						searchType: $("#sel01_TYPE").val(),
 						searchYear : $("#sel01_YEAR").val()
@@ -221,6 +229,7 @@
 				let param = {
 					number : data.number,
 					type : $("#pop01_sel01_TYPE").val(),
+					name : $("#pop01_txt01_NAME").val(),
 					date : $("#pop01_date01_DATE").val(),
 					regDt : data.regDt,
 					searchType: $("#sel01_TYPE").val(),
@@ -253,6 +262,7 @@
 						formatter: (cellValue, options, rowObject) => {
 							return  cellValue == "public" ? "공휴일" : "회사휴무일"
 						}},
+					{name: 'name', align: 'center', width: '25%'},
 					{name: 'date', align: 'center', width: '25%'},
 					{name: 'weekday', align: 'center', width: '25%'},
 					{name: 'regDt', hidden: true},
@@ -262,6 +272,7 @@
 				viewrecords: false,
 				rowNum : 5000,
 				onSelectRow: function (rowid, status, e) {
+
 				},
 				ondblClickRow: function (rowid, iRow, iCol, e) {
 					openPopup("U");
@@ -269,7 +280,6 @@
 			});
 
 			getAjaxJsonData("/an1400/dates", "", "searchGridCallback", "GET");
-
 		};
 		// 그리드 End
 
@@ -338,8 +348,6 @@
 		// CRUD 및 기타 설정 End
 
 		//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 유효성
-
-		
 		// Popup Start
 		/**
 		 * 팝업 열기
@@ -356,7 +364,7 @@
 				autoOpen : true,
 				title : titlePop,
 				width : 600,
-				height : 260,
+				height : 300,
 				modal : true,
 				open : function(event, ui) {
 					popReset("viewForm1");
@@ -369,6 +377,7 @@
 								item.setAttribute("selected", "true");
 							}
 						});
+						$("#pop01_txt01_NAME").val(rowData.name);
 						$("#pop01_date01_DATE").val(rowData.date);
 					}
 				},
@@ -379,6 +388,10 @@
 					{
 						text : pop01_btn01_SAVE,
 						click : function() {
+							if ($("#pop01_txt01_NAME").val() == "") {
+								toast("정보", "휴무명을 확인해주시기 바랍니다.", "info");
+								return;
+							}
 							if ($("#pop01_date01_DATE").val() == "") {
 								toast("정보", "날짜를 확인해주시기 바랍니다.", "info");
 								return;

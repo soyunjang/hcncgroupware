@@ -8,6 +8,7 @@ import com.hs.an.dto.HolidayPublicDto;
 import com.hs.an.repository.An1000Repository;
 import com.hs.home.controller.UserInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -105,6 +106,13 @@ public class An1000Service {
 	}
 
 	/**
+	 * 휴가 수정
+	 */
+	public void an1000UpdateHolidayInfo(Map<String, Object> param, UserInfo user) {
+		an1000Repository.an1000UpdateHolidayInfo(param);
+	}
+
+	/**
 	 * 휴가 신청 취소
 	 */
 	public void an1000Update(Map<String, Object> param, UserInfo user) {
@@ -115,8 +123,8 @@ public class An1000Service {
 					param.put("HOLIDAY_TYPE", code.get("SYS_ITEM_CD"));
 				}
 			});
-			param.put("UPT_ID", user.getUSER_ID());
 
+			param.put("UPT_ID", user.getUSER_ID());
 			an1000Repository.an1000Update(param);
 
 			// 휴가 등록하는 사람 확인 HOLIDAY_INFO 테이블 수정

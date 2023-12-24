@@ -49,7 +49,8 @@
 			   H.HOLIDAY_REASON,
 			   H.TASK,
 			   H.ACQUIRER,
-			   H.EMERGENCY
+			   H.EMERGENCY,
+			   CONVERT(CHAR(10), H.REG_DT, 23) AS REG_DT
 		FROM HOLIDAY_PERSON H
 				 LEFT OUTER JOIN USER_INFO U ON H.USER_ID = U.USER_ID
 		WHERE H.USE_YN = 'Y'
@@ -80,15 +81,33 @@
 							        #{REG_ID}, GETDATE(), 'Y')
 	</insert>
 
+	<update id="an1000UpdateHolidayInfo" parameterType="map">
+		UPDATE HOLIDAY_PERSON
+		   SET HOLIDAY_TYPE = #{HOLIDAY_TYPE}
+		     , HOLIDAY_CNT = #{HOLIDAY_CNT}
+		     , HOLIDAY_START = #{HOLIDAY_START}
+		     , HOLIDAY_END = #{HOLIDAY_END}
+		     , HOLIDAY_REASON = #{HOLIDAY_REASON}
+		     , TASK = #{TASK}
+		     , ACQUIRER = #{ACQUIRER}
+		     , EMERGENCY = #{EMERGENCY}
+		     , UPT_DT = GETDATE()
+		     , UPT_ID = #{UPT_ID}
+		WHERE USER_ID = #{USER_ID}
+		  AND HOLIDAY_START = #{START}
+		  AND HOLIDAY_END = #{END}
+	</update>
+
 	<update id="an1000Update" parameterType="map">
-		UPDATE HOLIDAY_PERSON SET UPT_DT = GETDATE(), UPT_ID = #{UPT_ID}, USE_YN = 'N'
-		                      WHERE	USER_ID = #{USER_ID} AND
-		                          	HOLIDAY_START = #{HOLIDAY_START} AND
-		                          	HOLIDAY_END = #{HOLIDAY_END} AND
-		                          	HOLIDAY_CNT = #{HOLIDAY_CNT} AND
-		                          	HOLIDAY_REASON = #{HOLIDAY_REASON} AND
-		                          	HOLIDAY_TYPE = #{HOLIDAY_TYPE} AND
-									USE_YN = 'Y'
+		UPDATE HOLIDAY_PERSON
+		   SET UPT_DT = GETDATE(), UPT_ID = #{UPT_ID}, USE_YN = 'N'
+	     WHERE USER_ID = #{USER_ID}
+	       AND HOLIDAY_START = #{HOLIDAY_START}
+	       AND HOLIDAY_END = #{HOLIDAY_END}
+	       AND HOLIDAY_CNT = #{HOLIDAY_CNT}
+	       AND HOLIDAY_REASON = #{HOLIDAY_REASON}
+	       AND HOLIDAY_TYPE = #{HOLIDAY_TYPE}
+	       AND USE_YN = 'Y'
 	</update>
 
 	<select id="an1000HolidayOfficeByUser" parameterType="String" resultType="map">
@@ -122,13 +141,14 @@
 	</select>
 
 	<update id="an1000HolidayInfoUpdate" parameterType="holidayInfoDto">
-		UPDATE HOLIDAY_INFO SET HOLIDAY_TOTAL = #{holiday_total},
-		                        HOLIDAY_USE = #{holiday_use},
-		                        HOLIDAY_REMAIN = #{holiday_remain},
-		                        HOLIDAY_DEDUCT = #{holiday_deduct}
-		WHERE USER_ID = #{user_id}
-		  AND #{holiday_start} BETWEEN USE_START AND USE_END
-		  AND #{holiday_end} BETWEEN USE_START AND USE_END
+		UPDATE HOLIDAY_INFO
+		   SET HOLIDAY_TOTAL = #{holiday_total},
+			   HOLIDAY_USE = #{holiday_use},
+			   HOLIDAY_REMAIN = #{holiday_remain},
+			   HOLIDAY_DEDUCT = #{holiday_deduct}
+		 WHERE USER_ID = #{user_id}
+		   AND #{holiday_start} BETWEEN USE_START AND USE_END
+		   AND #{holiday_end} BETWEEN USE_START AND USE_END
 	</update>
 
 	<select id="an1000PrintByUser" parameterType="an1000PrintDto" resultType="map">

@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -72,10 +73,21 @@ public class An1000Controller {
     }
 
     /**
+     * 휴가 수정
+     *
+     * @param param : 휴가 정보
+     */
+    @ResponseBody
+    @RequestMapping(value="/updateHolidayInfo")
+    public ResponseEntity an1000_updateHolidayInfo(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
+        an1000Service.an1000UpdateHolidayInfo(param, user);
+        return new ResponseEntity<>(an1000Service.an1000Sel(param, user), HttpStatus.OK);
+    }
+
+    /**
      * 휴가 취소
      *
      * @param param : 휴가 취소 정보
-     * @return : 휴가 신청 내역
      */
     @ResponseBody
     @RequestMapping(method = RequestMethod.PATCH)

@@ -26,6 +26,7 @@
 		FROM USER_INFO U
 		WHERE U.USER_ID LIKE '%' + #{USER_ID} + '%'
 		  AND U.USER_NM LIKE '%' + #{USER_NM} + '%'
+		  AND U.USE_YN = 'Y'
 		ORDER BY U.USER_NM;
 	</select>
 	
@@ -97,6 +98,11 @@
 							 UPT_DT       = CONVERT(VARCHAR(19), GETDATE(), 121)
 		                 WHERE USER_ID LIKE #{USER_ID}
 	</update>
+
+	<delete id="cm1200Delete" parameterType="map">
+		DELETE FROM USER_INFO
+		 WHERE USER_ID = #{USER_ID}
+	</delete>
 
 	<!-- 사용자 추가 시 TABLE HOLIDAY_INFO에 추가 -->
 	<insert id="cm1200SaveHolidayInfo" parameterType="map">

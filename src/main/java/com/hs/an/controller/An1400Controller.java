@@ -9,9 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpSession;
-
 import static com.hs.util.ResponseHttpHeaders.responseHeader;
 
 @Slf4j
@@ -69,5 +67,4 @@ public class An1400Controller {
                                         @RequestParam(required = false) String type) {
         return new ResponseEntity(an1400Service.an1400Dates(year, type), responseHeader(), HttpStatus.OK);
     }
-
 }

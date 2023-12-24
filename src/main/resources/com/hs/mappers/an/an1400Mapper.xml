@@ -9,13 +9,14 @@
 		INSERT INTO
 		<choose>
 			<when test='type.equals("public")'>
-				HOLIDAY_PUBLIC (PUBLIC_DAY, REG_ID, REG_DT)
+				HOLIDAY_PUBLIC (PUBLIC_DAY, PUBLIC_NAME, REG_ID, REG_DT)
+				VALUES (#{date}, #{name}, #{user.USER_ID}, GETDATE())
 			</when>
 			<otherwise>
 				HOLIDAY_OFFICE (OFFICE_HOLIDAY, REG_ID, REG_DT)
+				VALUES (#{date}, #{user.USER_ID}, GETDATE())
 			</otherwise>
 		</choose>
-		VALUES (#{date}, #{user.USER_ID}, GETDATE())
 	</insert>
 
 	<delete id="an1400Delete" parameterType="publicOfficeRequestDto">
@@ -34,7 +35,7 @@
 		UPDATE
 		<choose>
 			<when test='type.equals("public")'>
-				HOLIDAY_PUBLIC SET PUBLIC_DAY = #{date},
+				HOLIDAY_PUBLIC SET PUBLIC_DAY = #{date}, PUBLIC_NAME = #{name},
 			</when>
 			<otherwise>
 				HOLIDAY_OFFICE SET OFFICE_HOLIDAY = #{date},
@@ -61,6 +62,7 @@
 		<id column="NUMBER" property="number"/>
 		<result column="YEAR" property="year"/>
 		<result column="TYPE" property="type"/>
+		<result column="NAME" property="name"/>
 		<result column="DATE" property="date"/>
 		<result column="WEEKDAY" property="weekday"/>
 		<result column="REG_DT" property="regDt"/>
@@ -71,6 +73,7 @@
 			(SELECT HP.PUBLIC_NUM AS NUMBER,
 			     	YEAR(HP.PUBLIC_DAY)  AS YEAR,
 			        'public' AS TYPE,
+					PUBLIC_NAME AS NAME,
 				    HP.PUBLIC_DAY AS DATE,
   				    DATENAME(WEEKDAY, HP.PUBLIC_DAY) AS WEEKDAY,
 				    CONVERT(CHAR(10), HP.REG_DT, 23) AS REG_DT
@@ -79,6 +82,7 @@
 			 SELECT HO.OFFICE_NUM AS NUMBER,
 			     	YEAR(HO.OFFICE_HOLIDAY) AS YEAR,
 			    	'office' AS TYPE,
+					'공식휴무일' AS NAME,
 					HO.OFFICE_HOLIDAY AS DATE,
 					DATENAME(WEEKDAY, HO.OFFICE_HOLIDAY) AS WEEKDAY,
 					CONVERT(CHAR(10), HO.REG_DT, 23) AS REG_DT
