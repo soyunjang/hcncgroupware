@@ -104,6 +104,13 @@
 		 WHERE USER_ID = #{USER_ID}
 	</delete>
 
+	<update id="cm1200UpdatePw" parameterType="map">
+		UPDATE USER_INFO SET PASSWORD     = #{PASSWORD},
+							 UPT_ID       = #{UPT_ID},
+							 UPT_DT       = CONVERT(VARCHAR(19), GETDATE(), 121)
+		WHERE USER_ID = #{USER_ID}
+	</update>
+
 	<!-- 사용자 추가 시 TABLE HOLIDAY_INFO에 추가 -->
 	<insert id="cm1200SaveHolidayInfo" parameterType="map">
 		INSERT INTO HOLIDAY_INFO (USER_ID

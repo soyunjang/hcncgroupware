@@ -98,7 +98,10 @@
 										</td>
 										<th class="req">2.사용자명</th>
 										<td>
-											<input type="text" id="pop01_txt01_USER_NM" placeholder="사용자명">
+											<div class="input-btn">
+												<input type="text" id="pop01_txt01_USER_NM" placeholder="사용자명">
+												<a href="javascript:void(0);" id="pop01_btn02_PW" class="btn">비밀번호초기화</a>
+											</div>
 										</td>
 									</tr>
 
@@ -271,6 +274,8 @@
 		let checkUserID = false;
 		let checkUserNum = false;
 		let checkAuthChange = ""; // 권한그룹 변경 확인
+
+		const userDept = '${User.DEPT_CD}'
 		
 		/* 공통코드_콤보박스 */ 
 		commonCodeSelectAdd("pop01_sel01_GRADE", getCommonCode('ROLE'), 'N');
@@ -659,6 +664,26 @@
 			}
 		});
 
+		$("#pop01_btn02_PW").on({
+			click: function() {
+				updatePasswordRest();
+			}
+		});
+
+		function updatePasswordRest() {
+			const param = {
+				USER_ID: $("#pop01_txt01_USER_ID").val().trim()
+			}
+
+			getAjaxJsonData('cm1200PasswordReset', param, 'PasswordResetCallback');
+		}
+
+		function PasswordResetCallback(data){
+			$("#viewForm1").dialog("close");
+			popReset("viewForm1");
+			toast("성공", "비밀번호가 초기화되었습니다.", "success");
+			searchGridData();
+		}
 
 		function searchVerificationUserIdOrNum(type){
 			let searchParam;
@@ -730,12 +755,17 @@
 						$('#pop01_txt01_USER_NUM').attr("disabled", false);
 						$('#pop01_btn01_VERIFICATION').css("display", "block");
 						$('#pop01_btn02_VERIFICATION').css("display", "block");
+						$('#pop01_btn02_PW').css("display", "none");
 						$("#pop01_sel01_USE").find("option:eq(1)").prop("selected", "selected");
 						
 						document.getElementById('pop01_date01_ENTER').valueAsDate = new Date();
 					} else if(action == "U"){
 						$('#pop01_btn01_VERIFICATION').css("display", "none");
 						$('#pop01_btn02_VERIFICATION').css("display", "none");
+
+						if(userDept.indexOf("M") > -1) {
+							$('#pop01_btn02_PW').css("display", "block");
+						}
 					}
 				},
 				close: function () {

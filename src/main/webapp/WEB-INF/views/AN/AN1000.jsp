@@ -352,12 +352,14 @@
 
 			if(userDept.indexOf("M") > -1) {
 				$('#trUserInfo').removeClass('dis-n');
+				$('#btn01_UPDATE').removeClass('dis-n');
 				$('#btn01_DELETE').removeClass('dis-n');
 				$('#searchZone').removeClass('dis-n');
 				$('#rowWrap').removeClass('row-wrap-src');
 				$('#rowWrap').addClass('row-wrap-262');
 			} else {
 				$('#trUserInfo').addClass('dis-n');
+				$('#btn01_UPDATE').addClass('dis-n');
 				$('#btn01_DELETE').addClass('dis-n');
 				$('#rowWrap').removeClass('row-wrap-262');
 				$('#rowWrap').addClass('row-wrap-src');

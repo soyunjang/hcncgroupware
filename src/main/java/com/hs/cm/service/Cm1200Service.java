@@ -84,6 +84,8 @@ public class Cm1200Service {
 			param.put("HOST_NM", InetAddress.getLocalHost().getHostName());
 			if (!param.get("BIRTHDAY").equals("")) {
 				param.put("PASSWORD", encryptStringToByteData(param.get("BIRTHDAY").toString().replace("-", "")));
+			} else {
+				param.put("PASSWORD", encryptStringToByteData("Password1!"));
 			}
 
 			log.debug("CM1200Service > cm1200Save :: {}", param);
@@ -131,6 +133,32 @@ public class Cm1200Service {
 
 			log.debug("CM1200Service > cm1200Delete :: {}", param);
 			sqlSession.update("cm1200Mapper.cm1200Delete", param);
+		}catch(Exception e) {
+			e.printStackTrace();
+			rtnMap.put("Errmsg", "오류가 발생하였습니다.");
+			rtnMap.put("Errstate", -1);
+		}
+
+		return rtnMap;
+	}
+
+	/**
+	 * 메소드 설명 : 비밀번호 초기화
+	 * -------------------------------------------------------------------
+	 *
+	 * @param Map 			param 추가할 정보(사용자ID/비밀번호/부서코드/권한코드/사용유무/비고)
+	 * @return Map 			rtnMap 추가 성공/실패 확인(0:성공/1:실패)
+	 */
+
+	public Map<String, Object> cm1200PasswordReset(Map<String, Object> param, UserInfo user) {
+		Map<String, Object> rtnMap = new HashMap<>();
+
+		try {
+			param.put("UPT_ID", user.getUSER_ID());
+			param.put("PASSWORD", encryptStringToByteData("Password1!"));
+
+			log.debug("CM1200Service > cm1200PasswordReset :: {}", param);
+			sqlSession.update("cm1200Mapper.cm1200UpdatePw", param);
 		}catch(Exception e) {
 			e.printStackTrace();
 			rtnMap.put("Errmsg", "오류가 발생하였습니다.");
