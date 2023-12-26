@@ -345,10 +345,12 @@
 
 			let today = new Date();
 			let monthAgo = new Date(today);
+			let monthLater = new Date(today);
 			monthAgo.setMonth(today.getMonth() - 1);
+			monthLater.setMonth(today.getMonth() + 1);
 
 			$("#date01_START").val(monthAgo.toISOString().split('T')[0]);
-			$("#date01_END").val(today.toISOString().split('T')[0]);
+			$("#date01_END").val(monthLater.toISOString().split('T')[0]);
 
 			if(userDept.indexOf("M") > -1) {
 				$('#trUserInfo').removeClass('dis-n');
@@ -957,8 +959,12 @@
 		 * 반차 체크 및 휴가기간 체크(휴가시작일 >= 휴가종료일)
 		 */
 		function holidayDateCheck() {
-			const HALF_CHECK = ($('#pop01_sel01_TYPE').val() == 'HALF01' || $('#pop01_sel01_TYPE').val() == 'HALF02'
-					|| $('#pop01_sel01_TYPE').val() == 'CIVIL01' || $('#pop01_sel01_TYPE').val() == 'CIVIL02');
+			let searchParam = {};
+			getAjaxJsonData("an1000/holidayInfo", searchParam, "searchHolidatInfoCallBack");
+		}
+
+		function searchHolidatInfoCallBack(res) {
+			const HALF_CHECK = ($('#pop01_sel01_TYPE').val() == 'HALF01' || $('#pop01_sel01_TYPE').val() == 'HALF02' || $('#pop01_sel01_TYPE').val() == 'CIVIL01' || $('#pop01_sel01_TYPE').val() == 'CIVIL02');
 			const OFFICE_CHECK = ($('#pop01_sel01_TYPE').val() == 'OFFICE01');
 			const OFFICE_CHECK2 = ($('#pop01_sel01_TYPE').val() == 'OFFICE02');
 			let startDate = $('#pop01_date01_START').val();
@@ -972,7 +978,7 @@
 				$('#pop01_txt01_COUNT').val('0.5');
 			} else if (OFFICE_CHECK) {
 				// 공식 휴무일(연차)
-				holidayOfficeInfo.some(item => {
+				res.some(item => {
 					if (item.COUNT == 0) {
 						console.log(item);
 						$("#pop01_date01_START").val(item.OFFICE_HOLIDAY);
@@ -981,12 +987,12 @@
 						return true;
 					}
 				});
-				if (holidayOfficeInfo.length == 0) {
-					getAjaxJsonData(url, '', 'holidayDateCount', 'GET');
-				}
+				// if (holidayOfficeInfo.length == 0) {
+				getAjaxJsonData(url, '', 'holidayDateCount', 'GET');
+				// }
 			} else if (OFFICE_CHECK2) {
-				// 공식 휴무일(연차 및 출근)
-				holidayOfficeInfo.some(item => {
+				// 공식 휴무일(출근)
+				res.some(item => {
 					if (item.COUNT == 0) {
 						$("#pop01_date01_START").val(item.OFFICE_HOLIDAY);
 						$("#pop01_date01_END").val(item.OFFICE_HOLIDAY);

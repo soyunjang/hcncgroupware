@@ -60,6 +60,18 @@ public class An1000Controller {
     }
 
     /**
+     * 메소드 설명 : 연차신청내역 조회 (사용자별)
+     *
+     * @param param :	검색조건
+     * @return 휴가 신청 내역
+     */
+    @ResponseBody
+    @RequestMapping(value = "/holidayInfo")
+    public ResponseEntity an1000_selectHolidayInfo(@RequestBody Map<String, Object> param, @ModelAttribute("User") UserInfo user) {
+        return new ResponseEntity<>(an1000Service.an1000HolidayOfficeByUser(user), HttpStatus.OK);
+    }
+
+    /**
      * 휴가 등록
      *
      * @param param : 휴가 등록 정보
